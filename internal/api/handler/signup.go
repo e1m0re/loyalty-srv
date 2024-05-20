@@ -19,7 +19,6 @@ func (handler handler) SignUp(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if userInfo.Username == "" || userInfo.Password == "" {
-		w.Write([]byte("invalid request"))
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
