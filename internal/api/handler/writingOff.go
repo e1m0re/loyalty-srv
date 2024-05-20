@@ -12,7 +12,7 @@ type writingOffRequest struct {
 	Sum   int             `json:"sum"`
 }
 
-func (handler handler) WritingOff(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) WritingOff(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.Header().Set("Allow", http.MethodPost)
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -33,7 +33,7 @@ func (handler handler) WritingOff(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ok, err := handler.OrderService.ValidateNumber(r.Context(), requestData.Order)
+	ok, err := h.services.Orders.ValidateNumber(r.Context(), requestData.Order)
 	if err != nil {
 		w.Write([]byte(err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)
@@ -46,14 +46,14 @@ func (handler handler) WritingOff(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userId := models.UserId(1)
-	account, err := handler.AccountService.GetAccountByUserId(r.Context(), userId)
+	account, err := h.services.Accounts.GetAccountByUserId(r.Context(), userId)
 	if err != nil {
 		w.Write([]byte(err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	_, err = handler.AccountService.Withdraw(r.Context(), account.ID, requestData.Sum, requestData.Order)
+	_, err = h.services.Accounts.Withdraw(r.Context(), account.ID, requestData.Sum, requestData.Order)
 	if err != nil {
 		w.Write([]byte(err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)

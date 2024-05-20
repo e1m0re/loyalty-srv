@@ -9,7 +9,7 @@ import (
 	"e1m0re/loyalty-srv/internal/models"
 )
 
-func (handler handler) SignUp(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
 	userInfo := &models.UserInfo{}
 	err := json.NewDecoder(r.Body).Decode(userInfo)
 	if err != nil {
@@ -23,7 +23,7 @@ func (handler handler) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = handler.UserService.SignUp(r.Context(), *userInfo)
+	_, err = h.services.Authorization.CreateUser(r.Context(), *userInfo)
 	if err != nil {
 		w.Write([]byte(err.Error()))
 		if errors.Is(err, apperrors.BusyLoginError) {

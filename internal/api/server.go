@@ -26,12 +26,9 @@ func NewServer(ctx context.Context, cfg *Config) (*Server, error) {
 		return nil, err
 	}
 
-	usersRepository := repository.NewUserRepository(db)
-	usersService := service.NewUsersService(usersRepository)
-	ordersService := service.NewOrdersService()
-	accountsService := service.NewAccountsService()
-
-	handler := loyaltyHandler.NewHandler(usersService, ordersService, accountsService)
+	repo := repository.NewRepositories(db)
+	services := service.NewServices(repo)
+	handler := loyaltyHandler.NewHandler(services)
 
 	srv := &Server{
 		config: cfg,
@@ -64,8 +61,12 @@ func (srv *Server) Start(ctx context.Context) error {
 	grp.Go(func() error {
 		<-ctx.Done()
 
-		return srv.httpServer.Shutdown(ctx)
+		return srv.Shutdown(ctx)
 	})
 
 	return grp.Wait()
+}
+
+func (srv *Server) Shutdown(ctx context.Context) error {
+	return srv.httpServer.Shutdown(ctx)
 }

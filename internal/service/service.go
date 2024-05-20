@@ -4,10 +4,13 @@ import (
 	"context"
 
 	"e1m0re/loyalty-srv/internal/models"
+	"e1m0re/loyalty-srv/internal/repository"
 )
 
-type UsersService interface {
-	SignUp(ctx context.Context, userInfo models.UserInfo) (user *models.User, err error)
+//go:generate mockgen -source=service.go -destination=mocks/mock.go
+
+type Authorization interface {
+	CreateUser(ctx context.Context, userInfo models.UserInfo) (user *models.User, err error)
 	SignIn(ctx context.Context, userInfo models.UserInfo) (ok bool, err error)
 	Verify(ctx context.Context, userInfo models.UserInfo) (ok bool, err error)
 }
@@ -25,4 +28,16 @@ type AccountsService interface {
 	Withdraw(ctx context.Context, id models.AccountId, amount int, orderNum models.OrderNum) (models.Account, error)
 	GetWithdrawals(ctx context.Context, id models.UserId) (models.WithdrawalsList, error)
 	UpdateBalance(ctx context.Context, id models.AccountId, amount int) (models.Account, error)
+}
+
+type Services struct {
+	Authorization
+	Orders   OrdersService
+	Accounts AccountsService
+}
+
+func NewServices(repo *repository.Repositories) *Services {
+	return &Services{
+		Authorization: NewAuthService(repo.UserRepository),
+	}
 }

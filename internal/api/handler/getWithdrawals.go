@@ -7,7 +7,7 @@ import (
 	"e1m0re/loyalty-srv/internal/models"
 )
 
-func (handler handler) GetWithdrawals(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) GetWithdrawals(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		w.Header().Set("Allow", http.MethodGet)
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -15,7 +15,7 @@ func (handler handler) GetWithdrawals(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userId := models.UserId(1)
-	withdrawalsList, err := handler.AccountService.GetWithdrawals(r.Context(), userId)
+	withdrawalsList, err := h.services.Accounts.GetWithdrawals(r.Context(), userId)
 	if err != nil {
 		w.Write([]byte(err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)

@@ -8,7 +8,7 @@ import (
 	"e1m0re/loyalty-srv/internal/models"
 )
 
-func (handler handler) AddOrder(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) AddOrder(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.Header().Set("Allow", http.MethodPost)
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -23,7 +23,7 @@ func (handler handler) AddOrder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ordNum := models.OrderNum(data)
-	_, isNewOrder, err := handler.OrderService.LoadOrder(r.Context(), ordNum)
+	_, isNewOrder, err := h.services.Orders.LoadOrder(r.Context(), ordNum)
 	if err != nil {
 		w.Write([]byte(err.Error()))
 
