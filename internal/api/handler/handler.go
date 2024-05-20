@@ -22,12 +22,12 @@ type Handler interface {
 }
 
 type handler struct {
-	UserService    service.UserService
-	OrderService   service.OrderService
-	AccountService service.AccountService
+	UserService    service.UsersService
+	OrderService   service.OrdersService
+	AccountService service.AccountsService
 }
 
-func NewHandler(userService service.UserService, orderService service.OrderService, accountService service.AccountService) Handler {
+func NewHandler(userService service.UsersService, orderService service.OrdersService, accountService service.AccountsService) Handler {
 	return &handler{
 		UserService:    userService,
 		OrderService:   orderService,

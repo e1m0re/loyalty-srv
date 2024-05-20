@@ -41,5 +41,8 @@ func (handler handler) AddOrder(w http.ResponseWriter, r *http.Request) {
 
 	if isNewOrder {
 		w.WriteHeader(http.StatusAccepted)
+		return
 	}
+
+	w.WriteHeader(http.StatusOK)
 }

@@ -27,9 +27,11 @@ func NewServer(ctx context.Context, cfg *Config) (*Server, error) {
 	}
 
 	usersRepository := repository.NewUserRepository(db)
-	usersService := service.NewUserService(usersRepository)
+	usersService := service.NewUsersService(usersRepository)
+	ordersService := service.NewOrdersService()
+	accountsService := service.NewAccountsService()
 
-	handler := loyaltyHandler.NewHandler(usersService)
+	handler := loyaltyHandler.NewHandler(usersService, ordersService, accountsService)
 
 	srv := &Server{
 		config: cfg,

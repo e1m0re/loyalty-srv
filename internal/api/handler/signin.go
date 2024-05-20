@@ -31,4 +31,6 @@ func (handler handler) SignIn(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
+
+	w.WriteHeader(http.StatusOK)
 }
