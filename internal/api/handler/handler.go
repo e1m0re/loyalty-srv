@@ -16,7 +16,6 @@ func NewHandler(services *service.Services) *Handler {
 	return &Handler{
 		services: services,
 	}
-
 }
 
 func (h *Handler) NewRouter() *chi.Mux {

@@ -9,7 +9,7 @@ import (
 )
 
 type UserRepository interface {
-	CreateUser(ctx context.Context, info models.UserInfo) (*models.User, error)
+	CreateUser(ctx context.Context, user models.User) (models.UserId, error)
 }
 
 type Repositories struct {

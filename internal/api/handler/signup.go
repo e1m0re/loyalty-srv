@@ -2,19 +2,23 @@ package handler
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 
-	"e1m0re/loyalty-srv/internal/apperrors"
 	"e1m0re/loyalty-srv/internal/models"
 )
 
 func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		//w.Header().Set("Allow", http.MethodPost)
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+
 	userInfo := &models.UserInfo{}
 	err := json.NewDecoder(r.Body).Decode(userInfo)
 	if err != nil {
-		w.Write([]byte(err.Error()))
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
 		return
 	}
 
@@ -23,14 +27,26 @@ func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	user, err := h.services.Authorization.FindUserByUsername(r.Context(), userInfo.Username)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if user != nil {
+		w.WriteHeader(http.StatusConflict)
+		return
+	}
+
 	_, err = h.services.Authorization.CreateUser(r.Context(), *userInfo)
 	if err != nil {
-		w.Write([]byte(err.Error()))
-		if errors.Is(err, apperrors.BusyLoginError) {
-			w.WriteHeader(http.StatusConflict)
-			return
-		}
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	_, err = h.services.Authorization.SignIn(r.Context(), *userInfo)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
