@@ -12,7 +12,7 @@ import (
 
 	"e1m0re/loyalty-srv/internal/models"
 	"e1m0re/loyalty-srv/internal/service"
-	mock_service "e1m0re/loyalty-srv/internal/service/mocks"
+	mockservice "e1m0re/loyalty-srv/internal/service/mocks"
 )
 
 func TestHandler_SignUp(t *testing.T) {
@@ -20,6 +20,7 @@ func TestHandler_SignUp(t *testing.T) {
 		inputBody     string
 		inputUserInfo models.UserInfo
 		mockUser      *models.User
+		mockServices  func() *service.Services
 	}
 	type want struct {
 		expectedStatusCode   int
@@ -49,10 +50,10 @@ func TestHandler_SignUp(t *testing.T) {
 			method: http.MethodPost,
 			args: args{
 				inputBody: `{login:login,password:password}`,
-				mockServices: func() service.Services {
-					mockAuthorization := mock_service.NewAuthorization(t)
+				mockServices: func() *service.Services {
+					mockAuthorization := mockservice.NewAuthorization(t)
 
-					return service.Services{
+					return &service.Services{
 						Authorization: mockAuthorization,
 					}
 				},
@@ -67,10 +68,10 @@ func TestHandler_SignUp(t *testing.T) {
 			method: http.MethodPost,
 			args: args{
 				inputBody: `{"login":"","password":""}`,
-				mockServices: func() service.Services {
-					mockAuthorization := mock_service.NewAuthorization(t)
+				mockServices: func() *service.Services {
+					mockAuthorization := mockservice.NewAuthorization(t)
 
-					return service.Services{
+					return &service.Services{
 						Authorization: mockAuthorization,
 					}
 				},
@@ -85,13 +86,13 @@ func TestHandler_SignUp(t *testing.T) {
 			method: http.MethodPost,
 			args: args{
 				inputBody: `{"login":"test","password":"password"}`,
-				mockServices: func() service.Services {
-					mockAuthorization := mock_service.NewAuthorization(t)
+				mockServices: func() *service.Services {
+					mockAuthorization := mockservice.NewAuthorization(t)
 					mockAuthorization.
 						On("FindUserByUsername", mock.Anything, "test").
 						Return(nil, errors.New("user not found"))
 
-					return service.Services{
+					return &service.Services{
 						Authorization: mockAuthorization,
 					}
 				},
@@ -106,13 +107,13 @@ func TestHandler_SignUp(t *testing.T) {
 			method: http.MethodPost,
 			args: args{
 				inputBody: `{"login":"test","password":"password"}`,
-				mockServices: func() service.Services {
-					mockAuthorization := mock_service.NewAuthorization(t)
+				mockServices: func() *service.Services {
+					mockAuthorization := mockservice.NewAuthorization(t)
 					mockAuthorization.
 						On("FindUserByUsername", mock.Anything, "test").
 						Return(&models.User{ID: 1, Username: "test"}, nil)
 
-					return service.Services{
+					return &service.Services{
 						Authorization: mockAuthorization,
 					}
 				},
@@ -127,15 +128,15 @@ func TestHandler_SignUp(t *testing.T) {
 			method: http.MethodPost,
 			args: args{
 				inputBody: `{"login":"test","password":"password"}`,
-				mockServices: func() service.Services {
-					mockAuthorization := mock_service.NewAuthorization(t)
+				mockServices: func() *service.Services {
+					mockAuthorization := mockservice.NewAuthorization(t)
 					mockAuthorization.
 						On("FindUserByUsername", mock.Anything, "test").
 						Return(nil, nil).
 						On("CreateUser", mock.Anything, models.UserInfo{Username: "test", Password: "password"}).
 						Return(nil, errors.New("create failed"))
 
-					return service.Services{
+					return &service.Services{
 						Authorization: mockAuthorization,
 					}
 				},
@@ -150,10 +151,10 @@ func TestHandler_SignUp(t *testing.T) {
 			method: http.MethodPost,
 			args: args{
 				inputBody: `{"login":"test","password":"password"}`,
-				mockServices: func() service.Services {
+				mockServices: func() *service.Services {
 					userInfo := models.UserInfo{Username: "test", Password: "password"}
 					user := &models.User{ID: 1, Username: "test"}
-					mockAuthorization := mock_service.NewAuthorization(t)
+					mockAuthorization := mockservice.NewAuthorization(t)
 					mockAuthorization.
 						On("FindUserByUsername", mock.Anything, "test").
 						Return(nil, nil).
@@ -162,7 +163,7 @@ func TestHandler_SignUp(t *testing.T) {
 						On("SignIn", mock.Anything, userInfo).
 						Return(false, errors.New("signin failed"))
 
-					return service.Services{
+					return &service.Services{
 						Authorization: mockAuthorization,
 					}
 				},
@@ -177,10 +178,10 @@ func TestHandler_SignUp(t *testing.T) {
 			method: http.MethodPost,
 			args: args{
 				inputBody: `{"login":"test","password":"password"}`,
-				mockServices: func() service.Services {
+				mockServices: func() *service.Services {
 					userInfo := models.UserInfo{Username: "test", Password: "password"}
 					user := &models.User{ID: 1, Username: "test"}
-					mockAuthorization := mock_service.NewAuthorization(t)
+					mockAuthorization := mockservice.NewAuthorization(t)
 					mockAuthorization.
 						On("FindUserByUsername", mock.Anything, "test").
 						Return(nil, nil).
@@ -189,7 +190,7 @@ func TestHandler_SignUp(t *testing.T) {
 						On("SignIn", mock.Anything, userInfo).
 						Return(true, nil)
 
-					return service.Services{
+					return &service.Services{
 						Authorization: mockAuthorization,
 					}
 				},
@@ -205,7 +206,7 @@ func TestHandler_SignUp(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 
 			services := test.args.mockServices()
-			handler := NewHandler(&services)
+			handler := NewHandler(services)
 			router := handler.NewRouter()
 
 			req, err := http.NewRequest(test.method, "/api/user/register", bytes.NewReader([]byte(test.args.inputBody)))

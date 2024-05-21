@@ -86,6 +86,13 @@ e1m0re/loyalty-srv/internal/service/mocks/Authorization.go:130.2,130.15 1 0
 e1m0re/loyalty-srv/internal/service/mocks/Authorization.go:138.19,142.19 3 0
 e1m0re/loyalty-srv/internal/service/mocks/Authorization.go:142.19,142.49 1 0
 e1m0re/loyalty-srv/internal/service/mocks/Authorization.go:144.2,144.13 1 0
+e1m0re/loyalty-srv/internal/repository/repository.go:19.49,23.2 1 0
+e1m0re/loyalty-srv/internal/repository/user_repository.go:15.47,19.2 1 0
+e1m0re/loyalty-srv/internal/repository/user_repository.go:21.96,26.38 4 0
+e1m0re/loyalty-srv/internal/repository/user_repository.go:26.38,28.3 1 0
+e1m0re/loyalty-srv/internal/repository/user_repository.go:30.2,30.31 1 0
+e1m0re/loyalty-srv/internal/apperrors/errors.go:8.50,10.2 1 0
+e1m0re/loyalty-srv/internal/apperrors/errors.go:12.38,14.2 1 0
 e1m0re/loyalty-srv/internal/service/accounts_service.go:12.43,14.2 1 0
 e1m0re/loyalty-srv/internal/service/accounts_service.go:16.109,18.2 1 0
 e1m0re/loyalty-srv/internal/service/accounts_service.go:20.117,22.2 1 0
@@ -106,13 +113,6 @@ e1m0re/loyalty-srv/internal/service/orders_service.go:20.127,22.2 1 0
 e1m0re/loyalty-srv/internal/service/orders_service.go:24.115,26.2 1 0
 e1m0re/loyalty-srv/internal/service/orders_service.go:28.140,30.2 1 0
 e1m0re/loyalty-srv/internal/service/service.go:40.59,44.2 1 0
-e1m0re/loyalty-srv/internal/apperrors/errors.go:8.50,10.2 1 0
-e1m0re/loyalty-srv/internal/apperrors/errors.go:12.38,14.2 1 0
-e1m0re/loyalty-srv/internal/repository/repository.go:19.49,23.2 1 0
-e1m0re/loyalty-srv/internal/repository/user_repository.go:15.47,19.2 1 0
-e1m0re/loyalty-srv/internal/repository/user_repository.go:21.96,26.38 4 0
-e1m0re/loyalty-srv/internal/repository/user_repository.go:26.38,28.3 1 0
-e1m0re/loyalty-srv/internal/repository/user_repository.go:30.2,30.31 1 0
 e1m0re/loyalty-srv/internal/api/handler/addOrder.go:11.68,12.33 1 0
 e1m0re/loyalty-srv/internal/api/handler/addOrder.go:12.33,16.3 3 0
 e1m0re/loyalty-srv/internal/api/handler/addOrder.go:18.2,20.29 3 0
