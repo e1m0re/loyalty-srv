@@ -11,9 +11,9 @@ type Account struct {
 }
 
 type Withdrawal struct {
-	OrderNum    OrderNum   `json:"order"`
-	Sum         int        `json:"sum"`
-	ProcessedAt *time.Time `json:"processed_at"`
+	OrderNum    OrderNum  `json:"order"`
+	Sum         int       `json:"sum"`
+	ProcessedAt time.Time `json:"processed_at"`
 }
 
 type AccountInfo struct {
