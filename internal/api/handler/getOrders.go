@@ -9,7 +9,6 @@ import (
 
 func (h *Handler) GetOrders(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		w.Header().Set("Allow", http.MethodGet)
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
@@ -17,7 +16,6 @@ func (h *Handler) GetOrders(w http.ResponseWriter, r *http.Request) {
 	userId := models.UserId(1)
 	ordersList, err := h.services.Orders.GetLoadedOrdersByUserId(r.Context(), userId)
 	if err != nil {
-		w.Write([]byte(err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -29,12 +27,11 @@ func (h *Handler) GetOrders(w http.ResponseWriter, r *http.Request) {
 
 	responseBody, err := json.Marshal(ordersList)
 	if err != nil {
-		w.Write([]byte(err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(responseBody)
 	w.WriteHeader(http.StatusOK)
+	w.Write(responseBody)
 }

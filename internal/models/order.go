@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 type OrderId int
 
@@ -20,8 +23,19 @@ type Order struct {
 	UserID     UserId
 	Number     OrderNum     `json:"number"`
 	Status     OrdersStatus `json:"status"`
-	Accrual    int          `json:"accrual"`
-	UploadedAt *time.Time   `json:"uploaded_at"`
+	Accrual    int          `json:"accrual,omitempty"`
+	UploadedAt time.Time    `json:"uploaded_at"`
+}
+
+func (o *Order) MarshalJSON() ([]byte, error) {
+	type Alias Order
+	return json.Marshal(&struct {
+		UploadedAt string `json:"uploaded_at"`
+		*Alias
+	}{
+		UploadedAt: o.UploadedAt.Format(time.RFC3339),
+		Alias:      (*Alias)(o),
+	})
 }
 
 type OrdersList = []Order

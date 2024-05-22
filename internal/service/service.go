@@ -8,7 +8,6 @@ import (
 )
 
 //go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=Authorization
-
 type Authorization interface {
 	CreateUser(ctx context.Context, userInfo models.UserInfo) (user *models.User, err error)
 	FindUserByUsername(ctx context.Context, username string) (user *models.User, err error)
@@ -16,6 +15,7 @@ type Authorization interface {
 	Verify(ctx context.Context, userInfo models.UserInfo) (ok bool, err error)
 }
 
+//go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=OrdersService
 type OrdersService interface {
 	ValidateNumber(ctx context.Context, orderNum models.OrderNum) (ok bool, err error)
 	LoadOrder(ctx context.Context, orderNum models.OrderNum) (order *models.Order, isNew bool, err error)
@@ -23,6 +23,7 @@ type OrdersService interface {
 	UpdateOrder(ctx context.Context, id models.OrderId, status models.OrdersStatus, accrual int) (models.Order, error)
 }
 
+//go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=AccountsService
 type AccountsService interface {
 	GetAccountByUserId(ctx context.Context, id models.UserId) (models.Account, error)
 	GetAccountInfoByUserId(ctx context.Context, id models.UserId) (models.AccountInfo, error)

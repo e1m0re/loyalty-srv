@@ -4,7 +4,6 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 
-	loyaltyMiddleware "e1m0re/loyalty-srv/internal/api/handler/middleware"
 	"e1m0re/loyalty-srv/internal/service"
 )
 
@@ -31,7 +30,7 @@ func (h *Handler) NewRouter() *chi.Mux {
 
 	// Private functions
 	r.Group(func(r chi.Router) {
-		r.Use(loyaltyMiddleware.PrivateRoute)
+		//r.Use(loyaltyMiddleware.PrivateRoute)
 		r.Route("/", func(r chi.Router) {
 			r.Route("/api/user", func(r chi.Router) {
 				r.Route("/orders", func(r chi.Router) {
