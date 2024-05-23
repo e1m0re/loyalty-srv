@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"io"
 	"net/http"
 
 	"e1m0re/loyalty-srv/internal/models"
@@ -19,14 +18,8 @@ func (h *Handler) WritingOff(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	requestDataRaw, err := io.ReadAll(r.Body)
-	if err != nil || len(requestDataRaw) == 0 {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	requestData := writingOffRequest{}
-	err = json.Unmarshal(requestDataRaw, &requestData)
+	requestData := &writingOffRequest{}
+	err := json.NewDecoder(r.Body).Decode(requestData)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return

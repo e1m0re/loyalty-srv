@@ -15,7 +15,7 @@ type Authorization struct {
 }
 
 // CreateUser provides a mock function with given fields: ctx, userInfo
-func (_m *Authorization) CreateUser(ctx context.Context, userInfo models.UserInfo) (*models.User, error) {
+func (_m *Authorization) CreateUser(ctx context.Context, userInfo *models.UserInfo) (*models.User, error) {
 	ret := _m.Called(ctx, userInfo)
 
 	if len(ret) == 0 {
@@ -24,10 +24,10 @@ func (_m *Authorization) CreateUser(ctx context.Context, userInfo models.UserInf
 
 	var r0 *models.User
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, models.UserInfo) (*models.User, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, *models.UserInfo) (*models.User, error)); ok {
 		return rf(ctx, userInfo)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, models.UserInfo) *models.User); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, *models.UserInfo) *models.User); ok {
 		r0 = rf(ctx, userInfo)
 	} else {
 		if ret.Get(0) != nil {
@@ -35,7 +35,7 @@ func (_m *Authorization) CreateUser(ctx context.Context, userInfo models.UserInf
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, models.UserInfo) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *models.UserInfo) error); ok {
 		r1 = rf(ctx, userInfo)
 	} else {
 		r1 = ret.Error(1)

@@ -33,6 +33,20 @@ func TestHandler_SignIn(t *testing.T) {
 		want   want
 	}{
 		{
+			name:   "405",
+			method: http.MethodGet,
+			args: args{
+				mockServices: func() *service.Services {
+
+					return &service.Services{}
+				},
+			},
+			want: want{
+				expectedStatusCode:   http.StatusMethodNotAllowed,
+				expectedResponseBody: "",
+			},
+		},
+		{
 			name:   "400 — Invalid body",
 			method: http.MethodPost,
 			args: args{

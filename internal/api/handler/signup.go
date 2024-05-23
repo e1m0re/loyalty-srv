@@ -37,7 +37,7 @@ func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = h.services.Authorization.CreateUser(r.Context(), *userInfo)
+	_, err = h.services.Authorization.CreateUser(r.Context(), userInfo)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

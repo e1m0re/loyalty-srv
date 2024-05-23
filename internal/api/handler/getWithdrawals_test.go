@@ -30,6 +30,20 @@ func TestHandler_GetWithdrawals(t *testing.T) {
 		want   want
 	}{
 		{
+			name:   "405",
+			method: http.MethodPost,
+			args: args{
+				mockServices: func() *service.Services {
+
+					return &service.Services{}
+				},
+			},
+			want: want{
+				expectedStatusCode:   http.StatusMethodNotAllowed,
+				expectedResponseBody: "",
+			},
+		},
+		{
 			name:   "500 — GetWithdrawals failed",
 			method: http.MethodGet,
 			args: args{

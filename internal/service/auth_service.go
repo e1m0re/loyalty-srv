@@ -19,7 +19,7 @@ func NewAuthService(userRepository repository.UserRepository) *AuthService {
 	}
 }
 
-func (us *AuthService) CreateUser(ctx context.Context, userInfo models.UserInfo) (user *models.User, err error) {
+func (us *AuthService) CreateUser(ctx context.Context, userInfo *models.UserInfo) (user *models.User, err error) {
 	user = &models.User{
 		Username: userInfo.Username,
 		Password: getPasswordHash(userInfo.Password),

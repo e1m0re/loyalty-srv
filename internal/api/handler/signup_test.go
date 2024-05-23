@@ -32,19 +32,20 @@ func TestHandler_SignUp(t *testing.T) {
 		args   args
 		want   want
 	}{
-		//{
-		//	name:   "405",
-		//	method: http.MethodGet,
-		//	args: args{
-		//		inputBody:     "",
-		//		inputUserInfo: models.UserInfo{},
-		//		mockUser:      &models.User{},
-		//	},
-		//	want: want{
-		//		expectedStatusCode:   405,
-		//		expectedResponseBody: "",
-		//	},
-		//},
+		{
+			name:   "405",
+			method: http.MethodGet,
+			args: args{
+				mockServices: func() *service.Services {
+
+					return &service.Services{}
+				},
+			},
+			want: want{
+				expectedStatusCode:   http.StatusMethodNotAllowed,
+				expectedResponseBody: "",
+			},
+		},
 		{
 			name:   "400 — Invalid JSON body",
 			method: http.MethodPost,
@@ -133,7 +134,7 @@ func TestHandler_SignUp(t *testing.T) {
 					mockAuthorization.
 						On("FindUserByUsername", mock.Anything, "test").
 						Return(nil, nil).
-						On("CreateUser", mock.Anything, models.UserInfo{Username: "test", Password: "password"}).
+						On("CreateUser", mock.Anything, &models.UserInfo{Username: "test", Password: "password"}).
 						Return(nil, errors.New("create failed"))
 
 					return &service.Services{
@@ -152,7 +153,7 @@ func TestHandler_SignUp(t *testing.T) {
 			args: args{
 				inputBody: `{"login":"test","password":"password"}`,
 				mockServices: func() *service.Services {
-					userInfo := models.UserInfo{Username: "test", Password: "password"}
+					userInfo := &models.UserInfo{Username: "test", Password: "password"}
 					user := &models.User{ID: 1, Username: "test"}
 					mockAuthorization := mockservice.NewAuthorization(t)
 					mockAuthorization.
@@ -179,7 +180,7 @@ func TestHandler_SignUp(t *testing.T) {
 			args: args{
 				inputBody: `{"login":"test","password":"password"}`,
 				mockServices: func() *service.Services {
-					userInfo := models.UserInfo{Username: "test", Password: "password"}
+					userInfo := &models.UserInfo{Username: "test", Password: "password"}
 					user := &models.User{ID: 1, Username: "test"}
 					mockAuthorization := mockservice.NewAuthorization(t)
 					mockAuthorization.
