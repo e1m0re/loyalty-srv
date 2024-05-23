@@ -25,11 +25,11 @@ type OrdersService interface {
 
 //go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=AccountsService
 type AccountsService interface {
-	GetAccountByUserId(ctx context.Context, id models.UserId) (models.Account, error)
-	GetAccountInfoByUserId(ctx context.Context, id models.UserId) (models.AccountInfo, error)
-	Withdraw(ctx context.Context, id models.AccountId, amount int, orderNum models.OrderNum) (models.Account, error)
-	GetWithdrawals(ctx context.Context, id models.UserId) (models.WithdrawalsList, error)
-	UpdateBalance(ctx context.Context, id models.AccountId, amount int) (models.Account, error)
+	GetAccountByUserId(ctx context.Context, id models.UserId) (*models.Account, error)
+	GetAccountInfoByUserId(ctx context.Context, id models.UserId) (*models.AccountInfo, error)
+	Withdraw(ctx context.Context, id models.AccountId, amount int, orderNum models.OrderNum) (*models.Account, error)
+	GetWithdrawals(ctx context.Context, id models.UserId) (*models.WithdrawalsList, error)
+	UpdateBalance(ctx context.Context, id models.AccountId, amount int) (*models.Account, error)
 }
 
 type Services struct {

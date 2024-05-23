@@ -37,7 +37,7 @@ func TestHandler_GetWithdrawals(t *testing.T) {
 					mockAccountsService := mockservice.NewAccountsService(t)
 					mockAccountsService.
 						On("GetWithdrawals", mock.Anything, models.UserId(1)).
-						Return(models.WithdrawalsList{}, errors.New("some error"))
+						Return(nil, errors.New("some error"))
 					return &service.Services{
 						Accounts: mockAccountsService,
 					}
@@ -53,7 +53,7 @@ func TestHandler_GetWithdrawals(t *testing.T) {
 			method: http.MethodGet,
 			args: args{
 				mockServices: func() *service.Services {
-					withdrawalsList := models.WithdrawalsList{
+					withdrawalsList := &models.WithdrawalsList{
 						{
 							OrderNum:    "2377225624",
 							Sum:         500,

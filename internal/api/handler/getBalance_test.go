@@ -36,7 +36,7 @@ func TestHandler_GetBalance(t *testing.T) {
 					mockAccountsService := mockservice.NewAccountsService(t)
 					mockAccountsService.
 						On("GetAccountInfoByUserId", mock.Anything, models.UserId(1)).
-						Return(models.AccountInfo{}, errors.New("some error"))
+						Return(nil, errors.New("some error"))
 					return &service.Services{
 						Accounts: mockAccountsService,
 					}
@@ -55,7 +55,7 @@ func TestHandler_GetBalance(t *testing.T) {
 					mockAccountsService := mockservice.NewAccountsService(t)
 					mockAccountsService.
 						On("GetAccountInfoByUserId", mock.Anything, models.UserId(1)).
-						Return(models.AccountInfo{
+						Return(&models.AccountInfo{
 							CurrentBalance: 500.5,
 							Withdrawals:    42,
 						}, nil)

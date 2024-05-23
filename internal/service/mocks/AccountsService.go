@@ -15,22 +15,24 @@ type AccountsService struct {
 }
 
 // GetAccountByUserId provides a mock function with given fields: ctx, id
-func (_m *AccountsService) GetAccountByUserId(ctx context.Context, id models.UserId) (models.Account, error) {
+func (_m *AccountsService) GetAccountByUserId(ctx context.Context, id models.UserId) (*models.Account, error) {
 	ret := _m.Called(ctx, id)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetAccountByUserId")
 	}
 
-	var r0 models.Account
+	var r0 *models.Account
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, models.UserId) (models.Account, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, models.UserId) (*models.Account, error)); ok {
 		return rf(ctx, id)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, models.UserId) models.Account); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, models.UserId) *models.Account); ok {
 		r0 = rf(ctx, id)
 	} else {
-		r0 = ret.Get(0).(models.Account)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.Account)
+		}
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, models.UserId) error); ok {
@@ -43,22 +45,24 @@ func (_m *AccountsService) GetAccountByUserId(ctx context.Context, id models.Use
 }
 
 // GetAccountInfoByUserId provides a mock function with given fields: ctx, id
-func (_m *AccountsService) GetAccountInfoByUserId(ctx context.Context, id models.UserId) (models.AccountInfo, error) {
+func (_m *AccountsService) GetAccountInfoByUserId(ctx context.Context, id models.UserId) (*models.AccountInfo, error) {
 	ret := _m.Called(ctx, id)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetAccountInfoByUserId")
 	}
 
-	var r0 models.AccountInfo
+	var r0 *models.AccountInfo
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, models.UserId) (models.AccountInfo, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, models.UserId) (*models.AccountInfo, error)); ok {
 		return rf(ctx, id)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, models.UserId) models.AccountInfo); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, models.UserId) *models.AccountInfo); ok {
 		r0 = rf(ctx, id)
 	} else {
-		r0 = ret.Get(0).(models.AccountInfo)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.AccountInfo)
+		}
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, models.UserId) error); ok {
@@ -71,23 +75,23 @@ func (_m *AccountsService) GetAccountInfoByUserId(ctx context.Context, id models
 }
 
 // GetWithdrawals provides a mock function with given fields: ctx, id
-func (_m *AccountsService) GetWithdrawals(ctx context.Context, id models.UserId) ([]models.Withdrawal, error) {
+func (_m *AccountsService) GetWithdrawals(ctx context.Context, id models.UserId) (*[]models.Withdrawal, error) {
 	ret := _m.Called(ctx, id)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetWithdrawals")
 	}
 
-	var r0 []models.Withdrawal
+	var r0 *[]models.Withdrawal
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, models.UserId) ([]models.Withdrawal, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, models.UserId) (*[]models.Withdrawal, error)); ok {
 		return rf(ctx, id)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, models.UserId) []models.Withdrawal); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, models.UserId) *[]models.Withdrawal); ok {
 		r0 = rf(ctx, id)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]models.Withdrawal)
+			r0 = ret.Get(0).(*[]models.Withdrawal)
 		}
 	}
 
@@ -101,22 +105,24 @@ func (_m *AccountsService) GetWithdrawals(ctx context.Context, id models.UserId)
 }
 
 // UpdateBalance provides a mock function with given fields: ctx, id, amount
-func (_m *AccountsService) UpdateBalance(ctx context.Context, id models.AccountId, amount int) (models.Account, error) {
+func (_m *AccountsService) UpdateBalance(ctx context.Context, id models.AccountId, amount int) (*models.Account, error) {
 	ret := _m.Called(ctx, id, amount)
 
 	if len(ret) == 0 {
 		panic("no return value specified for UpdateBalance")
 	}
 
-	var r0 models.Account
+	var r0 *models.Account
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, models.AccountId, int) (models.Account, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, models.AccountId, int) (*models.Account, error)); ok {
 		return rf(ctx, id, amount)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, models.AccountId, int) models.Account); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, models.AccountId, int) *models.Account); ok {
 		r0 = rf(ctx, id, amount)
 	} else {
-		r0 = ret.Get(0).(models.Account)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.Account)
+		}
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, models.AccountId, int) error); ok {
@@ -129,22 +135,24 @@ func (_m *AccountsService) UpdateBalance(ctx context.Context, id models.AccountI
 }
 
 // Withdraw provides a mock function with given fields: ctx, id, amount, orderNum
-func (_m *AccountsService) Withdraw(ctx context.Context, id models.AccountId, amount int, orderNum models.OrderNum) (models.Account, error) {
+func (_m *AccountsService) Withdraw(ctx context.Context, id models.AccountId, amount int, orderNum models.OrderNum) (*models.Account, error) {
 	ret := _m.Called(ctx, id, amount, orderNum)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Withdraw")
 	}
 
-	var r0 models.Account
+	var r0 *models.Account
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, models.AccountId, int, models.OrderNum) (models.Account, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, models.AccountId, int, models.OrderNum) (*models.Account, error)); ok {
 		return rf(ctx, id, amount, orderNum)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, models.AccountId, int, models.OrderNum) models.Account); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, models.AccountId, int, models.OrderNum) *models.Account); ok {
 		r0 = rf(ctx, id, amount, orderNum)
 	} else {
-		r0 = ret.Get(0).(models.Account)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.Account)
+		}
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, models.AccountId, int, models.OrderNum) error); ok {
