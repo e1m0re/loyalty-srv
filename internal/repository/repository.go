@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"time"
 
 	"github.com/jmoiron/sqlx"
 
@@ -9,7 +10,9 @@ import (
 )
 
 type UserRepository interface {
+	GetUserByUsername(ctx context.Context, username string) (user *models.User, err error)
 	CreateUser(ctx context.Context, user models.User) (models.UserId, error)
+	UpdateUsersLastLogin(ctx context.Context, id models.UserId, t time.Time) error
 }
 
 type Repositories struct {

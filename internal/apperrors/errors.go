@@ -17,4 +17,5 @@ var (
 	BusyLoginError          = errors.New("busy login")
 	InvalidOrderNumberError = errors.New("invalid order number")
 	OtherUsersOrderError    = errors.New("the order number has already been uploaded by another user")
+	EntityNotFoundError     = errors.New("entity not found")
 )

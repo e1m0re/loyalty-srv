@@ -2,6 +2,7 @@ package handler
 
 import (
 	"bytes"
+	"e1m0re/loyalty-srv/internal/apperrors"
 	"errors"
 	"net/http"
 	"net/http/httptest"
@@ -83,36 +84,16 @@ func TestHandler_SignUp(t *testing.T) {
 			},
 		},
 		{
-			name:   "500 — FindUserByUsername failed",
-			method: http.MethodPost,
-			args: args{
-				inputBody: `{"login":"test","password":"password"}`,
-				mockServices: func() *service.Services {
-					mockUsersService := mockservice.NewUsersService(t)
-					mockUsersService.
-						On("FindUserByUsername", mock.Anything, "test").
-						Return(nil, errors.New("user not found"))
-
-					return &service.Services{
-						UsersService: mockUsersService,
-					}
-				},
-			},
-			want: want{
-				expectedStatusCode:   http.StatusInternalServerError,
-				expectedResponseBody: "",
-			},
-		},
-		{
 			name:   "409 — username busy",
 			method: http.MethodPost,
 			args: args{
 				inputBody: `{"login":"test","password":"password"}`,
 				mockServices: func() *service.Services {
+					userInfo := &models.UserInfo{Username: "test", Password: "password"}
 					mockUsersService := mockservice.NewUsersService(t)
 					mockUsersService.
-						On("FindUserByUsername", mock.Anything, "test").
-						Return(&models.User{ID: 1, Username: "test"}, nil)
+						On("CreateUser", mock.Anything, userInfo).
+						Return(nil, apperrors.BusyLoginError)
 
 					return &service.Services{
 						UsersService: mockUsersService,
@@ -130,11 +111,10 @@ func TestHandler_SignUp(t *testing.T) {
 			args: args{
 				inputBody: `{"login":"test","password":"password"}`,
 				mockServices: func() *service.Services {
+					userInfo := &models.UserInfo{Username: "test", Password: "password"}
 					mockUsersService := mockservice.NewUsersService(t)
 					mockUsersService.
-						On("FindUserByUsername", mock.Anything, "test").
-						Return(nil, nil).
-						On("CreateUser", mock.Anything, &models.UserInfo{Username: "test", Password: "password"}).
+						On("CreateUser", mock.Anything, userInfo).
 						Return(nil, errors.New("create failed"))
 
 					return &service.Services{
@@ -157,8 +137,6 @@ func TestHandler_SignUp(t *testing.T) {
 					user := &models.User{ID: 1, Username: "test"}
 					mockUsersService := mockservice.NewUsersService(t)
 					mockUsersService.
-						On("FindUserByUsername", mock.Anything, "test").
-						Return(nil, nil).
 						On("CreateUser", mock.Anything, userInfo).
 						Return(user, nil).
 						On("SignIn", mock.Anything, userInfo).
@@ -184,8 +162,6 @@ func TestHandler_SignUp(t *testing.T) {
 					user := &models.User{ID: 1, Username: "test"}
 					mockUsersService := mockservice.NewUsersService(t)
 					mockUsersService.
-						On("FindUserByUsername", mock.Anything, "test").
-						Return(nil, nil).
 						On("CreateUser", mock.Anything, userInfo).
 						Return(user, nil).
 						On("SignIn", mock.Anything, userInfo).

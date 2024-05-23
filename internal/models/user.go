@@ -7,10 +7,10 @@ import (
 type UserId int
 
 type User struct {
-	ID        UserId     `json:"~" db:"id"`
-	Username  string     `json:"username"`
-	Password  string     `json:"password"`
-	LastLogin *time.Time `json:"last_login"`
+	ID        UserId     `db:"id"`
+	Username  string     `db:"username"`
+	Password  string     `db:"password"`
+	LastLogin *time.Time `db:"last_login"`
 }
 
 type UserInfo struct {

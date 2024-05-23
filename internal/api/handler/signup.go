@@ -2,8 +2,10 @@ package handler
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 
+	"e1m0re/loyalty-srv/internal/apperrors"
 	"e1m0re/loyalty-srv/internal/models"
 )
 
@@ -26,19 +28,13 @@ func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := h.services.UsersService.FindUserByUsername(r.Context(), userInfo.Username)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	if user != nil {
-		w.WriteHeader(http.StatusConflict)
-		return
-	}
-
 	_, err = h.services.UsersService.CreateUser(r.Context(), userInfo)
 	if err != nil {
+		if errors.Is(err, apperrors.BusyLoginError) {
+			w.WriteHeader(http.StatusConflict)
+			return
+		}
+
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
