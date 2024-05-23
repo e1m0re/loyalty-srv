@@ -52,10 +52,10 @@ func TestHandler_SignUp(t *testing.T) {
 			args: args{
 				inputBody: `{login:login,password:password}`,
 				mockServices: func() *service.Services {
-					mockAuthorization := mockservice.NewAuthorization(t)
+					mockUsersService := mockservice.NewUsersService(t)
 
 					return &service.Services{
-						Authorization: mockAuthorization,
+						UsersService: mockUsersService,
 					}
 				},
 			},
@@ -70,10 +70,10 @@ func TestHandler_SignUp(t *testing.T) {
 			args: args{
 				inputBody: `{"login":"","password":""}`,
 				mockServices: func() *service.Services {
-					mockAuthorization := mockservice.NewAuthorization(t)
+					mockUsersService := mockservice.NewUsersService(t)
 
 					return &service.Services{
-						Authorization: mockAuthorization,
+						UsersService: mockUsersService,
 					}
 				},
 			},
@@ -88,13 +88,13 @@ func TestHandler_SignUp(t *testing.T) {
 			args: args{
 				inputBody: `{"login":"test","password":"password"}`,
 				mockServices: func() *service.Services {
-					mockAuthorization := mockservice.NewAuthorization(t)
-					mockAuthorization.
+					mockUsersService := mockservice.NewUsersService(t)
+					mockUsersService.
 						On("FindUserByUsername", mock.Anything, "test").
 						Return(nil, errors.New("user not found"))
 
 					return &service.Services{
-						Authorization: mockAuthorization,
+						UsersService: mockUsersService,
 					}
 				},
 			},
@@ -109,13 +109,13 @@ func TestHandler_SignUp(t *testing.T) {
 			args: args{
 				inputBody: `{"login":"test","password":"password"}`,
 				mockServices: func() *service.Services {
-					mockAuthorization := mockservice.NewAuthorization(t)
-					mockAuthorization.
+					mockUsersService := mockservice.NewUsersService(t)
+					mockUsersService.
 						On("FindUserByUsername", mock.Anything, "test").
 						Return(&models.User{ID: 1, Username: "test"}, nil)
 
 					return &service.Services{
-						Authorization: mockAuthorization,
+						UsersService: mockUsersService,
 					}
 				},
 			},
@@ -130,15 +130,15 @@ func TestHandler_SignUp(t *testing.T) {
 			args: args{
 				inputBody: `{"login":"test","password":"password"}`,
 				mockServices: func() *service.Services {
-					mockAuthorization := mockservice.NewAuthorization(t)
-					mockAuthorization.
+					mockUsersService := mockservice.NewUsersService(t)
+					mockUsersService.
 						On("FindUserByUsername", mock.Anything, "test").
 						Return(nil, nil).
 						On("CreateUser", mock.Anything, &models.UserInfo{Username: "test", Password: "password"}).
 						Return(nil, errors.New("create failed"))
 
 					return &service.Services{
-						Authorization: mockAuthorization,
+						UsersService: mockUsersService,
 					}
 				},
 			},
@@ -155,8 +155,8 @@ func TestHandler_SignUp(t *testing.T) {
 				mockServices: func() *service.Services {
 					userInfo := &models.UserInfo{Username: "test", Password: "password"}
 					user := &models.User{ID: 1, Username: "test"}
-					mockAuthorization := mockservice.NewAuthorization(t)
-					mockAuthorization.
+					mockUsersService := mockservice.NewUsersService(t)
+					mockUsersService.
 						On("FindUserByUsername", mock.Anything, "test").
 						Return(nil, nil).
 						On("CreateUser", mock.Anything, userInfo).
@@ -165,7 +165,7 @@ func TestHandler_SignUp(t *testing.T) {
 						Return(false, errors.New("signin failed"))
 
 					return &service.Services{
-						Authorization: mockAuthorization,
+						UsersService: mockUsersService,
 					}
 				},
 			},
@@ -182,8 +182,8 @@ func TestHandler_SignUp(t *testing.T) {
 				mockServices: func() *service.Services {
 					userInfo := &models.UserInfo{Username: "test", Password: "password"}
 					user := &models.User{ID: 1, Username: "test"}
-					mockAuthorization := mockservice.NewAuthorization(t)
-					mockAuthorization.
+					mockUsersService := mockservice.NewUsersService(t)
+					mockUsersService.
 						On("FindUserByUsername", mock.Anything, "test").
 						Return(nil, nil).
 						On("CreateUser", mock.Anything, userInfo).
@@ -192,7 +192,7 @@ func TestHandler_SignUp(t *testing.T) {
 						Return(true, nil)
 
 					return &service.Services{
-						Authorization: mockAuthorization,
+						UsersService: mockUsersService,
 					}
 				},
 			},

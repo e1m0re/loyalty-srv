@@ -9,17 +9,17 @@ import (
 	"e1m0re/loyalty-srv/internal/repository"
 )
 
-type AuthService struct {
+type usersService struct {
 	userRepository repository.UserRepository
 }
 
-func NewAuthService(userRepository repository.UserRepository) *AuthService {
-	return &AuthService{
+func NewUsersService(userRepository repository.UserRepository) UsersService {
+	return &usersService{
 		userRepository: userRepository,
 	}
 }
 
-func (us *AuthService) CreateUser(ctx context.Context, userInfo *models.UserInfo) (user *models.User, err error) {
+func (us *usersService) CreateUser(ctx context.Context, userInfo *models.UserInfo) (user *models.User, err error) {
 	user = &models.User{
 		Username: userInfo.Username,
 		Password: getPasswordHash(userInfo.Password),
@@ -34,15 +34,15 @@ func (us *AuthService) CreateUser(ctx context.Context, userInfo *models.UserInfo
 	return user, nil
 }
 
-func (us *AuthService) FindUserByUsername(ctx context.Context, username string) (user *models.User, err error) {
+func (us *usersService) FindUserByUsername(ctx context.Context, username string) (user *models.User, err error) {
 	return nil, err
 }
 
-func (us *AuthService) SignIn(ctx context.Context, userInfo *models.UserInfo) (ok bool, err error) {
+func (us *usersService) SignIn(ctx context.Context, userInfo *models.UserInfo) (ok bool, err error) {
 	return true, nil
 }
 
-func (us *AuthService) Verify(ctx context.Context, userInfo *models.UserInfo) (ok bool, err error) {
+func (us *usersService) Verify(ctx context.Context, userInfo *models.UserInfo) (ok bool, err error) {
 	return true, nil
 }
 

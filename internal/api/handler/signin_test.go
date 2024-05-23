@@ -86,13 +86,13 @@ func TestHandler_SignIn(t *testing.T) {
 						Username: "login",
 						Password: "password",
 					}
-					mockAuthorization := mockservice.NewAuthorization(t)
-					mockAuthorization.
+					mockUsersService := mockservice.NewUsersService(t)
+					mockUsersService.
 						On("SignIn", mock.Anything, userInfo).
 						Return(false, fmt.Errorf("some error"))
 
 					return &service.Services{
-						Authorization: mockAuthorization,
+						UsersService: mockUsersService,
 					}
 				},
 			},
@@ -111,13 +111,13 @@ func TestHandler_SignIn(t *testing.T) {
 						Username: "login",
 						Password: "password",
 					}
-					mockAuthorization := mockservice.NewAuthorization(t)
-					mockAuthorization.
+					mockUsersService := mockservice.NewUsersService(t)
+					mockUsersService.
 						On("SignIn", mock.Anything, userInfo).
 						Return(false, nil)
 
 					return &service.Services{
-						Authorization: mockAuthorization,
+						UsersService: mockUsersService,
 					}
 				},
 			},
@@ -136,13 +136,13 @@ func TestHandler_SignIn(t *testing.T) {
 						Username: "login",
 						Password: "password",
 					}
-					mockAuthorization := mockservice.NewAuthorization(t)
-					mockAuthorization.
+					mockUsersService := mockservice.NewUsersService(t)
+					mockUsersService.
 						On("SignIn", mock.Anything, userInfo).
 						Return(true, nil)
 
 					return &service.Services{
-						Authorization: mockAuthorization,
+						UsersService: mockUsersService,
 					}
 				},
 			},

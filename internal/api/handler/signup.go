@@ -26,7 +26,7 @@ func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := h.services.Authorization.FindUserByUsername(r.Context(), userInfo.Username)
+	user, err := h.services.UsersService.FindUserByUsername(r.Context(), userInfo.Username)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -37,13 +37,13 @@ func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = h.services.Authorization.CreateUser(r.Context(), userInfo)
+	_, err = h.services.UsersService.CreateUser(r.Context(), userInfo)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	_, err = h.services.Authorization.SignIn(r.Context(), userInfo)
+	_, err = h.services.UsersService.SignIn(r.Context(), userInfo)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
