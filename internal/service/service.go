@@ -18,7 +18,7 @@ type Authorization interface {
 //go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=OrdersService
 type OrdersService interface {
 	ValidateNumber(ctx context.Context, orderNum models.OrderNum) (ok bool, err error)
-	LoadOrder(ctx context.Context, orderNum models.OrderNum) (order *models.Order, isNew bool, err error)
+	NewOrder(ctx context.Context, orderNum models.OrderNum) (order *models.Order, isNew bool, err error)
 	GetLoadedOrdersByUserId(ctx context.Context, id models.UserId) (models.OrdersList, error)
 	UpdateOrder(ctx context.Context, id models.OrderId, status models.OrdersStatus, accrual int) (models.Order, error)
 }

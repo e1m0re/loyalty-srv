@@ -17,7 +17,7 @@ func (os ordersService) ValidateNumber(ctx context.Context, orderNum models.Orde
 	return true, nil
 }
 
-func (os ordersService) LoadOrder(ctx context.Context, orderNum models.OrderNum) (order *models.Order, isNew bool, err error) {
+func (os ordersService) NewOrder(ctx context.Context, orderNum models.OrderNum) (order *models.Order, isNew bool, err error) {
 	return &models.Order{}, false, nil
 }
 

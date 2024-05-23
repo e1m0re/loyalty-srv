@@ -44,12 +44,12 @@ func (_m *OrdersService) GetLoadedOrdersByUserId(ctx context.Context, id models.
 	return r0, r1
 }
 
-// LoadOrder provides a mock function with given fields: ctx, orderNum
-func (_m *OrdersService) LoadOrder(ctx context.Context, orderNum models.OrderNum) (*models.Order, bool, error) {
+// NewOrder provides a mock function with given fields: ctx, orderNum
+func (_m *OrdersService) NewOrder(ctx context.Context, orderNum models.OrderNum) (*models.Order, bool, error) {
 	ret := _m.Called(ctx, orderNum)
 
 	if len(ret) == 0 {
-		panic("no return value specified for LoadOrder")
+		panic("no return value specified for NewOrder")
 	}
 
 	var r0 *models.Order

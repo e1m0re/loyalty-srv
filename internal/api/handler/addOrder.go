@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"io"
 	"net/http"
 
 	"e1m0re/loyalty-srv/internal/apperrors"
@@ -10,23 +11,19 @@ import (
 
 func (h *Handler) AddOrder(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		w.Header().Set("Allow", http.MethodPost)
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
 
-	var data []byte
-	size, err := r.Body.Read(data)
-	if err != nil || size == 0 {
+	data, err := io.ReadAll(r.Body)
+	if err != nil || len(data) == 0 {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	ordNum := models.OrderNum(data)
-	_, isNewOrder, err := h.services.Orders.LoadOrder(r.Context(), ordNum)
+	_, isNewOrder, err := h.services.Orders.NewOrder(r.Context(), ordNum)
 	if err != nil {
-		w.Write([]byte(err.Error()))
-
 		switch true {
 		case errors.Is(err, apperrors.InvalidOrderNumberError):
 			w.WriteHeader(http.StatusUnprocessableEntity)
@@ -35,7 +32,7 @@ func (h *Handler) AddOrder(w http.ResponseWriter, r *http.Request) {
 		default:
 			w.WriteHeader(http.StatusInternalServerError)
 		}
-
+		w.Write([]byte(err.Error()))
 		return
 	}
 
