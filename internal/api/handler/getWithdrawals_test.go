@@ -38,6 +38,7 @@ func TestHandler_GetWithdrawals(t *testing.T) {
 					mockAccountsService.
 						On("GetWithdrawals", mock.Anything, models.UserId(1)).
 						Return(nil, errors.New("some error"))
+
 					return &service.Services{
 						Accounts: mockAccountsService,
 					}
@@ -64,6 +65,7 @@ func TestHandler_GetWithdrawals(t *testing.T) {
 					mockAccountsService.
 						On("GetWithdrawals", mock.Anything, models.UserId(1)).
 						Return(withdrawalsList, nil)
+
 					return &service.Services{
 						Accounts: mockAccountsService,
 					}

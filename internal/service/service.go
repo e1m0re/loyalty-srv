@@ -11,8 +11,8 @@ import (
 type Authorization interface {
 	CreateUser(ctx context.Context, userInfo models.UserInfo) (user *models.User, err error)
 	FindUserByUsername(ctx context.Context, username string) (user *models.User, err error)
-	SignIn(ctx context.Context, userInfo models.UserInfo) (ok bool, err error)
-	Verify(ctx context.Context, userInfo models.UserInfo) (ok bool, err error)
+	SignIn(ctx context.Context, userInfo *models.UserInfo) (ok bool, err error)
+	Verify(ctx context.Context, userInfo *models.UserInfo) (ok bool, err error)
 }
 
 //go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=OrdersService

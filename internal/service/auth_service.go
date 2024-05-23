@@ -38,11 +38,11 @@ func (us *AuthService) FindUserByUsername(ctx context.Context, username string) 
 	return nil, err
 }
 
-func (us *AuthService) SignIn(ctx context.Context, userInfo models.UserInfo) (ok bool, err error) {
+func (us *AuthService) SignIn(ctx context.Context, userInfo *models.UserInfo) (ok bool, err error) {
 	return true, nil
 }
 
-func (us *AuthService) Verify(ctx context.Context, userInfo models.UserInfo) (ok bool, err error) {
+func (us *AuthService) Verify(ctx context.Context, userInfo *models.UserInfo) (ok bool, err error) {
 	return true, nil
 }
 

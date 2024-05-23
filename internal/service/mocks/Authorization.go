@@ -75,7 +75,7 @@ func (_m *Authorization) FindUserByUsername(ctx context.Context, username string
 }
 
 // SignIn provides a mock function with given fields: ctx, userInfo
-func (_m *Authorization) SignIn(ctx context.Context, userInfo models.UserInfo) (bool, error) {
+func (_m *Authorization) SignIn(ctx context.Context, userInfo *models.UserInfo) (bool, error) {
 	ret := _m.Called(ctx, userInfo)
 
 	if len(ret) == 0 {
@@ -84,16 +84,16 @@ func (_m *Authorization) SignIn(ctx context.Context, userInfo models.UserInfo) (
 
 	var r0 bool
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, models.UserInfo) (bool, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, *models.UserInfo) (bool, error)); ok {
 		return rf(ctx, userInfo)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, models.UserInfo) bool); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, *models.UserInfo) bool); ok {
 		r0 = rf(ctx, userInfo)
 	} else {
 		r0 = ret.Get(0).(bool)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, models.UserInfo) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *models.UserInfo) error); ok {
 		r1 = rf(ctx, userInfo)
 	} else {
 		r1 = ret.Error(1)
@@ -103,7 +103,7 @@ func (_m *Authorization) SignIn(ctx context.Context, userInfo models.UserInfo) (
 }
 
 // Verify provides a mock function with given fields: ctx, userInfo
-func (_m *Authorization) Verify(ctx context.Context, userInfo models.UserInfo) (bool, error) {
+func (_m *Authorization) Verify(ctx context.Context, userInfo *models.UserInfo) (bool, error) {
 	ret := _m.Called(ctx, userInfo)
 
 	if len(ret) == 0 {
@@ -112,16 +112,16 @@ func (_m *Authorization) Verify(ctx context.Context, userInfo models.UserInfo) (
 
 	var r0 bool
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, models.UserInfo) (bool, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, *models.UserInfo) (bool, error)); ok {
 		return rf(ctx, userInfo)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, models.UserInfo) bool); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, *models.UserInfo) bool); ok {
 		r0 = rf(ctx, userInfo)
 	} else {
 		r0 = ret.Get(0).(bool)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, models.UserInfo) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *models.UserInfo) error); ok {
 		r1 = rf(ctx, userInfo)
 	} else {
 		r1 = ret.Error(1)
