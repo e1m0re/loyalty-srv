@@ -22,28 +22,28 @@ func (h *Handler) NewRouter() *chi.Mux {
 	r.Use(middleware.DefaultLogger)
 	r.Use(middleware.Compress(5, "text/html", "application/json"))
 
+	// todo предусмотреть проблемы "заказ обработан - счет не обновлен"
+
 	// Public functions
 	r.Group(func(r chi.Router) {
-		r.Post("/api/user/register", h.SignUp)
-		r.Post("/api/user/login", h.SignIn)
+		r.Route("/api/user", func(r chi.Router) {
+			r.Post("/register", h.SignUp)
+			r.Post("/login", h.SignIn)
+		})
 	})
 
 	// Private functions
 	r.Group(func(r chi.Router) {
 		//r.Use(loyaltyMiddleware.PrivateRoute)
-		r.Route("/", func(r chi.Router) {
-			r.Route("/api/user", func(r chi.Router) {
-				r.Route("/orders", func(r chi.Router) {
-					r.Get("/", h.GetOrders)
-					r.Post("/", h.AddOrder)
-				})
-				r.Route("/balance", func(r chi.Router) {
-					r.Get("/", h.GetBalance)
-					r.Post("/withdraw", h.WritingOff)
-				})
-				r.Get("/withdrawals", h.GetWithdrawals)
-			})
+		r.Route("/api/user/orders", func(r chi.Router) {
+			r.Get("/", h.GetOrders)
+			r.Post("/", h.AddOrder)
 		})
+		r.Route("/api/user/balance", func(r chi.Router) {
+			r.Get("/", h.GetBalance)
+			r.Post("/withdraw", h.WritingOff)
+		})
+		r.Get("/api/user/withdrawals", h.GetWithdrawals)
 	})
 
 	return r
