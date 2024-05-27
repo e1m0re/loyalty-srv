@@ -63,10 +63,10 @@ func (os ordersService) NewOrder(ctx context.Context, orderInfo models.OrderInfo
 
 	if order != nil {
 		if order.UserID != orderInfo.UserID {
-			return nil, apperrors.ErrOtherUsersOrder
+			return nil, apperrors.ErrOrderWasLoadedByAnotherUser
 		}
 
-		return nil, apperrors.ErrOrderIsLoaded
+		return nil, apperrors.ErrOrderWasLoaded
 	}
 
 	order, err = os.orderRepository.AddOrder(ctx, orderInfo)

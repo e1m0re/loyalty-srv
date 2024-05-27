@@ -31,9 +31,9 @@ func (h *Handler) AddOrder(w http.ResponseWriter, r *http.Request) {
 		switch true {
 		case errors.Is(err, apperrors.ErrInvalidOrderNumber):
 			w.WriteHeader(http.StatusUnprocessableEntity)
-		case errors.Is(err, apperrors.ErrOtherUsersOrder):
+		case errors.Is(err, apperrors.ErrOrderWasLoadedByAnotherUser):
 			w.WriteHeader(http.StatusConflict)
-		case errors.Is(err, apperrors.ErrOrderIsLoaded):
+		case errors.Is(err, apperrors.ErrOrderWasLoaded):
 			w.WriteHeader(http.StatusOK)
 		default:
 			w.WriteHeader(http.StatusInternalServerError)

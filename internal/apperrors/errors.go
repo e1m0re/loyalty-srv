@@ -9,8 +9,8 @@ var (
 
 	ErrBusyLogin = errors.New("busy login")
 
-	ErrInvalidOrderNumber = errors.New("invalid order number")
-	ErrEmptyOrderNumber   = errors.New("empty order number")
-	ErrOrderIsLoaded      = errors.New("order with this number loaded yet")
-	ErrOtherUsersOrder    = errors.New("the order number has already been uploaded by another user")
+	ErrInvalidOrderNumber          = errors.New("invalid order number")
+	ErrEmptyOrderNumber            = errors.New("empty order number")
+	ErrOrderWasLoaded              = errors.New("order with this number was loaded")
+	ErrOrderWasLoadedByAnotherUser = errors.New("order with this number was loaded by another user")
 )

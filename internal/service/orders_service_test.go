@@ -102,6 +102,122 @@ func TestOrdersService_NewOrder(t *testing.T) {
 		want             want
 	}{
 		{
+			name: "Invalid order number",
+			mockRepositories: func() *repository.Repositories {
+
+				return &repository.Repositories{}
+			},
+			args: args{
+				ctx: context.Background(),
+				orderInfo: models.OrderInfo{
+					UserID:   1,
+					OrderNum: "12345678904",
+				},
+			},
+			want: want{
+				order:  nil,
+				errMsg: "",
+			},
+		},
+		{
+			name: "GetOrderByNumber failed",
+			mockRepositories: func() *repository.Repositories {
+				mockOrderRepo := mocks.NewOrderRepository(t)
+				mockOrderRepo.
+					On("GetOrderByNumber", mock.Anything, mock.AnythingOfType("models.OrderNum")).
+					Return(nil, fmt.Errorf("some repo error"))
+
+				return &repository.Repositories{
+					OrderRepository: mockOrderRepo,
+				}
+			},
+			args: args{
+				ctx: context.Background(),
+				orderInfo: models.OrderInfo{
+					UserID:   1,
+					OrderNum: "12345678903",
+				},
+			},
+			want: want{
+				order:  nil,
+				errMsg: "some repo error",
+			},
+		},
+		{
+			name: "order was loaded",
+			mockRepositories: func() *repository.Repositories {
+				mockOrderRepo := mocks.NewOrderRepository(t)
+				mockOrderRepo.
+					On("GetOrderByNumber", mock.Anything, mock.AnythingOfType("models.OrderNum")).
+					Return(&models.Order{UserID: 1}, nil)
+
+				return &repository.Repositories{
+					OrderRepository: mockOrderRepo,
+				}
+			},
+			args: args{
+				ctx: context.Background(),
+				orderInfo: models.OrderInfo{
+					UserID:   1,
+					OrderNum: "12345678903",
+				},
+			},
+			want: want{
+				order:  nil,
+				errMsg: apperrors.ErrOrderWasLoaded.Error(),
+			},
+		},
+		{
+			name: "order was loaded by other user",
+			mockRepositories: func() *repository.Repositories {
+				mockOrderRepo := mocks.NewOrderRepository(t)
+				mockOrderRepo.
+					On("GetOrderByNumber", mock.Anything, mock.AnythingOfType("models.OrderNum")).
+					Return(&models.Order{UserID: 2}, nil)
+
+				return &repository.Repositories{
+					OrderRepository: mockOrderRepo,
+				}
+			},
+			args: args{
+				ctx: context.Background(),
+				orderInfo: models.OrderInfo{
+					UserID:   1,
+					OrderNum: "12345678903",
+				},
+			},
+			want: want{
+				order:  nil,
+				errMsg: apperrors.ErrOrderWasLoadedByAnotherUser.Error(),
+			},
+		},
+		{
+			name: "AddOrder failed",
+			mockRepositories: func() *repository.Repositories {
+				mockOrderRepo := mocks.NewOrderRepository(t)
+				mockOrderRepo.
+					On("GetOrderByNumber", mock.Anything, mock.AnythingOfType("models.OrderNum")).
+					Return(nil, nil).
+					On("AddOrder", mock.Anything, mock.AnythingOfType("models.OrderInfo")).
+					Return(nil, fmt.Errorf("some repo error"))
+
+				return &repository.Repositories{
+					OrderRepository: mockOrderRepo,
+				}
+			},
+			args: args{
+				ctx: context.Background(),
+				orderInfo: models.OrderInfo{
+					UserID:   1,
+					OrderNum: "12345678903",
+				},
+			},
+			want: want{
+				order:  nil,
+				errMsg: "some repo error",
+			},
+		},
+		{
 			name: "order added successfully",
 			mockRepositories: func() *repository.Repositories {
 				orderInfo := models.OrderInfo{
