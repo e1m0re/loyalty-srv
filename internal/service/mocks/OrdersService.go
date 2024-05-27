@@ -14,29 +14,29 @@ type OrdersService struct {
 	mock.Mock
 }
 
-// GetLoadedOrdersByUserId provides a mock function with given fields: ctx, id
-func (_m *OrdersService) GetLoadedOrdersByUserId(ctx context.Context, id models.UserId) ([]models.Order, error) {
-	ret := _m.Called(ctx, id)
+// GetLoadedOrdersByUserId provides a mock function with given fields: ctx, userId
+func (_m *OrdersService) GetLoadedOrdersByUserId(ctx context.Context, userId models.UserId) (*[]models.Order, error) {
+	ret := _m.Called(ctx, userId)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetLoadedOrdersByUserId")
 	}
 
-	var r0 []models.Order
+	var r0 *[]models.Order
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, models.UserId) ([]models.Order, error)); ok {
-		return rf(ctx, id)
+	if rf, ok := ret.Get(0).(func(context.Context, models.UserId) (*[]models.Order, error)); ok {
+		return rf(ctx, userId)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, models.UserId) []models.Order); ok {
-		r0 = rf(ctx, id)
+	if rf, ok := ret.Get(0).(func(context.Context, models.UserId) *[]models.Order); ok {
+		r0 = rf(ctx, userId)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]models.Order)
+			r0 = ret.Get(0).(*[]models.Order)
 		}
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, models.UserId) error); ok {
-		r1 = rf(ctx, id)
+		r1 = rf(ctx, userId)
 	} else {
 		r1 = ret.Error(1)
 	}

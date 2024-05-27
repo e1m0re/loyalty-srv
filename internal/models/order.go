@@ -19,12 +19,12 @@ const (
 type OrderNum string
 
 type Order struct {
-	ID         OrderId
-	UserID     UserId
-	Number     OrderNum     `json:"number"`
-	Status     OrdersStatus `json:"status"`
-	Accrual    int          `json:"accrual,omitempty"`
-	UploadedAt time.Time    `json:"uploaded_at"`
+	ID         OrderId      `db:"id" json:"-"`
+	UserID     UserId       `db:"user" json:"-"`
+	Number     OrderNum     `db:"number" json:"number"`
+	Status     OrdersStatus `db:"status" json:"status"`
+	Accrual    *int         `db:"accrual" json:"accrual,omitempty"`
+	UploadedAt time.Time    `db:"created_at" json:"uploaded_at"`
 }
 
 func (o *Order) MarshalJSON() ([]byte, error) {

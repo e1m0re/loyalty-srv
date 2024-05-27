@@ -70,8 +70,8 @@ func (os ordersService) NewOrder(ctx context.Context, orderNum models.OrderNum) 
 	return order, true, nil
 }
 
-func (os ordersService) GetLoadedOrdersByUserId(ctx context.Context, id models.UserId) (models.OrdersList, error) {
-	return models.OrdersList{}, nil
+func (os ordersService) GetLoadedOrdersByUserId(ctx context.Context, userId models.UserId) (*models.OrdersList, error) {
+	return os.orderRepository.GetLoadedOrdersByUserId(ctx, userId)
 }
 
 func (os ordersService) UpdateOrder(ctx context.Context, id models.OrderId, status models.OrdersStatus, accrual int) (models.Order, error) {

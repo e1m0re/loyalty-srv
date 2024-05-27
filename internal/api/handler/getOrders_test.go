@@ -37,7 +37,7 @@ func TestHandler_GetOrders(t *testing.T) {
 					mockOrdersService := mockservice.NewOrdersService(t)
 					mockOrdersService.
 						On("GetLoadedOrdersByUserId", mock.Anything, models.UserId(1)).
-						Return(make(models.OrdersList, 0), errors.New("some error"))
+						Return(&models.OrdersList{}, errors.New("some error"))
 
 					return &service.Services{
 						OrdersService: mockOrdersService,
@@ -57,7 +57,7 @@ func TestHandler_GetOrders(t *testing.T) {
 					mockOrdersService := mockservice.NewOrdersService(t)
 					mockOrdersService.
 						On("GetLoadedOrdersByUserId", mock.Anything, models.UserId(1)).
-						Return(make(models.OrdersList, 0), nil)
+						Return(&models.OrdersList{}, nil)
 
 					return &service.Services{
 						OrdersService: mockOrdersService,
@@ -74,7 +74,8 @@ func TestHandler_GetOrders(t *testing.T) {
 			method: http.MethodGet,
 			args: args{
 				mockServices: func() *service.Services {
-					ordersList := models.OrdersList{
+					accrual := 500
+					ordersList := &models.OrdersList{
 						{
 							ID:         1,
 							UserID:     1,
@@ -101,7 +102,7 @@ func TestHandler_GetOrders(t *testing.T) {
 							UserID:     1,
 							Number:     "4",
 							Status:     "PROCESSED",
-							Accrual:    500,
+							Accrual:    &accrual,
 							UploadedAt: time.Date(1984, time.April, 1, 12, 13, 15, 0, time.UTC),
 						},
 					}
@@ -117,7 +118,7 @@ func TestHandler_GetOrders(t *testing.T) {
 			},
 			want: want{
 				expectedStatusCode:   http.StatusOK,
-				expectedResponseBody: "[{\"uploaded_at\":\"1984-04-01T12:13:00Z\",\"ID\":1,\"UserID\":1,\"number\":\"1\",\"status\":\"NEW\"},{\"uploaded_at\":\"1984-04-01T12:13:05Z\",\"ID\":2,\"UserID\":1,\"number\":\"2\",\"status\":\"PROCESSING\"},{\"uploaded_at\":\"1984-04-01T12:13:10Z\",\"ID\":3,\"UserID\":1,\"number\":\"3\",\"status\":\"INVALID\"},{\"uploaded_at\":\"1984-04-01T12:13:15Z\",\"ID\":4,\"UserID\":1,\"number\":\"4\",\"status\":\"PROCESSED\",\"accrual\":500}]",
+				expectedResponseBody: "[{\"uploaded_at\":\"1984-04-01T12:13:00Z\",\"number\":\"1\",\"status\":\"NEW\"},{\"uploaded_at\":\"1984-04-01T12:13:05Z\",\"number\":\"2\",\"status\":\"PROCESSING\"},{\"uploaded_at\":\"1984-04-01T12:13:10Z\",\"number\":\"3\",\"status\":\"INVALID\"},{\"uploaded_at\":\"1984-04-01T12:13:15Z\",\"number\":\"4\",\"status\":\"PROCESSED\",\"accrual\":500}]",
 			},
 		},
 	}

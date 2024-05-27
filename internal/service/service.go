@@ -19,7 +19,7 @@ type UsersService interface {
 type OrdersService interface {
 	ValidateNumber(ctx context.Context, orderNum models.OrderNum) (ok bool, err error)
 	NewOrder(ctx context.Context, orderNum models.OrderNum) (order *models.Order, isNew bool, err error)
-	GetLoadedOrdersByUserId(ctx context.Context, id models.UserId) (models.OrdersList, error)
+	GetLoadedOrdersByUserId(ctx context.Context, userId models.UserId) (*models.OrdersList, error)
 	UpdateOrder(ctx context.Context, id models.OrderId, status models.OrdersStatus, accrual int) (models.Order, error)
 }
 

@@ -20,7 +20,7 @@ func (h *Handler) GetOrders(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if len(ordersList) == 0 {
+	if len(*ordersList) == 0 {
 		w.WriteHeader(http.StatusNoContent)
 		return
 	}
