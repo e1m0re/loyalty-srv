@@ -46,17 +46,12 @@ func TestHandler_AddOrder(t *testing.T) {
 					On("GenerateAuthToken").
 					Return(jwtAuth)
 
-				mockOrdersService := mockservice.NewOrdersService(t)
-
 				return &service.Services{
-					OrdersService:   mockOrdersService,
 					SecurityService: mockSecurityService,
 				}
 			},
 			args: args{
-				ctx:       context.WithValue(context.Background(), "userID", 1),
-				headers:   make(map[string]string),
-				inputBody: "",
+				ctx: context.WithValue(context.Background(), "userID", 1),
 			},
 			want: want{
 				expectedStatusCode:   http.StatusUnauthorized,

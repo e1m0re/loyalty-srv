@@ -36,18 +36,16 @@ func (h *Handler) WritingOff(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userID := models.UserID(1)
+	userID := r.Context().Value("userID").(models.UserID)
 	account, err := h.services.AccountsService.GetAccountByUserID(r.Context(), userID)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
 		return
 	}
 
 	_, err = h.services.AccountsService.Withdraw(r.Context(), account.ID, requestData.Sum, requestData.Order)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
 		return
 	}
 
