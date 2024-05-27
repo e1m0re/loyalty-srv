@@ -13,7 +13,7 @@ func (h *Handler) GetWithdrawals(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userID := models.UserID(1)
+	userID := r.Context().Value("userID").(models.UserID)
 	withdrawalsList, err := h.services.AccountsService.GetWithdrawals(r.Context(), userID)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
