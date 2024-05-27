@@ -1,6 +1,6 @@
 module e1m0re/loyalty-srv
 
-go 1.22.1
+go 1.21.8
 
 require (
 	github.com/go-chi/chi/v5 v5.0.12
