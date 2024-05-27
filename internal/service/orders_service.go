@@ -2,10 +2,10 @@ package service
 
 import (
 	"context"
-	"e1m0re/loyalty-srv/internal/apperrors"
 	"strconv"
 	"unicode/utf8"
 
+	"e1m0re/loyalty-srv/internal/apperrors"
 	"e1m0re/loyalty-srv/internal/models"
 	"e1m0re/loyalty-srv/internal/repository"
 )
@@ -51,8 +51,23 @@ func (os ordersService) ValidateNumber(ctx context.Context, orderNum models.Orde
 }
 
 func (os ordersService) NewOrder(ctx context.Context, orderNum models.OrderNum) (order *models.Order, isNew bool, err error) {
+	ok, err := os.ValidateNumber(ctx, orderNum)
+	if !ok {
+		return nil, false, err
+	}
 
-	return &models.Order{}, false, nil
+	orderInfo := models.OrderInfo{
+		UserId:   4, // todo get user
+		OrderNum: orderNum,
+	}
+
+	// todo bad cases
+	order, err = os.orderRepository.AddOrder(ctx, orderInfo)
+	if err != nil {
+		return nil, false, err
+	}
+
+	return order, true, nil
 }
 
 func (os ordersService) GetLoadedOrdersByUserId(ctx context.Context, id models.UserId) (models.OrdersList, error) {
