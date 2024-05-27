@@ -10,7 +10,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"golang.org/x/sync/errgroup"
 
-	loyaltyHandler "e1m0re/loyalty-srv/internal/api/handler"
+	appHandler "e1m0re/loyalty-srv/internal/api/handler"
 	"e1m0re/loyalty-srv/internal/repository"
 	"e1m0re/loyalty-srv/internal/service"
 )
@@ -29,7 +29,7 @@ func NewServer(ctx context.Context, cfg *Config) (*Server, error) {
 	securityService := service.NewSecurityService(cfg.jwtSecretKey)
 	repo := repository.NewRepositories(db)
 	services := service.NewServices(repo, securityService)
-	handler := loyaltyHandler.NewHandler(services)
+	handler := appHandler.NewHandler(services)
 
 	srv := &Server{
 		config: cfg,
