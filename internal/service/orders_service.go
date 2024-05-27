@@ -2,6 +2,9 @@ package service
 
 import (
 	"context"
+	"e1m0re/loyalty-srv/internal/apperrors"
+	"strconv"
+	"unicode/utf8"
 
 	"e1m0re/loyalty-srv/internal/models"
 	"e1m0re/loyalty-srv/internal/repository"
@@ -18,7 +21,33 @@ func NewOrdersService(orderRepository repository.OrderRepository) OrdersService 
 }
 
 func (os ordersService) ValidateNumber(ctx context.Context, orderNum models.OrderNum) (ok bool, err error) {
-	return true, nil
+	orderLen := len(orderNum)
+	if orderLen == 0 {
+		return false, apperrors.EmptyOrderNumberError
+	}
+
+	var sum int
+	parity := orderLen % 2
+	for idx, num := range orderNum {
+		buf := make([]byte, 1)
+		_ = utf8.EncodeRune(buf, num)
+		digit, err := strconv.Atoi(string(buf))
+		if err != nil {
+			return false, err
+		}
+
+		if idx%2 == parity {
+			digit *= 2
+			if digit > 9 {
+				digit -= 9
+			}
+		}
+		sum += digit
+	}
+
+	ok = sum%10 == 0
+
+	return ok, nil
 }
 
 func (os ordersService) NewOrder(ctx context.Context, orderNum models.OrderNum) (order *models.Order, isNew bool, err error) {

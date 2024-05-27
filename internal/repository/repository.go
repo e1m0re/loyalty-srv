@@ -15,6 +15,7 @@ type UserRepository interface {
 	UpdateUsersLastLogin(ctx context.Context, id models.UserId, t time.Time) error
 }
 
+//go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=OrderRepository
 type OrderRepository interface {
 }
 
