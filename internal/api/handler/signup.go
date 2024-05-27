@@ -19,7 +19,6 @@ func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&userInfo)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(err.Error()))
 		return
 	}
 
@@ -39,11 +38,12 @@ func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = h.services.UsersService.SignIn(r.Context(), userInfo)
+	token, err := h.services.UsersService.SignIn(r.Context(), userInfo)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(token))
 }
