@@ -22,7 +22,7 @@ func (h *Handler) AddOrder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	orderInfo := models.OrderInfo{
-		UserID:   r.Context().Value("userID").(models.UserID),
+		UserID:   r.Context().Value(models.CKUserID).(models.UserID),
 		OrderNum: models.OrderNum(data),
 	}
 

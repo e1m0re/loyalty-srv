@@ -51,7 +51,7 @@ func TestHandler_GetOrders(t *testing.T) {
 				}
 			},
 			args: args{
-				ctx:     context.WithValue(context.Background(), "userID", 1),
+				ctx:     context.WithValue(context.Background(), models.CKUserID, 1),
 				headers: make(map[string]string),
 			},
 			want: want{
@@ -79,7 +79,7 @@ func TestHandler_GetOrders(t *testing.T) {
 				}
 			},
 			args: args{
-				ctx: context.WithValue(context.Background(), "userID", 1),
+				ctx: context.WithValue(context.Background(), models.CKUserID, 1),
 				headers: map[string]string{
 					"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwidXNlcm5hbWUiOiJ1c2VyMiJ9.vY8OSC5qvDO-rLLnTUBGevkjIUm2oAjBuSsV75LO1Yw",
 				},
@@ -109,7 +109,7 @@ func TestHandler_GetOrders(t *testing.T) {
 				}
 			},
 			args: args{
-				ctx: context.WithValue(context.Background(), "userID", 1),
+				ctx: context.WithValue(context.Background(), models.CKUserID, 1),
 				headers: map[string]string{
 					"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwidXNlcm5hbWUiOiJ1c2VyMiJ9.vY8OSC5qvDO-rLLnTUBGevkjIUm2oAjBuSsV75LO1Yw",
 				},
@@ -171,7 +171,7 @@ func TestHandler_GetOrders(t *testing.T) {
 				}
 			},
 			args: args{
-				ctx: context.WithValue(context.Background(), "userID", 1),
+				ctx: context.WithValue(context.Background(), models.CKUserID, 1),
 				headers: map[string]string{
 					"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwidXNlcm5hbWUiOiJ1c2VyMiJ9.vY8OSC5qvDO-rLLnTUBGevkjIUm2oAjBuSsV75LO1Yw",
 				},

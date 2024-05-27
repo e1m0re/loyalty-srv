@@ -36,7 +36,7 @@ func (h *Handler) WritingOff(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userID := r.Context().Value("userID").(models.UserID)
+	userID := r.Context().Value(models.CKUserID).(models.UserID)
 	account, err := h.services.AccountsService.GetAccountByUserID(r.Context(), userID)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

@@ -23,14 +23,14 @@ func Authenticator(ja *jwtauth.JWTAuth) func(http.Handler) http.Handler {
 			}
 
 			if token == nil || jwt.Validate(token, ja.ValidateOptions()...) != nil {
-				slog.Error("authentication error", slog.String("error", err.Error()))
+				slog.Error("authentication error", slog.String("error", "invalid token"))
 				w.WriteHeader(http.StatusUnauthorized)
 				return
 			}
 
 			_, claims, _ := jwtauth.FromContext(r.Context())
-			userIdFromClaims := models.UserID(claims["id"].(float64))
-			ctx := context.WithValue(r.Context(), "userID", userIdFromClaims)
+			userIDFromClaims := models.UserID(claims["id"].(float64))
+			ctx := context.WithValue(r.Context(), models.CKUserID, userIDFromClaims)
 			next.ServeHTTP(w, r.WithContext(ctx))
 		}
 		return http.HandlerFunc(hfn)

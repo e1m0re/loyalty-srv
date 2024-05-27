@@ -51,7 +51,7 @@ func TestHandler_AddOrder(t *testing.T) {
 				}
 			},
 			args: args{
-				ctx: context.WithValue(context.Background(), "userID", 1),
+				ctx: context.WithValue(context.Background(), models.CKUserID, 1),
 			},
 			want: want{
 				expectedStatusCode:   http.StatusUnauthorized,
@@ -75,7 +75,7 @@ func TestHandler_AddOrder(t *testing.T) {
 				}
 			},
 			args: args{
-				ctx: context.WithValue(context.Background(), "userID", 1),
+				ctx: context.WithValue(context.Background(), models.CKUserID, 1),
 				headers: map[string]string{
 					"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwidXNlcm5hbWUiOiJ1c2VyMiJ9.vY8OSC5qvDO-rLLnTUBGevkjIUm2oAjBuSsV75LO1Yw",
 				},
@@ -107,7 +107,7 @@ func TestHandler_AddOrder(t *testing.T) {
 			},
 			args: args{
 				inputBody: "1984",
-				ctx:       context.WithValue(context.Background(), "userID", 1),
+				ctx:       context.WithValue(context.Background(), models.CKUserID, 1),
 				headers: map[string]string{
 					"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwidXNlcm5hbWUiOiJ1c2VyMiJ9.vY8OSC5qvDO-rLLnTUBGevkjIUm2oAjBuSsV75LO1Yw",
 				},
@@ -138,7 +138,7 @@ func TestHandler_AddOrder(t *testing.T) {
 			},
 			args: args{
 				inputBody: "1984",
-				ctx:       context.WithValue(context.Background(), "userID", 1),
+				ctx:       context.WithValue(context.Background(), models.CKUserID, 1),
 				headers: map[string]string{
 					"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwidXNlcm5hbWUiOiJ1c2VyMiJ9.vY8OSC5qvDO-rLLnTUBGevkjIUm2oAjBuSsV75LO1Yw",
 				},
@@ -169,7 +169,7 @@ func TestHandler_AddOrder(t *testing.T) {
 			},
 			args: args{
 				inputBody: "1984",
-				ctx:       context.WithValue(context.Background(), "userID", 1),
+				ctx:       context.WithValue(context.Background(), models.CKUserID, 1),
 				headers: map[string]string{
 					"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwidXNlcm5hbWUiOiJ1c2VyMiJ9.vY8OSC5qvDO-rLLnTUBGevkjIUm2oAjBuSsV75LO1Yw",
 				},
@@ -200,7 +200,7 @@ func TestHandler_AddOrder(t *testing.T) {
 			},
 			args: args{
 				inputBody: "12345678903",
-				ctx:       context.WithValue(context.Background(), "userID", 1),
+				ctx:       context.WithValue(context.Background(), models.CKUserID, 1),
 				headers: map[string]string{
 					"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwidXNlcm5hbWUiOiJ1c2VyMiJ9.vY8OSC5qvDO-rLLnTUBGevkjIUm2oAjBuSsV75LO1Yw",
 				},
@@ -231,7 +231,7 @@ func TestHandler_AddOrder(t *testing.T) {
 			},
 			args: args{
 				inputBody: "12345678903",
-				ctx:       context.WithValue(context.Background(), "userID", 1),
+				ctx:       context.WithValue(context.Background(), models.CKUserID, 1),
 				headers: map[string]string{
 					"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwidXNlcm5hbWUiOiJ1c2VyMiJ9.vY8OSC5qvDO-rLLnTUBGevkjIUm2oAjBuSsV75LO1Yw",
 				},
