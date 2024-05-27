@@ -2,53 +2,36 @@ package service
 
 import (
 	"context"
-	"errors"
 	"time"
 
-	"golang.org/x/crypto/bcrypt"
-
-	"e1m0re/loyalty-srv/internal/apperrors"
 	"e1m0re/loyalty-srv/internal/models"
 	"e1m0re/loyalty-srv/internal/repository"
 )
 
 type usersService struct {
-	userRepository repository.UserRepository
+	userRepository  repository.UserRepository
+	securityService SecurityService
 }
 
-func NewUsersService(userRepository repository.UserRepository) UsersService {
+func NewUsersService(userRepository repository.UserRepository, securityService SecurityService) UsersService {
 	return &usersService{
-		userRepository: userRepository,
+		userRepository:  userRepository,
+		securityService: securityService,
 	}
 }
 
 func (us *usersService) CreateUser(ctx context.Context, userInfo *models.UserInfo) (user *models.User, err error) {
-	user, err = us.userRepository.GetUserByUsername(ctx, userInfo.Username)
-	if err != nil && errors.Is(err, apperrors.EntityNotFoundError) != true {
-		return nil, err
-	}
-
-	if user != nil {
-		return nil, apperrors.BusyLoginError
-	}
-
-	hash, err := us.getPasswordHash(userInfo.Password)
+	passwordHash, err := us.securityService.GetPasswordHash(userInfo.Password)
 	if err != nil {
 		return nil, err
 	}
 
-	user = &models.User{
+	user, err = us.userRepository.CreateUser(ctx, models.UserInfo{
 		Username: userInfo.Username,
-		Password: hash,
-	}
+		Password: passwordHash,
+	})
 
-	id, err := us.userRepository.CreateUser(ctx, *user)
-	if err != nil {
-		return nil, err
-	}
-
-	user.ID = id
-	return user, nil
+	return user, err
 }
 
 func (us *usersService) FindUserByUsername(ctx context.Context, username string) (user *models.User, err error) {
@@ -61,7 +44,7 @@ func (us *usersService) SignIn(ctx context.Context, userInfo *models.UserInfo) (
 		return false, err
 	}
 
-	if !us.checkPassword(user.Password, userInfo.Password) {
+	if !us.securityService.CheckPassword(user.Password, userInfo.Password) {
 		return false, nil
 	}
 
@@ -75,17 +58,4 @@ func (us *usersService) SignIn(ctx context.Context, userInfo *models.UserInfo) (
 
 func (us *usersService) Verify(ctx context.Context, userInfo *models.UserInfo) (ok bool, err error) {
 	return true, nil
-}
-
-func (us *usersService) getPasswordHash(password string) (string, error) {
-	bytePassword := []byte(password)
-	hash, err := bcrypt.GenerateFromPassword(bytePassword, bcrypt.DefaultCost)
-	if err != nil {
-		return "", err
-	}
-	return string(hash), nil
-}
-
-func (us *usersService) checkPassword(hashPassword string, password string) bool {
-	return nil == bcrypt.CompareHashAndPassword([]byte(hashPassword), []byte(password))
 }

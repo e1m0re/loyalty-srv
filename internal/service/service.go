@@ -7,6 +7,12 @@ import (
 	"e1m0re/loyalty-srv/internal/repository"
 )
 
+//go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=SecurityService
+type SecurityService interface {
+	GetPasswordHash(password string) (string, error)
+	CheckPassword(hashPassword string, password string) bool
+}
+
 //go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=UsersService
 type UsersService interface {
 	CreateUser(ctx context.Context, userInfo *models.UserInfo) (user *models.User, err error)
@@ -39,8 +45,9 @@ type Services struct {
 }
 
 func NewServices(repo *repository.Repositories) *Services {
+	securityService := NewSecurityService()
 	return &Services{
-		UsersService:  NewUsersService(repo.UserRepository),
+		UsersService:  NewUsersService(repo.UserRepository, securityService),
 		OrdersService: NewOrdersService(repo.OrderRepository),
 	}
 }

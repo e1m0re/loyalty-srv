@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"github.com/jackc/pgx/v5/pgconn"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -22,15 +23,22 @@ func NewUserRepository(db *sqlx.DB) UserRepository {
 	}
 }
 
-func (repo *userRepository) CreateUser(ctx context.Context, user models.User) (models.UserId, error) {
-	var id int
-	query := "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id"
-	row := repo.db.QueryRowxContext(ctx, query, user.Username, user.Password)
-	if err := row.Scan(&id); err != nil {
-		return 0, err
+func (repo *userRepository) CreateUser(ctx context.Context, userInfo models.UserInfo) (user *models.User, err error) {
+	user = &models.User{
+		Username: userInfo.Username,
+		Password: userInfo.Password,
 	}
 
-	return models.UserId(id), nil
+	query := "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id"
+	err = repo.db.QueryRowxContext(ctx, query, userInfo.Username, userInfo.Password).Scan(&user.ID)
+	if err != nil {
+		if err.(*pgconn.PgError).Code == "23505" {
+			return nil, apperrors.BusyLoginError
+		}
+		return nil, err
+	}
+
+	return user, nil
 }
 
 func (repo *userRepository) GetUserByUsername(ctx context.Context, username string) (user *models.User, err error) {

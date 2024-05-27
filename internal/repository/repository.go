@@ -9,9 +9,10 @@ import (
 	"e1m0re/loyalty-srv/internal/models"
 )
 
+//go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=UserRepository
 type UserRepository interface {
 	GetUserByUsername(ctx context.Context, username string) (user *models.User, err error)
-	CreateUser(ctx context.Context, user models.User) (models.UserId, error)
+	CreateUser(ctx context.Context, userInfo models.UserInfo) (user *models.User, err error)
 	UpdateUsersLastLogin(ctx context.Context, id models.UserId, t time.Time) error
 }
 
