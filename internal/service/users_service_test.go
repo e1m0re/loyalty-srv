@@ -2,14 +2,16 @@ package service
 
 import (
 	"context"
+	"fmt"
+	"testing"
+
+	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
+
 	"e1m0re/loyalty-srv/internal/apperrors"
 	"e1m0re/loyalty-srv/internal/models"
 	repositoriesMocks "e1m0re/loyalty-srv/internal/repository/mocks"
 	servicesMocks "e1m0re/loyalty-srv/internal/service/mocks"
-	"fmt"
-	"github.com/stretchr/testify/mock"
-	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func Test_usersService_CreateUser(t *testing.T) {
@@ -147,7 +149,7 @@ func Test_usersService_CreateUser(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			us := test.prepareService()
-			gotUser, gotErr := us.CreateUser(test.args.ctx, &test.args.userInfo)
+			gotUser, gotErr := us.CreateUser(test.args.ctx, test.args.userInfo)
 			require.Equal(t, &test.want.user, &gotUser)
 			if len(test.want.errMsg) > 0 {
 				require.EqualError(t, gotErr, test.want.errMsg)
@@ -173,7 +175,7 @@ func Test_usersService_SignIn(t *testing.T) {
 		userInfo models.UserInfo
 	}
 	type want struct {
-		ok     bool
+		token  string
 		errMsg string
 	}
 	tests := []struct {
@@ -187,7 +189,7 @@ func Test_usersService_SignIn(t *testing.T) {
 			prepareService: func() *usersService {
 				mockUserRepo := repositoriesMocks.NewUserRepository(t)
 				mockUserRepo.
-					On("GetUserByUsername", mock.Anything, userInfo.Username).
+					On("GetUserByUsername", mock.Anything, mock.Anything).
 					Return(nil, fmt.Errorf("some repos error"))
 
 				return &usersService{
@@ -199,7 +201,7 @@ func Test_usersService_SignIn(t *testing.T) {
 				userInfo: userInfo,
 			},
 			want: want{
-				ok:     false,
+				token:  "",
 				errMsg: "some repos error",
 			},
 		},
@@ -208,12 +210,12 @@ func Test_usersService_SignIn(t *testing.T) {
 			prepareService: func() *usersService {
 				mockSecurityService := servicesMocks.NewSecurityService(t)
 				mockSecurityService.
-					On("CheckPassword", user.Password, userInfo.Password).
+					On("CheckPassword", mock.Anything, mock.Anything).
 					Return(false, nil)
 
 				mockUserRepo := repositoriesMocks.NewUserRepository(t)
 				mockUserRepo.
-					On("GetUserByUsername", mock.Anything, userInfo.Username).
+					On("GetUserByUsername", mock.Anything, mock.Anything).
 					Return(&user, nil)
 
 				return &usersService{
@@ -226,7 +228,7 @@ func Test_usersService_SignIn(t *testing.T) {
 				userInfo: userInfo,
 			},
 			want: want{
-				ok:     false,
+				token:  "",
 				errMsg: "",
 			},
 		},
@@ -235,14 +237,14 @@ func Test_usersService_SignIn(t *testing.T) {
 			prepareService: func() *usersService {
 				mockSecurityService := servicesMocks.NewSecurityService(t)
 				mockSecurityService.
-					On("CheckPassword", user.Password, userInfo.Password).
+					On("CheckPassword", mock.Anything, mock.Anything).
 					Return(true, nil)
 
 				mockUserRepo := repositoriesMocks.NewUserRepository(t)
 				mockUserRepo.
-					On("GetUserByUsername", mock.Anything, userInfo.Username).
-					Return(&user, nil).
-					On("UpdateUsersLastLogin", mock.Anything, user.ID, mock.AnythingOfType("time.Time")).
+					On("GetUserByUsername", mock.Anything, mock.Anything).
+					Return(&models.User{}, nil).
+					On("UpdateUsersLastLogin", mock.Anything, mock.AnythingOfType("models.UserID"), mock.AnythingOfType("time.Time")).
 					Return(fmt.Errorf("some repos error"))
 
 				return &usersService{
@@ -255,7 +257,7 @@ func Test_usersService_SignIn(t *testing.T) {
 				userInfo: userInfo,
 			},
 			want: want{
-				ok:     false,
+				token:  "",
 				errMsg: "some repos error",
 			},
 		},
@@ -264,14 +266,16 @@ func Test_usersService_SignIn(t *testing.T) {
 			prepareService: func() *usersService {
 				mockSecurityService := servicesMocks.NewSecurityService(t)
 				mockSecurityService.
-					On("CheckPassword", user.Password, userInfo.Password).
-					Return(true, nil)
+					On("CheckPassword", mock.Anything, mock.Anything).
+					Return(true, nil).
+					On("GenerateToken", mock.Anything).
+					Return("json-token", nil)
 
 				mockUserRepo := repositoriesMocks.NewUserRepository(t)
 				mockUserRepo.
-					On("GetUserByUsername", mock.Anything, userInfo.Username).
-					Return(&user, nil).
-					On("UpdateUsersLastLogin", mock.Anything, user.ID, mock.AnythingOfType("time.Time")).
+					On("GetUserByUsername", mock.Anything, mock.Anything).
+					Return(&models.User{}, nil).
+					On("UpdateUsersLastLogin", mock.Anything, mock.AnythingOfType("models.UserID"), mock.AnythingOfType("time.Time")).
 					Return(nil)
 
 				return &usersService{
@@ -284,7 +288,7 @@ func Test_usersService_SignIn(t *testing.T) {
 				userInfo: userInfo,
 			},
 			want: want{
-				ok:     true,
+				token:  "json-token",
 				errMsg: "",
 			},
 		},
@@ -292,8 +296,8 @@ func Test_usersService_SignIn(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			us := test.prepareService()
-			gotOk, gotErr := us.SignIn(test.args.ctx, &test.args.userInfo)
-			require.Equal(t, test.want.ok, gotOk)
+			gotToken, gotErr := us.SignIn(test.args.ctx, test.args.userInfo)
+			require.Equal(t, test.want.token, gotToken)
 			if len(test.want.errMsg) > 0 {
 				require.EqualError(t, gotErr, test.want.errMsg)
 			}
