@@ -1,11 +1,24 @@
 package service
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"github.com/go-chi/jwtauth/v5"
+	"golang.org/x/crypto/bcrypt"
 
-type securityService struct{}
+	"e1m0re/loyalty-srv/internal/models"
+)
 
-func NewSecurityService() SecurityService {
-	return &securityService{}
+type securityService struct {
+	authToken *jwtauth.JWTAuth
+}
+
+func NewSecurityService(jwtSecretKey string) SecurityService {
+	return &securityService{
+		authToken: jwtauth.New("HS256", []byte(jwtSecretKey), nil),
+	}
+}
+
+func (ss *securityService) GenerateAuthToken() *jwtauth.JWTAuth {
+	return ss.authToken
 }
 
 func (ss *securityService) GetPasswordHash(password string) (string, error) {
@@ -19,4 +32,11 @@ func (ss *securityService) GetPasswordHash(password string) (string, error) {
 
 func (ss *securityService) CheckPassword(hashPassword string, password string) bool {
 	return nil == bcrypt.CompareHashAndPassword([]byte(hashPassword), []byte(password))
+}
+
+func (ss *securityService) GenerateToken(user *models.User) (string, error) {
+	claims := map[string]interface{}{"id": user.ID, "username": user.Username}
+	_, tokenString, err := ss.authToken.Encode(claims)
+
+	return tokenString, err
 }

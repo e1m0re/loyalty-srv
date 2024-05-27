@@ -2,7 +2,9 @@ package handler
 
 import (
 	"errors"
+	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 
 	"e1m0re/loyalty-srv/internal/apperrors"
@@ -14,6 +16,9 @@ func (h *Handler) AddOrder(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
+
+	userID := r.Context().Value("userID").(models.UserID)
+	slog.Info("asdasd", slog.String("asd", fmt.Sprintf("%v", userID)))
 
 	data, err := io.ReadAll(r.Body)
 	if err != nil || len(data) == 0 {

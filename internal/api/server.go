@@ -26,8 +26,9 @@ func NewServer(ctx context.Context, cfg *Config) (*Server, error) {
 		return nil, err
 	}
 
+	securityService := service.NewSecurityService(cfg.jwtSecretKey)
 	repo := repository.NewRepositories(db)
-	services := service.NewServices(repo)
+	services := service.NewServices(repo, securityService)
 	handler := loyaltyHandler.NewHandler(services)
 
 	srv := &Server{

@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"e1m0re/loyalty-srv/internal/apperrors"
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"e1m0re/loyalty-srv/internal/models"
@@ -20,17 +22,22 @@ func (h *Handler) SignIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ok, err := h.services.UsersService.SignIn(r.Context(), userInfo)
+	token, err := h.services.UsersService.SignIn(r.Context(), userInfo)
 	if err != nil {
+		if errors.Is(err, apperrors.ErrEntityNotFound) {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
 		return
 	}
 
-	if !ok {
-		w.WriteHeader(http.StatusUnauthorized)
+	if len(token) > 0 {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(token))
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusUnauthorized)
 }

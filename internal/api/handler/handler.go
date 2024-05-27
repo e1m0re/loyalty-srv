@@ -3,7 +3,9 @@ package handler
 import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/jwtauth/v5"
 
+	appMiddleware "e1m0re/loyalty-srv/internal/api/handler/middleware"
 	"e1m0re/loyalty-srv/internal/service"
 )
 
@@ -32,9 +34,11 @@ func (h *Handler) NewRouter() *chi.Mux {
 		})
 	})
 
+	tokenAuth := h.services.SecurityService.GenerateAuthToken()
 	// Private functions
 	r.Group(func(r chi.Router) {
-		//r.Use(loyaltyMiddleware.PrivateRoute)
+		r.Use(jwtauth.Verifier(tokenAuth))
+		r.Use(appMiddleware.Authenticator(tokenAuth))
 		r.Route("/api/user/orders", func(r chi.Router) {
 			r.Get("/", h.GetOrders)
 			r.Post("/", h.AddOrder)

@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/go-chi/jwtauth/v5"
 
 	"e1m0re/loyalty-srv/internal/models"
 	"e1m0re/loyalty-srv/internal/repository"
@@ -9,6 +10,8 @@ import (
 
 //go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=SecurityService
 type SecurityService interface {
+	GenerateAuthToken() *jwtauth.JWTAuth
+	GenerateToken(user *models.User) (string, error)
 	GetPasswordHash(password string) (string, error)
 	CheckPassword(hashPassword string, password string) bool
 }
@@ -17,7 +20,7 @@ type SecurityService interface {
 type UsersService interface {
 	CreateUser(ctx context.Context, userInfo *models.UserInfo) (user *models.User, err error)
 	FindUserByUsername(ctx context.Context, username string) (user *models.User, err error)
-	SignIn(ctx context.Context, userInfo *models.UserInfo) (ok bool, err error)
+	SignIn(ctx context.Context, userInfo *models.UserInfo) (token string, err error)
 	Verify(ctx context.Context, userInfo *models.UserInfo) (ok bool, err error)
 }
 
@@ -42,12 +45,13 @@ type Services struct {
 	UsersService
 	OrdersService
 	Accounts AccountsService
+	SecurityService
 }
 
-func NewServices(repo *repository.Repositories) *Services {
-	securityService := NewSecurityService()
+func NewServices(repo *repository.Repositories, securityService SecurityService) *Services {
 	return &Services{
-		UsersService:  NewUsersService(repo.UserRepository, securityService),
-		OrdersService: NewOrdersService(repo.OrderRepository),
+		UsersService:    NewUsersService(repo.UserRepository, securityService),
+		OrdersService:   NewOrdersService(repo.OrderRepository),
+		SecurityService: securityService,
 	}
 }

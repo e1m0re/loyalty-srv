@@ -38,22 +38,22 @@ func (us *usersService) FindUserByUsername(ctx context.Context, username string)
 	return us.userRepository.GetUserByUsername(ctx, username)
 }
 
-func (us *usersService) SignIn(ctx context.Context, userInfo *models.UserInfo) (ok bool, err error) {
+func (us *usersService) SignIn(ctx context.Context, userInfo *models.UserInfo) (token string, err error) {
 	user, err := us.FindUserByUsername(ctx, userInfo.Username)
 	if err != nil {
-		return false, err
+		return "", err
 	}
 
 	if !us.securityService.CheckPassword(user.Password, userInfo.Password) {
-		return false, nil
+		return "", nil
 	}
 
 	err = us.userRepository.UpdateUsersLastLogin(ctx, user.ID, time.Now())
 	if err != nil {
-		return false, err
+		return "", err
 	}
 
-	return true, nil
+	return us.securityService.GenerateToken(user)
 }
 
 func (us *usersService) Verify(ctx context.Context, userInfo *models.UserInfo) (ok bool, err error) {
