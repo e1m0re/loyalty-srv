@@ -18,13 +18,13 @@ func Authenticator(ja *jwtauth.JWTAuth) func(http.Handler) http.Handler {
 
 			if err != nil {
 				slog.Error("authentication error", slog.String("error", err.Error()))
-				http.Error(w, "", http.StatusUnauthorized)
+				w.WriteHeader(http.StatusUnauthorized)
 				return
 			}
 
 			if token == nil || jwt.Validate(token, ja.ValidateOptions()...) != nil {
 				slog.Error("authentication error", slog.String("error", err.Error()))
-				http.Error(w, "", http.StatusUnauthorized)
+				w.WriteHeader(http.StatusUnauthorized)
 				return
 			}
 
