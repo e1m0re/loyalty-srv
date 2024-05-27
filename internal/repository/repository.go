@@ -15,12 +15,17 @@ type UserRepository interface {
 	UpdateUsersLastLogin(ctx context.Context, id models.UserId, t time.Time) error
 }
 
+type OrderRepository interface {
+}
+
 type Repositories struct {
 	UserRepository
+	OrderRepository
 }
 
 func NewRepositories(db *sqlx.DB) *Repositories {
 	return &Repositories{
-		UserRepository: NewUserRepository(db),
+		UserRepository:  NewUserRepository(db),
+		OrderRepository: NewOrderRepository(db),
 	}
 }

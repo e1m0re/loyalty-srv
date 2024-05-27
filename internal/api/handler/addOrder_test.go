@@ -42,7 +42,7 @@ func TestHandler_AddOrder(t *testing.T) {
 					mockOrdersService := mockservice.NewOrdersService(t)
 
 					return &service.Services{
-						Orders: mockOrdersService,
+						OrdersService: mockOrdersService,
 					}
 				},
 			},
@@ -63,7 +63,7 @@ func TestHandler_AddOrder(t *testing.T) {
 						Return(nil, false, apperrors.InvalidOrderNumberError)
 
 					return &service.Services{
-						Orders: mockOrdersService,
+						OrdersService: mockOrdersService,
 					}
 				},
 			},
@@ -84,7 +84,7 @@ func TestHandler_AddOrder(t *testing.T) {
 						Return(nil, false, apperrors.OtherUsersOrderError)
 
 					return &service.Services{
-						Orders: mockOrdersService,
+						OrdersService: mockOrdersService,
 					}
 				},
 			},
@@ -105,7 +105,7 @@ func TestHandler_AddOrder(t *testing.T) {
 						Return(nil, false, fmt.Errorf("some error"))
 
 					return &service.Services{
-						Orders: mockOrdersService,
+						OrdersService: mockOrdersService,
 					}
 				},
 			},
@@ -126,7 +126,7 @@ func TestHandler_AddOrder(t *testing.T) {
 						Return(nil, true, nil)
 
 					return &service.Services{
-						Orders: mockOrdersService,
+						OrdersService: mockOrdersService,
 					}
 				},
 			},
@@ -147,7 +147,7 @@ func TestHandler_AddOrder(t *testing.T) {
 						Return(nil, false, nil)
 
 					return &service.Services{
-						Orders: mockOrdersService,
+						OrdersService: mockOrdersService,
 					}
 				},
 			},

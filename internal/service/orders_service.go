@@ -4,13 +4,17 @@ import (
 	"context"
 
 	"e1m0re/loyalty-srv/internal/models"
+	"e1m0re/loyalty-srv/internal/repository"
 )
 
 type ordersService struct {
+	orderRepository repository.OrderRepository
 }
 
-func NewOrdersService() OrdersService {
-	return &ordersService{}
+func NewOrdersService(orderRepository repository.OrderRepository) OrdersService {
+	return &ordersService{
+		orderRepository: orderRepository,
+	}
 }
 
 func (os ordersService) ValidateNumber(ctx context.Context, orderNum models.OrderNum) (ok bool, err error) {
@@ -18,6 +22,7 @@ func (os ordersService) ValidateNumber(ctx context.Context, orderNum models.Orde
 }
 
 func (os ordersService) NewOrder(ctx context.Context, orderNum models.OrderNum) (order *models.Order, isNew bool, err error) {
+
 	return &models.Order{}, false, nil
 }
 

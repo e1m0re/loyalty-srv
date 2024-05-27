@@ -14,7 +14,7 @@ func (h *Handler) GetOrders(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userId := models.UserId(1)
-	ordersList, err := h.services.Orders.GetLoadedOrdersByUserId(r.Context(), userId)
+	ordersList, err := h.services.OrdersService.GetLoadedOrdersByUserId(r.Context(), userId)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

@@ -40,7 +40,7 @@ func TestHandler_GetOrders(t *testing.T) {
 						Return(make(models.OrdersList, 0), errors.New("some error"))
 
 					return &service.Services{
-						Orders: mockOrdersService,
+						OrdersService: mockOrdersService,
 					}
 				},
 			},
@@ -60,7 +60,7 @@ func TestHandler_GetOrders(t *testing.T) {
 						Return(make(models.OrdersList, 0), nil)
 
 					return &service.Services{
-						Orders: mockOrdersService,
+						OrdersService: mockOrdersService,
 					}
 				},
 			},
@@ -111,7 +111,7 @@ func TestHandler_GetOrders(t *testing.T) {
 						Return(ordersList, nil)
 
 					return &service.Services{
-						Orders: mockOrdersService,
+						OrdersService: mockOrdersService,
 					}
 				},
 			},

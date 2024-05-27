@@ -34,12 +34,13 @@ type AccountsService interface {
 
 type Services struct {
 	UsersService
-	Orders   OrdersService
+	OrdersService
 	Accounts AccountsService
 }
 
 func NewServices(repo *repository.Repositories) *Services {
 	return &Services{
-		UsersService: NewUsersService(repo.UserRepository),
+		UsersService:  NewUsersService(repo.UserRepository),
+		OrdersService: NewOrdersService(repo.OrderRepository),
 	}
 }

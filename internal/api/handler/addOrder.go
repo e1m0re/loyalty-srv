@@ -22,7 +22,7 @@ func (h *Handler) AddOrder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ordNum := models.OrderNum(data)
-	_, isNewOrder, err := h.services.Orders.NewOrder(r.Context(), ordNum)
+	_, isNewOrder, err := h.services.OrdersService.NewOrder(r.Context(), ordNum)
 	if err != nil {
 		switch true {
 		case errors.Is(err, apperrors.InvalidOrderNumberError):

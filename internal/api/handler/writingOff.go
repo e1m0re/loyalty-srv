@@ -25,7 +25,7 @@ func (h *Handler) WritingOff(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ok, err := h.services.Orders.ValidateNumber(r.Context(), requestData.Order)
+	ok, err := h.services.OrdersService.ValidateNumber(r.Context(), requestData.Order)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
