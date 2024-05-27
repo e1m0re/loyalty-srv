@@ -25,9 +25,9 @@ func (h *Handler) AddOrder(w http.ResponseWriter, r *http.Request) {
 	_, isNewOrder, err := h.services.OrdersService.NewOrder(r.Context(), ordNum)
 	if err != nil {
 		switch true {
-		case errors.Is(err, apperrors.InvalidOrderNumberError):
+		case errors.Is(err, apperrors.ErrInvalidOrderNumber):
 			w.WriteHeader(http.StatusUnprocessableEntity)
-		case errors.Is(err, apperrors.OtherUsersOrderError):
+		case errors.Is(err, apperrors.ErrOtherUsersOrder):
 			w.WriteHeader(http.StatusConflict)
 		default:
 			w.WriteHeader(http.StatusInternalServerError)

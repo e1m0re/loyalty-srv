@@ -22,8 +22,8 @@ func InitConfig() *Config {
 		config.serverAddress = envRunAddress
 	}
 
-	if envDatabaseUri := os.Getenv("DATABASE_URI"); envDatabaseUri != "" {
-		config.databaseDSN = envDatabaseUri
+	if envDatabaseURI := os.Getenv("DATABASE_URI"); envDatabaseURI != "" {
+		config.databaseDSN = envDatabaseURI
 	}
 
 	if envAccrualSystemAddress := os.Getenv("ACCRULA_SYSTEM_ADDRESS"); envAccrualSystemAddress != "" {

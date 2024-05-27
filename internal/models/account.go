@@ -2,11 +2,11 @@ package models
 
 import "time"
 
-type AccountId int
+type AccountID int
 
 type Account struct {
-	ID      AccountId `json:"id"`
-	User    UserId    `json:"user"`
+	ID      AccountID `json:"id"`
+	User    UserID    `json:"user"`
 	Balance float64   `json:"balance,omitempty"`
 }
 

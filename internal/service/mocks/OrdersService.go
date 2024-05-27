@@ -14,29 +14,29 @@ type OrdersService struct {
 	mock.Mock
 }
 
-// GetLoadedOrdersByUserId provides a mock function with given fields: ctx, userId
-func (_m *OrdersService) GetLoadedOrdersByUserId(ctx context.Context, userId models.UserId) (*[]models.Order, error) {
-	ret := _m.Called(ctx, userId)
+// GetLoadedOrdersByUserID provides a mock function with given fields: ctx, userID
+func (_m *OrdersService) GetLoadedOrdersByUserID(ctx context.Context, userID models.UserID) (*[]models.Order, error) {
+	ret := _m.Called(ctx, userID)
 
 	if len(ret) == 0 {
-		panic("no return value specified for GetLoadedOrdersByUserId")
+		panic("no return value specified for GetLoadedOrdersByUserID")
 	}
 
 	var r0 *[]models.Order
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, models.UserId) (*[]models.Order, error)); ok {
-		return rf(ctx, userId)
+	if rf, ok := ret.Get(0).(func(context.Context, models.UserID) (*[]models.Order, error)); ok {
+		return rf(ctx, userID)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, models.UserId) *[]models.Order); ok {
-		r0 = rf(ctx, userId)
+	if rf, ok := ret.Get(0).(func(context.Context, models.UserID) *[]models.Order); ok {
+		r0 = rf(ctx, userID)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*[]models.Order)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, models.UserId) error); ok {
-		r1 = rf(ctx, userId)
+	if rf, ok := ret.Get(1).(func(context.Context, models.UserID) error); ok {
+		r1 = rf(ctx, userID)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -82,7 +82,7 @@ func (_m *OrdersService) NewOrder(ctx context.Context, orderNum models.OrderNum)
 }
 
 // UpdateOrder provides a mock function with given fields: ctx, id, status, accrual
-func (_m *OrdersService) UpdateOrder(ctx context.Context, id models.OrderId, status models.OrdersStatus, accrual int) (models.Order, error) {
+func (_m *OrdersService) UpdateOrder(ctx context.Context, id models.OrderID, status models.OrdersStatus, accrual int) (models.Order, error) {
 	ret := _m.Called(ctx, id, status, accrual)
 
 	if len(ret) == 0 {
@@ -91,16 +91,16 @@ func (_m *OrdersService) UpdateOrder(ctx context.Context, id models.OrderId, sta
 
 	var r0 models.Order
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, models.OrderId, models.OrdersStatus, int) (models.Order, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, models.OrderID, models.OrdersStatus, int) (models.Order, error)); ok {
 		return rf(ctx, id, status, accrual)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, models.OrderId, models.OrdersStatus, int) models.Order); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, models.OrderID, models.OrdersStatus, int) models.Order); ok {
 		r0 = rf(ctx, id, status, accrual)
 	} else {
 		r0 = ret.Get(0).(models.Order)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, models.OrderId, models.OrdersStatus, int) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, models.OrderID, models.OrdersStatus, int) error); ok {
 		r1 = rf(ctx, id, status, accrual)
 	} else {
 		r1 = ret.Error(1)

@@ -93,7 +93,7 @@ func TestHandler_SignUp(t *testing.T) {
 					mockUsersService := mockservice.NewUsersService(t)
 					mockUsersService.
 						On("CreateUser", mock.Anything, userInfo).
-						Return(nil, apperrors.BusyLoginError)
+						Return(nil, apperrors.ErrBusyLogin)
 
 					return &service.Services{
 						UsersService: mockUsersService,

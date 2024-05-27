@@ -60,7 +60,7 @@ func TestHandler_AddOrder(t *testing.T) {
 					mockOrdersService := mockservice.NewOrdersService(t)
 					mockOrdersService.
 						On("NewOrder", mock.Anything, models.OrderNum("1984")).
-						Return(nil, false, apperrors.InvalidOrderNumberError)
+						Return(nil, false, apperrors.ErrInvalidOrderNumber)
 
 					return &service.Services{
 						OrdersService: mockOrdersService,
@@ -81,7 +81,7 @@ func TestHandler_AddOrder(t *testing.T) {
 					mockOrdersService := mockservice.NewOrdersService(t)
 					mockOrdersService.
 						On("NewOrder", mock.Anything, models.OrderNum("1984")).
-						Return(nil, false, apperrors.OtherUsersOrderError)
+						Return(nil, false, apperrors.ErrOtherUsersOrder)
 
 					return &service.Services{
 						OrdersService: mockOrdersService,

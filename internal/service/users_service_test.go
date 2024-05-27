@@ -70,7 +70,7 @@ func Test_usersService_CreateUser(t *testing.T) {
 				mockUserRepo := repositoriesMocks.NewUserRepository(t)
 				mockUserRepo.
 					On("CreateUser", mock.Anything, userInfo).
-					Return(nil, apperrors.BusyLoginError)
+					Return(nil, apperrors.ErrBusyLogin)
 
 				return &usersService{
 					userRepository:  mockUserRepo,
@@ -83,7 +83,7 @@ func Test_usersService_CreateUser(t *testing.T) {
 			},
 			want: want{
 				user:   nil,
-				errMsg: apperrors.BusyLoginError.Error(),
+				errMsg: apperrors.ErrBusyLogin.Error(),
 			},
 		},
 		{

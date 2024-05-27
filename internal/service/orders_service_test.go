@@ -37,7 +37,7 @@ func Test_ordersService_ValidateNumber(t *testing.T) {
 			},
 			want: want{
 				ok:     false,
-				errMsg: apperrors.EmptyOrderNumberError.Error(),
+				errMsg: apperrors.ErrEmptyOrderNumber.Error(),
 			},
 		},
 		{
@@ -108,7 +108,7 @@ func Test_ordersService_NewOrder(t *testing.T) {
 				mockOrderRepo := mocks.NewOrderRepository(t)
 				mockOrderRepo.
 					On("AddOrder", mock.Anything, models.OrderInfo{
-						UserId:   4,
+						UserID:   4,
 						OrderNum: "12345678903",
 					}).
 					Return(&models.Order{
@@ -156,11 +156,11 @@ func Test_ordersService_NewOrder(t *testing.T) {
 	}
 }
 
-func Test_ordersService_GetLoadedOrdersByUserId(t *testing.T) {
+func Test_ordersService_GetLoadedOrdersByUserID(t *testing.T) {
 	accrual := 500
 	type args struct {
 		ctx    context.Context
-		userId models.UserId
+		userID models.UserID
 	}
 	type want struct {
 		ordersList models.OrdersList
@@ -177,7 +177,7 @@ func Test_ordersService_GetLoadedOrdersByUserId(t *testing.T) {
 			mockRepositories: func() *repository.Repositories {
 				mockOrderRepo := mocks.NewOrderRepository(t)
 				mockOrderRepo.
-					On("GetLoadedOrdersByUserId", mock.Anything, models.UserId(1)).
+					On("GetLoadedOrdersByUserID", mock.Anything, models.UserID(1)).
 					Return(&models.OrdersList{}, fmt.Errorf("some repo error"))
 				return &repository.Repositories{
 					OrderRepository: mockOrderRepo,
@@ -185,7 +185,7 @@ func Test_ordersService_GetLoadedOrdersByUserId(t *testing.T) {
 			},
 			args: args{
 				ctx:    context.Background(),
-				userId: 1,
+				userID: 1,
 			},
 			want: want{
 				ordersList: models.OrdersList{},
@@ -197,7 +197,7 @@ func Test_ordersService_GetLoadedOrdersByUserId(t *testing.T) {
 			mockRepositories: func() *repository.Repositories {
 				mockOrderRepo := mocks.NewOrderRepository(t)
 				mockOrderRepo.
-					On("GetLoadedOrdersByUserId", mock.Anything, models.UserId(1)).
+					On("GetLoadedOrdersByUserID", mock.Anything, models.UserID(1)).
 					Return(&models.OrdersList{}, nil)
 				return &repository.Repositories{
 					OrderRepository: mockOrderRepo,
@@ -205,7 +205,7 @@ func Test_ordersService_GetLoadedOrdersByUserId(t *testing.T) {
 			},
 			args: args{
 				ctx:    context.Background(),
-				userId: 1,
+				userID: 1,
 			},
 			want: want{
 				ordersList: models.OrdersList{},
@@ -217,7 +217,7 @@ func Test_ordersService_GetLoadedOrdersByUserId(t *testing.T) {
 			mockRepositories: func() *repository.Repositories {
 				mockOrderRepo := mocks.NewOrderRepository(t)
 				mockOrderRepo.
-					On("GetLoadedOrdersByUserId", mock.Anything, models.UserId(1)).
+					On("GetLoadedOrdersByUserID", mock.Anything, models.UserID(1)).
 					Return(&models.OrdersList{
 						{
 							ID:         1,
@@ -255,7 +255,7 @@ func Test_ordersService_GetLoadedOrdersByUserId(t *testing.T) {
 			},
 			args: args{
 				ctx:    context.Background(),
-				userId: 1,
+				userID: 1,
 			},
 			want: want{
 				ordersList: models.OrdersList{
@@ -299,7 +299,7 @@ func Test_ordersService_GetLoadedOrdersByUserId(t *testing.T) {
 			os := ordersService{
 				orderRepository: repo.OrderRepository,
 			}
-			gotOrdersList, gotErr := os.GetLoadedOrdersByUserId(test.args.ctx, test.args.userId)
+			gotOrdersList, gotErr := os.GetLoadedOrdersByUserID(test.args.ctx, test.args.userID)
 			require.ElementsMatch(t, test.want.ordersList, *gotOrdersList)
 			if len(test.want.errMsg) > 0 {
 				require.EqualError(t, gotErr, test.want.errMsg)

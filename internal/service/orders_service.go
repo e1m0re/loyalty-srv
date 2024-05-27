@@ -23,7 +23,7 @@ func NewOrdersService(orderRepository repository.OrderRepository) OrdersService 
 func (os ordersService) ValidateNumber(ctx context.Context, orderNum models.OrderNum) (ok bool, err error) {
 	orderLen := len(orderNum)
 	if orderLen == 0 {
-		return false, apperrors.EmptyOrderNumberError
+		return false, apperrors.ErrEmptyOrderNumber
 	}
 
 	var sum int
@@ -57,7 +57,7 @@ func (os ordersService) NewOrder(ctx context.Context, orderNum models.OrderNum) 
 	}
 
 	orderInfo := models.OrderInfo{
-		UserId:   4, // todo get user
+		UserID:   4, // todo get user
 		OrderNum: orderNum,
 	}
 
@@ -70,10 +70,10 @@ func (os ordersService) NewOrder(ctx context.Context, orderNum models.OrderNum) 
 	return order, true, nil
 }
 
-func (os ordersService) GetLoadedOrdersByUserId(ctx context.Context, userId models.UserId) (*models.OrdersList, error) {
-	return os.orderRepository.GetLoadedOrdersByUserId(ctx, userId)
+func (os ordersService) GetLoadedOrdersByUserID(ctx context.Context, userID models.UserID) (*models.OrdersList, error) {
+	return os.orderRepository.GetLoadedOrdersByUserID(ctx, userID)
 }
 
-func (os ordersService) UpdateOrder(ctx context.Context, id models.OrderId, status models.OrdersStatus, accrual int) (models.Order, error) {
+func (os ordersService) UpdateOrder(ctx context.Context, id models.OrderID, status models.OrdersStatus, accrual int) (models.Order, error) {
 	return models.Order{}, nil
 }

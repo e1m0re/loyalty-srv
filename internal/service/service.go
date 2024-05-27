@@ -25,17 +25,17 @@ type UsersService interface {
 type OrdersService interface {
 	ValidateNumber(ctx context.Context, orderNum models.OrderNum) (ok bool, err error)
 	NewOrder(ctx context.Context, orderNum models.OrderNum) (order *models.Order, isNew bool, err error)
-	GetLoadedOrdersByUserId(ctx context.Context, userId models.UserId) (*models.OrdersList, error)
-	UpdateOrder(ctx context.Context, id models.OrderId, status models.OrdersStatus, accrual int) (models.Order, error)
+	GetLoadedOrdersByUserID(ctx context.Context, userID models.UserID) (*models.OrdersList, error)
+	UpdateOrder(ctx context.Context, id models.OrderID, status models.OrdersStatus, accrual int) (models.Order, error)
 }
 
 //go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=AccountsService
 type AccountsService interface {
-	GetAccountByUserId(ctx context.Context, id models.UserId) (*models.Account, error)
-	GetAccountInfoByUserId(ctx context.Context, id models.UserId) (*models.AccountInfo, error)
-	Withdraw(ctx context.Context, id models.AccountId, amount int, orderNum models.OrderNum) (*models.Account, error)
-	GetWithdrawals(ctx context.Context, id models.UserId) (*models.WithdrawalsList, error)
-	UpdateBalance(ctx context.Context, id models.AccountId, amount int) (*models.Account, error)
+	GetAccountByUserID(ctx context.Context, id models.UserID) (*models.Account, error)
+	GetAccountInfoByUserID(ctx context.Context, id models.UserID) (*models.AccountInfo, error)
+	Withdraw(ctx context.Context, id models.AccountID, amount int, orderNum models.OrderNum) (*models.Account, error)
+	GetWithdrawals(ctx context.Context, id models.UserID) (*models.WithdrawalsList, error)
+	UpdateBalance(ctx context.Context, id models.AccountID, amount int) (*models.Account, error)
 }
 
 type Services struct {

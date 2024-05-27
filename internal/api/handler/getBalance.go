@@ -13,8 +13,8 @@ func (h *Handler) GetBalance(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userId := models.UserId(1)
-	accountInfo, err := h.services.Accounts.GetAccountInfoByUserId(r.Context(), userId)
+	userID := models.UserID(1)
+	accountInfo, err := h.services.Accounts.GetAccountInfoByUserID(r.Context(), userID)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

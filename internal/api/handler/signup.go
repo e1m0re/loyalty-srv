@@ -30,7 +30,7 @@ func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
 
 	_, err = h.services.UsersService.CreateUser(r.Context(), userInfo)
 	if err != nil {
-		if errors.Is(err, apperrors.BusyLoginError) {
+		if errors.Is(err, apperrors.ErrBusyLogin) {
 			w.WriteHeader(http.StatusConflict)
 			return
 		}

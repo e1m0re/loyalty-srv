@@ -39,7 +39,7 @@ func (us *usersService) FindUserByUsername(ctx context.Context, username string)
 }
 
 func (us *usersService) SignIn(ctx context.Context, userInfo *models.UserInfo) (ok bool, err error) {
-	user, err := us.userRepository.GetUserByUsername(ctx, userInfo.Username)
+	user, err := us.FindUserByUsername(ctx, userInfo.Username)
 	if err != nil {
 		return false, err
 	}

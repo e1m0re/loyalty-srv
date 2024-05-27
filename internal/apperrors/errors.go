@@ -2,21 +2,12 @@ package apperrors
 
 import (
 	"errors"
-	"fmt"
 )
 
-func NewNotImplementedError(method string) error {
-	return fmt.Errorf("method %s not implemented", method)
-}
-
-func NewInvalidRequestFormat() error {
-	return fmt.Errorf("invalid reguest")
-}
-
 var (
-	BusyLoginError          = errors.New("busy login")
-	InvalidOrderNumberError = errors.New("invalid order number")
-	EmptyOrderNumberError   = errors.New("empty order number")
-	OtherUsersOrderError    = errors.New("the order number has already been uploaded by another user")
-	EntityNotFoundError     = errors.New("entity not found")
+	ErrBusyLogin          = errors.New("busy login")
+	ErrInvalidOrderNumber = errors.New("invalid order number")
+	ErrEmptyOrderNumber   = errors.New("empty order number")
+	ErrOtherUsersOrder    = errors.New("the order number has already been uploaded by another user")
+	ErrEntityNotFound     = errors.New("entity not found")
 )

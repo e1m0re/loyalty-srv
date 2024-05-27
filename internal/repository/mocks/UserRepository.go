@@ -77,7 +77,7 @@ func (_m *UserRepository) GetUserByUsername(ctx context.Context, username string
 }
 
 // UpdateUsersLastLogin provides a mock function with given fields: ctx, id, t
-func (_m *UserRepository) UpdateUsersLastLogin(ctx context.Context, id models.UserId, t time.Time) error {
+func (_m *UserRepository) UpdateUsersLastLogin(ctx context.Context, id models.UserID, t time.Time) error {
 	ret := _m.Called(ctx, id, t)
 
 	if len(ret) == 0 {
@@ -85,7 +85,7 @@ func (_m *UserRepository) UpdateUsersLastLogin(ctx context.Context, id models.Us
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, models.UserId, time.Time) error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, models.UserID, time.Time) error); ok {
 		r0 = rf(ctx, id, t)
 	} else {
 		r0 = ret.Error(0)

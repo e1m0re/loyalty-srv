@@ -44,29 +44,29 @@ func (_m *OrderRepository) AddOrder(ctx context.Context, orderInfo models.OrderI
 	return r0, r1
 }
 
-// GetLoadedOrdersByUserId provides a mock function with given fields: ctx, userId
-func (_m *OrderRepository) GetLoadedOrdersByUserId(ctx context.Context, userId models.UserId) (*[]models.Order, error) {
-	ret := _m.Called(ctx, userId)
+// GetLoadedOrdersByUserID provides a mock function with given fields: ctx, userID
+func (_m *OrderRepository) GetLoadedOrdersByUserID(ctx context.Context, userID models.UserID) (*[]models.Order, error) {
+	ret := _m.Called(ctx, userID)
 
 	if len(ret) == 0 {
-		panic("no return value specified for GetLoadedOrdersByUserId")
+		panic("no return value specified for GetLoadedOrdersByUserID")
 	}
 
 	var r0 *[]models.Order
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, models.UserId) (*[]models.Order, error)); ok {
-		return rf(ctx, userId)
+	if rf, ok := ret.Get(0).(func(context.Context, models.UserID) (*[]models.Order, error)); ok {
+		return rf(ctx, userID)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, models.UserId) *[]models.Order); ok {
-		r0 = rf(ctx, userId)
+	if rf, ok := ret.Get(0).(func(context.Context, models.UserID) *[]models.Order); ok {
+		r0 = rf(ctx, userID)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*[]models.Order)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, models.UserId) error); ok {
-		r1 = rf(ctx, userId)
+	if rf, ok := ret.Get(1).(func(context.Context, models.UserID) error); ok {
+		r1 = rf(ctx, userID)
 	} else {
 		r1 = ret.Error(1)
 	}

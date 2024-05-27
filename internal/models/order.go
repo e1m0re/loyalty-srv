@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type OrderId int
+type OrderID int
 
 type OrdersStatus string
 
@@ -19,8 +19,8 @@ const (
 type OrderNum string
 
 type Order struct {
-	ID         OrderId      `db:"id" json:"-"`
-	UserID     UserId       `db:"user" json:"-"`
+	ID         OrderID      `db:"id" json:"-"`
+	UserID     UserID       `db:"user" json:"-"`
 	Number     OrderNum     `db:"number" json:"number"`
 	Status     OrdersStatus `db:"status" json:"status"`
 	Accrual    *int         `db:"accrual" json:"accrual,omitempty"`
@@ -41,6 +41,6 @@ func (o *Order) MarshalJSON() ([]byte, error) {
 type OrdersList = []Order
 
 type OrderInfo struct {
-	UserId
+	UserID
 	OrderNum
 }

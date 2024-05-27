@@ -30,13 +30,13 @@ func TestHandler_GetOrders(t *testing.T) {
 		want   want
 	}{
 		{
-			name:   "500 — GetLoadedOrdersByUserId failed",
+			name:   "500 — GetLoadedOrdersByUserID failed",
 			method: http.MethodGet,
 			args: args{
 				mockServices: func() *service.Services {
 					mockOrdersService := mockservice.NewOrdersService(t)
 					mockOrdersService.
-						On("GetLoadedOrdersByUserId", mock.Anything, models.UserId(1)).
+						On("GetLoadedOrdersByUserID", mock.Anything, models.UserID(1)).
 						Return(&models.OrdersList{}, errors.New("some error"))
 
 					return &service.Services{
@@ -56,7 +56,7 @@ func TestHandler_GetOrders(t *testing.T) {
 				mockServices: func() *service.Services {
 					mockOrdersService := mockservice.NewOrdersService(t)
 					mockOrdersService.
-						On("GetLoadedOrdersByUserId", mock.Anything, models.UserId(1)).
+						On("GetLoadedOrdersByUserID", mock.Anything, models.UserID(1)).
 						Return(&models.OrdersList{}, nil)
 
 					return &service.Services{
@@ -108,7 +108,7 @@ func TestHandler_GetOrders(t *testing.T) {
 					}
 					mockOrdersService := mockservice.NewOrdersService(t)
 					mockOrdersService.
-						On("GetLoadedOrdersByUserId", mock.Anything, models.UserId(1)).
+						On("GetLoadedOrdersByUserID", mock.Anything, models.UserID(1)).
 						Return(ordersList, nil)
 
 					return &service.Services{

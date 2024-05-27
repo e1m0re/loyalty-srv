@@ -104,7 +104,7 @@ func TestHandler_WritingOff(t *testing.T) {
 			},
 		},
 		{
-			name:   "500 — GetAccountByUserId failed",
+			name:   "500 — GetAccountByUserID failed",
 			method: http.MethodPost,
 			args: args{
 				inputBody: "{\"order\":\"2377225624\",\"sum\":751}",
@@ -116,7 +116,7 @@ func TestHandler_WritingOff(t *testing.T) {
 
 					mockAccountsService := mockservice.NewAccountsService(t)
 					mockAccountsService.
-						On("GetAccountByUserId", mock.Anything, models.UserId(1)).
+						On("GetAccountByUserID", mock.Anything, models.UserID(1)).
 						Return(nil, fmt.Errorf("some error"))
 
 					return &service.Services{
@@ -141,10 +141,10 @@ func TestHandler_WritingOff(t *testing.T) {
 						On("ValidateNumber", mock.Anything, models.OrderNum("2377225624")).
 						Return(true, nil)
 
-					stubAccount := &models.Account{ID: models.AccountId(1)}
+					stubAccount := &models.Account{ID: models.AccountID(1)}
 					mockAccountsService := mockservice.NewAccountsService(t)
 					mockAccountsService.
-						On("GetAccountByUserId", mock.Anything, models.UserId(1)).
+						On("GetAccountByUserID", mock.Anything, models.UserID(1)).
 						Return(stubAccount, nil).
 						On("Withdraw", mock.Anything, stubAccount.ID, 751, models.OrderNum("2377225624")).
 						Return(nil, fmt.Errorf("some error"))
@@ -171,10 +171,10 @@ func TestHandler_WritingOff(t *testing.T) {
 						On("ValidateNumber", mock.Anything, models.OrderNum("2377225624")).
 						Return(true, nil)
 
-					stubAccount := &models.Account{ID: models.AccountId(1)}
+					stubAccount := &models.Account{ID: models.AccountID(1)}
 					mockAccountsService := mockservice.NewAccountsService(t)
 					mockAccountsService.
-						On("GetAccountByUserId", mock.Anything, models.UserId(1)).
+						On("GetAccountByUserID", mock.Anything, models.UserID(1)).
 						Return(stubAccount, nil).
 						On("Withdraw", mock.Anything, stubAccount.ID, 751, models.OrderNum("2377225624")).
 						Return(nil, nil)

@@ -43,13 +43,13 @@ func TestHandler_GetBalance(t *testing.T) {
 			},
 		},
 		{
-			name:   "500 — GetAccountInfoByUserId failed",
+			name:   "500 — GetAccountInfoByUserID failed",
 			method: http.MethodGet,
 			args: args{
 				mockServices: func() *service.Services {
 					mockAccountsService := mockservice.NewAccountsService(t)
 					mockAccountsService.
-						On("GetAccountInfoByUserId", mock.Anything, models.UserId(1)).
+						On("GetAccountInfoByUserID", mock.Anything, models.UserID(1)).
 						Return(nil, errors.New("some error"))
 
 					return &service.Services{
@@ -69,7 +69,7 @@ func TestHandler_GetBalance(t *testing.T) {
 				mockServices: func() *service.Services {
 					mockAccountsService := mockservice.NewAccountsService(t)
 					mockAccountsService.
-						On("GetAccountInfoByUserId", mock.Anything, models.UserId(1)).
+						On("GetAccountInfoByUserID", mock.Anything, models.UserID(1)).
 						Return(&models.AccountInfo{
 							CurrentBalance: 500.5,
 							Withdrawals:    42,

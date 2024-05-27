@@ -21,7 +21,7 @@ func NewOrderRepository(db *sqlx.DB) OrderRepository {
 
 func (repo orderRepository) AddOrder(ctx context.Context, orderInfo models.OrderInfo) (*models.Order, error) {
 	order := &models.Order{
-		UserID:     orderInfo.UserId,
+		UserID:     orderInfo.UserID,
 		Number:     orderInfo.OrderNum,
 		Status:     models.OrderStatusNew,
 		UploadedAt: time.Now(),
@@ -36,9 +36,9 @@ func (repo orderRepository) AddOrder(ctx context.Context, orderInfo models.Order
 	return order, nil
 }
 
-func (repo orderRepository) GetLoadedOrdersByUserId(ctx context.Context, userId models.UserId) (*models.OrdersList, error) {
+func (repo orderRepository) GetLoadedOrdersByUserID(ctx context.Context, userID models.UserID) (*models.OrdersList, error) {
 	orders := models.OrdersList{}
-	err := repo.db.SelectContext(ctx, &orders, "SELECT * FROM orders WHERE \"user\" = $1", userId)
+	err := repo.db.SelectContext(ctx, &orders, "SELECT * FROM orders WHERE \"user\" = $1", userID)
 
 	return &orders, err
 }

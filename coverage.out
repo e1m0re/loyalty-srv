@@ -33,8 +33,6 @@ e1m0re/loyalty-srv/internal/api/server.go:61.2,61.22 1 0
 e1m0re/loyalty-srv/internal/api/server.go:61.22,65.3 2 0
 e1m0re/loyalty-srv/internal/api/server.go:67.2,67.19 1 0
 e1m0re/loyalty-srv/internal/api/server.go:70.56,72.2 1 0
-e1m0re/loyalty-srv/internal/apperrors/errors.go:8.50,10.2 1 0
-e1m0re/loyalty-srv/internal/apperrors/errors.go:12.38,14.2 1 0
 e1m0re/loyalty-srv/internal/api/handler/middleware/privateRoute.go:5.51,6.71 1 0
 e1m0re/loyalty-srv/internal/api/handler/middleware/privateRoute.go:6.71,8.10 2 0
 e1m0re/loyalty-srv/internal/api/handler/middleware/privateRoute.go:8.10,11.4 2 0
@@ -52,7 +50,7 @@ e1m0re/loyalty-srv/internal/repository/user_repository.go:35.44,37.4 1 0
 e1m0re/loyalty-srv/internal/repository/user_repository.go:38.3,38.18 1 0
 e1m0re/loyalty-srv/internal/repository/user_repository.go:41.2,41.18 1 0
 e1m0re/loyalty-srv/internal/repository/user_repository.go:44.116,48.9 4 0
-e1m0re/loyalty-srv/internal/repository/user_repository.go:49.37,50.44 1 0
+e1m0re/loyalty-srv/internal/repository/user_repository.go:49.37,50.42 1 0
 e1m0re/loyalty-srv/internal/repository/user_repository.go:51.18,52.18 1 0
 e1m0re/loyalty-srv/internal/repository/user_repository.go:53.10,54.9 1 0
 e1m0re/loyalty-srv/internal/repository/user_repository.go:58.108,63.2 3 0
@@ -307,8 +305,8 @@ e1m0re/loyalty-srv/internal/api/handler/addOrder.go:18.2,19.34 2 6
 e1m0re/loyalty-srv/internal/api/handler/addOrder.go:19.34,22.3 2 1
 e1m0re/loyalty-srv/internal/api/handler/addOrder.go:24.2,26.16 3 5
 e1m0re/loyalty-srv/internal/api/handler/addOrder.go:26.16,27.15 1 3
-e1m0re/loyalty-srv/internal/api/handler/addOrder.go:28.58,29.49 1 1
-e1m0re/loyalty-srv/internal/api/handler/addOrder.go:30.55,31.38 1 1
+e1m0re/loyalty-srv/internal/api/handler/addOrder.go:28.56,29.49 1 1
+e1m0re/loyalty-srv/internal/api/handler/addOrder.go:30.53,31.38 1 1
 e1m0re/loyalty-srv/internal/api/handler/addOrder.go:32.11,33.49 1 1
 e1m0re/loyalty-srv/internal/api/handler/addOrder.go:35.3,36.9 2 3
 e1m0re/loyalty-srv/internal/api/handler/addOrder.go:39.2,39.16 1 2
@@ -364,8 +362,8 @@ e1m0re/loyalty-srv/internal/api/handler/signup.go:20.16,24.3 3 1
 e1m0re/loyalty-srv/internal/api/handler/signup.go:26.2,26.56 1 5
 e1m0re/loyalty-srv/internal/api/handler/signup.go:26.56,29.3 2 1
 e1m0re/loyalty-srv/internal/api/handler/signup.go:31.2,32.16 2 4
-e1m0re/loyalty-srv/internal/api/handler/signup.go:32.16,33.47 1 2
-e1m0re/loyalty-srv/internal/api/handler/signup.go:33.47,36.4 2 1
+e1m0re/loyalty-srv/internal/api/handler/signup.go:32.16,33.45 1 2
+e1m0re/loyalty-srv/internal/api/handler/signup.go:33.45,36.4 2 1
 e1m0re/loyalty-srv/internal/api/handler/signup.go:38.3,39.9 2 1
 e1m0re/loyalty-srv/internal/api/handler/signup.go:42.2,43.16 2 2
 e1m0re/loyalty-srv/internal/api/handler/signup.go:43.16,46.3 2 1
@@ -383,8 +381,6 @@ e1m0re/loyalty-srv/internal/api/handler/writingOff.go:41.16,45.3 3 1
 e1m0re/loyalty-srv/internal/api/handler/writingOff.go:47.2,48.16 2 2
 e1m0re/loyalty-srv/internal/api/handler/writingOff.go:48.16,52.3 3 1
 e1m0re/loyalty-srv/internal/api/handler/writingOff.go:54.2,54.30 1 1
-e1m0re/loyalty-srv/internal/apperrors/errors.go:8.50,10.2 1 0
-e1m0re/loyalty-srv/internal/apperrors/errors.go:12.38,14.2 1 0
 e1m0re/loyalty-srv/internal/models/order.go:30.47,39.2 2 4
 e1m0re/loyalty-srv/internal/repository/order_repository.go:16.54,20.2 1 0
 e1m0re/loyalty-srv/internal/repository/order_repository.go:22.110,32.16 4 0
@@ -399,7 +395,7 @@ e1m0re/loyalty-srv/internal/repository/user_repository.go:35.44,37.4 1 0
 e1m0re/loyalty-srv/internal/repository/user_repository.go:38.3,38.18 1 0
 e1m0re/loyalty-srv/internal/repository/user_repository.go:41.2,41.18 1 0
 e1m0re/loyalty-srv/internal/repository/user_repository.go:44.116,48.9 4 0
-e1m0re/loyalty-srv/internal/repository/user_repository.go:49.37,50.44 1 0
+e1m0re/loyalty-srv/internal/repository/user_repository.go:49.37,50.42 1 0
 e1m0re/loyalty-srv/internal/repository/user_repository.go:51.18,52.18 1 0
 e1m0re/loyalty-srv/internal/repository/user_repository.go:53.10,54.9 1 0
 e1m0re/loyalty-srv/internal/repository/user_repository.go:58.108,63.2 3 0
@@ -587,8 +583,6 @@ e1m0re/loyalty-srv/internal/service/mocks/UsersService.go:130.2,130.15 1 0
 e1m0re/loyalty-srv/internal/service/mocks/UsersService.go:138.18,142.19 3 9
 e1m0re/loyalty-srv/internal/service/mocks/UsersService.go:142.19,142.49 1 9
 e1m0re/loyalty-srv/internal/service/mocks/UsersService.go:144.2,144.13 1 9
-e1m0re/loyalty-srv/internal/apperrors/errors.go:8.50,10.2 1 0
-e1m0re/loyalty-srv/internal/apperrors/errors.go:12.38,14.2 1 0
 e1m0re/loyalty-srv/internal/models/order.go:30.47,39.2 2 0
 e1m0re/loyalty-srv/internal/repository/order_repository.go:16.54,20.2 1 0
 e1m0re/loyalty-srv/internal/repository/order_repository.go:22.110,32.16 4 0
@@ -603,7 +597,7 @@ e1m0re/loyalty-srv/internal/repository/user_repository.go:35.44,37.4 1 0
 e1m0re/loyalty-srv/internal/repository/user_repository.go:38.3,38.18 1 0
 e1m0re/loyalty-srv/internal/repository/user_repository.go:41.2,41.18 1 0
 e1m0re/loyalty-srv/internal/repository/user_repository.go:44.116,48.9 4 0
-e1m0re/loyalty-srv/internal/repository/user_repository.go:49.37,50.44 1 0
+e1m0re/loyalty-srv/internal/repository/user_repository.go:49.37,50.42 1 0
 e1m0re/loyalty-srv/internal/repository/user_repository.go:51.18,52.18 1 0
 e1m0re/loyalty-srv/internal/repository/user_repository.go:53.10,54.9 1 0
 e1m0re/loyalty-srv/internal/repository/user_repository.go:58.108,63.2 3 0
@@ -701,7 +695,7 @@ e1m0re/loyalty-srv/internal/service/users_service.go:16.110,21.2 1 0
 e1m0re/loyalty-srv/internal/service/users_service.go:23.115,25.16 2 4
 e1m0re/loyalty-srv/internal/service/users_service.go:25.16,27.3 1 1
 e1m0re/loyalty-srv/internal/service/users_service.go:29.2,34.18 2 3
-e1m0re/loyalty-srv/internal/service/users_service.go:37.113,39.2 1 0
+e1m0re/loyalty-srv/internal/service/users_service.go:37.113,39.2 1 4
 e1m0re/loyalty-srv/internal/service/users_service.go:41.101,43.16 2 4
 e1m0re/loyalty-srv/internal/service/users_service.go:43.16,45.3 1 1
 e1m0re/loyalty-srv/internal/service/users_service.go:47.2,47.73 1 3

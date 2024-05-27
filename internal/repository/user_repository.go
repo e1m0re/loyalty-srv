@@ -33,7 +33,7 @@ func (repo *userRepository) CreateUser(ctx context.Context, userInfo models.User
 	err = repo.db.QueryRowxContext(ctx, query, userInfo.Username, userInfo.Password).Scan(&user.ID)
 	if err != nil {
 		if err.(*pgconn.PgError).Code == "23505" {
-			return nil, apperrors.BusyLoginError
+			return nil, apperrors.ErrBusyLogin
 		}
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func (repo *userRepository) GetUserByUsername(ctx context.Context, username stri
 	err = repo.db.GetContext(ctx, user, query, username)
 	switch {
 	case errors.Is(err, sql.ErrNoRows):
-		return nil, apperrors.EntityNotFoundError
+		return nil, apperrors.ErrEntityNotFound
 	case err != nil:
 		return nil, err
 	default:
@@ -55,7 +55,7 @@ func (repo *userRepository) GetUserByUsername(ctx context.Context, username stri
 	}
 }
 
-func (repo *userRepository) UpdateUsersLastLogin(ctx context.Context, id models.UserId, t time.Time) error {
+func (repo *userRepository) UpdateUsersLastLogin(ctx context.Context, id models.UserID, t time.Time) error {
 	query := "UPDATE users SET last_login = $1 WHERE id = $2"
 	_, err := repo.db.ExecContext(ctx, query, t, id)
 
