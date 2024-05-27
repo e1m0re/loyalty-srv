@@ -54,7 +54,7 @@ func TestHandler_GetWithdrawals(t *testing.T) {
 						Return(nil, errors.New("some error"))
 
 					return &service.Services{
-						Accounts: mockAccountsService,
+						AccountsService: mockAccountsService,
 					}
 				},
 			},
@@ -81,7 +81,7 @@ func TestHandler_GetWithdrawals(t *testing.T) {
 						Return(withdrawalsList, nil)
 
 					return &service.Services{
-						Accounts: mockAccountsService,
+						AccountsService: mockAccountsService,
 					}
 				},
 			},

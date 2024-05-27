@@ -120,8 +120,8 @@ func TestHandler_WritingOff(t *testing.T) {
 						Return(nil, fmt.Errorf("some error"))
 
 					return &service.Services{
-						OrdersService: mockOrdersService,
-						Accounts:      mockAccountsService,
+						OrdersService:   mockOrdersService,
+						AccountsService: mockAccountsService,
 					}
 				},
 			},
@@ -150,8 +150,8 @@ func TestHandler_WritingOff(t *testing.T) {
 						Return(nil, fmt.Errorf("some error"))
 
 					return &service.Services{
-						OrdersService: mockOrdersService,
-						Accounts:      mockAccountsService,
+						OrdersService:   mockOrdersService,
+						AccountsService: mockAccountsService,
 					}
 				},
 			},
@@ -180,8 +180,8 @@ func TestHandler_WritingOff(t *testing.T) {
 						Return(nil, nil)
 
 					return &service.Services{
-						OrdersService: mockOrdersService,
-						Accounts:      mockAccountsService,
+						OrdersService:   mockOrdersService,
+						AccountsService: mockAccountsService,
 					}
 				},
 			},

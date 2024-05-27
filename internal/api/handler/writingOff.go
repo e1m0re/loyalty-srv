@@ -37,14 +37,14 @@ func (h *Handler) WritingOff(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userID := models.UserID(1)
-	account, err := h.services.Accounts.GetAccountByUserID(r.Context(), userID)
+	account, err := h.services.AccountsService.GetAccountByUserID(r.Context(), userID)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}
 
-	_, err = h.services.Accounts.Withdraw(r.Context(), account.ID, requestData.Sum, requestData.Order)
+	_, err = h.services.AccountsService.Withdraw(r.Context(), account.ID, requestData.Sum, requestData.Order)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
