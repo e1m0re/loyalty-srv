@@ -44,41 +44,34 @@ func (_m *OrdersService) GetLoadedOrdersByUserID(ctx context.Context, userID mod
 	return r0, r1
 }
 
-// NewOrder provides a mock function with given fields: ctx, orderNum
-func (_m *OrdersService) NewOrder(ctx context.Context, orderNum models.OrderNum) (*models.Order, bool, error) {
-	ret := _m.Called(ctx, orderNum)
+// NewOrder provides a mock function with given fields: ctx, orderInfo
+func (_m *OrdersService) NewOrder(ctx context.Context, orderInfo models.OrderInfo) (*models.Order, error) {
+	ret := _m.Called(ctx, orderInfo)
 
 	if len(ret) == 0 {
 		panic("no return value specified for NewOrder")
 	}
 
 	var r0 *models.Order
-	var r1 bool
-	var r2 error
-	if rf, ok := ret.Get(0).(func(context.Context, models.OrderNum) (*models.Order, bool, error)); ok {
-		return rf(ctx, orderNum)
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, models.OrderInfo) (*models.Order, error)); ok {
+		return rf(ctx, orderInfo)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, models.OrderNum) *models.Order); ok {
-		r0 = rf(ctx, orderNum)
+	if rf, ok := ret.Get(0).(func(context.Context, models.OrderInfo) *models.Order); ok {
+		r0 = rf(ctx, orderInfo)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*models.Order)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, models.OrderNum) bool); ok {
-		r1 = rf(ctx, orderNum)
+	if rf, ok := ret.Get(1).(func(context.Context, models.OrderInfo) error); ok {
+		r1 = rf(ctx, orderInfo)
 	} else {
-		r1 = ret.Get(1).(bool)
+		r1 = ret.Error(1)
 	}
 
-	if rf, ok := ret.Get(2).(func(context.Context, models.OrderNum) error); ok {
-		r2 = rf(ctx, orderNum)
-	} else {
-		r2 = ret.Error(2)
-	}
-
-	return r0, r1, r2
+	return r0, r1
 }
 
 // UpdateOrder provides a mock function with given fields: ctx, id, status, accrual

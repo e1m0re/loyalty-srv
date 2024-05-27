@@ -3,10 +3,10 @@ package service
 import (
 	"context"
 	"fmt"
-	"github.com/stretchr/testify/mock"
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
 	"e1m0re/loyalty-srv/internal/apperrors"
@@ -15,7 +15,7 @@ import (
 	"e1m0re/loyalty-srv/internal/repository/mocks"
 )
 
-func Test_ordersService_ValidateNumber(t *testing.T) {
+func TestOrdersService_ValidateNumber(t *testing.T) {
 	type args struct {
 		ctx      context.Context
 		orderNum models.OrderNum
@@ -86,14 +86,13 @@ func Test_ordersService_ValidateNumber(t *testing.T) {
 	}
 }
 
-func Test_ordersService_NewOrder(t *testing.T) {
+func TestOrdersService_NewOrder(t *testing.T) {
 	type args struct {
-		ctx      context.Context
-		orderNum models.OrderNum
+		ctx       context.Context
+		orderInfo models.OrderInfo
 	}
 	type want struct {
-		order  models.Order
-		isNew  bool
+		order  *models.Order
 		errMsg string
 	}
 	tests := []struct {
@@ -105,36 +104,42 @@ func Test_ordersService_NewOrder(t *testing.T) {
 		{
 			name: "order added successfully",
 			mockRepositories: func() *repository.Repositories {
+				orderInfo := models.OrderInfo{
+					UserID:   1,
+					OrderNum: "12345678903",
+				}
 				mockOrderRepo := mocks.NewOrderRepository(t)
 				mockOrderRepo.
-					On("AddOrder", mock.Anything, models.OrderInfo{
-						UserID:   4,
-						OrderNum: "12345678903",
-					}).
+					On("GetOrderByNumber", mock.Anything, orderInfo.OrderNum).
+					Return(nil, nil).
+					On("AddOrder", mock.Anything, orderInfo).
 					Return(&models.Order{
 						ID:         1,
-						UserID:     4,
+						UserID:     1,
 						Number:     "12345678903",
 						Status:     models.OrderStatusNew,
 						UploadedAt: time.Date(1703, time.May, 27, 12, 0, 0, 0, time.UTC),
 					}, nil)
+
 				return &repository.Repositories{
 					OrderRepository: mockOrderRepo,
 				}
 			},
 			args: args{
-				ctx:      context.Background(),
-				orderNum: "12345678903",
+				ctx: context.Background(),
+				orderInfo: models.OrderInfo{
+					UserID:   1,
+					OrderNum: "12345678903",
+				},
 			},
 			want: want{
-				order: models.Order{
+				order: &models.Order{
 					ID:         1,
 					Number:     "12345678903",
 					UserID:     1,
 					Status:     models.OrderStatusNew,
 					UploadedAt: time.Date(1703, time.May, 27, 12, 0, 0, 0, time.UTC),
 				},
-				isNew:  true,
 				errMsg: "",
 			},
 		},
@@ -145,10 +150,8 @@ func Test_ordersService_NewOrder(t *testing.T) {
 			os := ordersService{
 				orderRepository: repo.OrderRepository,
 			}
-			gotOrder, gotIsNew, gotErr := os.NewOrder(test.args.ctx, test.args.orderNum)
-			require.Equal(t, test.want.order.ID, gotOrder.ID)
-			require.Equal(t, test.want.order.Number, gotOrder.Number)
-			require.Equal(t, test.want.isNew, gotIsNew)
+			gotOrder, gotErr := os.NewOrder(test.args.ctx, test.args.orderInfo)
+			require.Equal(t, test.want.order, gotOrder)
 			if len(test.want.errMsg) > 0 {
 				require.EqualError(t, gotErr, test.want.errMsg)
 			}
@@ -156,7 +159,7 @@ func Test_ordersService_NewOrder(t *testing.T) {
 	}
 }
 
-func Test_ordersService_GetLoadedOrdersByUserID(t *testing.T) {
+func TestOrdersService_GetLoadedOrdersByUserID(t *testing.T) {
 	accrual := 500
 	type args struct {
 		ctx    context.Context

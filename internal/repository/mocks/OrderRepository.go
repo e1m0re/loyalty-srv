@@ -74,6 +74,36 @@ func (_m *OrderRepository) GetLoadedOrdersByUserID(ctx context.Context, userID m
 	return r0, r1
 }
 
+// GetOrderByNumber provides a mock function with given fields: ctx, num
+func (_m *OrderRepository) GetOrderByNumber(ctx context.Context, num models.OrderNum) (*models.Order, error) {
+	ret := _m.Called(ctx, num)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetOrderByNumber")
+	}
+
+	var r0 *models.Order
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, models.OrderNum) (*models.Order, error)); ok {
+		return rf(ctx, num)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, models.OrderNum) *models.Order); ok {
+		r0 = rf(ctx, num)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.Order)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, models.OrderNum) error); ok {
+		r1 = rf(ctx, num)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // NewOrderRepository creates a new instance of OrderRepository. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewOrderRepository(t interface {

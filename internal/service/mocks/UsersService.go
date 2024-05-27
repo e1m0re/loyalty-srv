@@ -75,22 +75,22 @@ func (_m *UsersService) FindUserByUsername(ctx context.Context, username string)
 }
 
 // SignIn provides a mock function with given fields: ctx, userInfo
-func (_m *UsersService) SignIn(ctx context.Context, userInfo *models.UserInfo) (bool, error) {
+func (_m *UsersService) SignIn(ctx context.Context, userInfo *models.UserInfo) (string, error) {
 	ret := _m.Called(ctx, userInfo)
 
 	if len(ret) == 0 {
 		panic("no return value specified for SignIn")
 	}
 
-	var r0 bool
+	var r0 string
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, *models.UserInfo) (bool, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, *models.UserInfo) (string, error)); ok {
 		return rf(ctx, userInfo)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, *models.UserInfo) bool); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, *models.UserInfo) string); ok {
 		r0 = rf(ctx, userInfo)
 	} else {
-		r0 = ret.Get(0).(bool)
+		r0 = ret.Get(0).(string)
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, *models.UserInfo) error); ok {
