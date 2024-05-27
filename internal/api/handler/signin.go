@@ -10,8 +10,8 @@ import (
 )
 
 func (h *Handler) SignIn(w http.ResponseWriter, r *http.Request) {
-	userInfo := &models.UserInfo{}
-	err := json.NewDecoder(r.Body).Decode(userInfo)
+	userInfo := models.UserInfo{}
+	err := json.NewDecoder(r.Body).Decode(&userInfo)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return

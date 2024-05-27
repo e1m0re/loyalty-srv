@@ -15,8 +15,8 @@ func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userInfo := &models.UserInfo{}
-	err := json.NewDecoder(r.Body).Decode(userInfo)
+	userInfo := models.UserInfo{}
+	err := json.NewDecoder(r.Body).Decode(&userInfo)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))

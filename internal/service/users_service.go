@@ -20,7 +20,7 @@ func NewUsersService(userRepository repository.UserRepository, securityService S
 	}
 }
 
-func (us *usersService) CreateUser(ctx context.Context, userInfo *models.UserInfo) (user *models.User, err error) {
+func (us *usersService) CreateUser(ctx context.Context, userInfo models.UserInfo) (user *models.User, err error) {
 	passwordHash, err := us.securityService.GetPasswordHash(userInfo.Password)
 	if err != nil {
 		return nil, err
@@ -38,7 +38,7 @@ func (us *usersService) FindUserByUsername(ctx context.Context, username string)
 	return us.userRepository.GetUserByUsername(ctx, username)
 }
 
-func (us *usersService) SignIn(ctx context.Context, userInfo *models.UserInfo) (token string, err error) {
+func (us *usersService) SignIn(ctx context.Context, userInfo models.UserInfo) (token string, err error) {
 	user, err := us.FindUserByUsername(ctx, userInfo.Username)
 	if err != nil {
 		return "", err
@@ -54,8 +54,4 @@ func (us *usersService) SignIn(ctx context.Context, userInfo *models.UserInfo) (
 	}
 
 	return us.securityService.GenerateToken(user)
-}
-
-func (us *usersService) Verify(ctx context.Context, userInfo *models.UserInfo) (ok bool, err error) {
-	return true, nil
 }
