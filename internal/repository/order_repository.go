@@ -2,6 +2,8 @@ package repository
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -36,9 +38,26 @@ func (repo orderRepository) AddOrder(ctx context.Context, orderInfo models.Order
 	return order, nil
 }
 
+func (repo orderRepository) GetOrderByNumber(ctx context.Context, num models.OrderNum) (*models.Order, error) {
+	order := models.Order{}
+	err := repo.db.GetContext(ctx, &order, "SELECT * FROM orders WHERE number = $1", num)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+
+		return nil, err
+	}
+
+	return &order, nil
+}
+
 func (repo orderRepository) GetLoadedOrdersByUserID(ctx context.Context, userID models.UserID) (*models.OrdersList, error) {
 	orders := models.OrdersList{}
 	err := repo.db.SelectContext(ctx, &orders, "SELECT * FROM orders WHERE \"user\" = $1", userID)
+	if err != nil {
+		return nil, err
+	}
 
-	return &orders, err
+	return &orders, nil
 }

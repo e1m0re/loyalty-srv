@@ -50,24 +50,31 @@ func (os ordersService) ValidateNumber(ctx context.Context, orderNum models.Orde
 	return ok, nil
 }
 
-func (os ordersService) NewOrder(ctx context.Context, orderNum models.OrderNum) (order *models.Order, isNew bool, err error) {
-	ok, err := os.ValidateNumber(ctx, orderNum)
+func (os ordersService) NewOrder(ctx context.Context, orderInfo models.OrderInfo) (*models.Order, error) {
+	ok, err := os.ValidateNumber(ctx, orderInfo.OrderNum)
 	if !ok {
-		return nil, false, err
+		return nil, err
 	}
 
-	orderInfo := models.OrderInfo{
-		UserID:   4, // todo get user
-		OrderNum: orderNum,
+	order, err := os.orderRepository.GetOrderByNumber(ctx, orderInfo.OrderNum)
+	if err != nil {
+		return nil, err
 	}
 
-	// todo bad cases
+	if order != nil {
+		if order.UserID != orderInfo.UserID {
+			return nil, apperrors.ErrOtherUsersOrder
+		}
+
+		return nil, apperrors.ErrOrderIsLoaded
+	}
+
 	order, err = os.orderRepository.AddOrder(ctx, orderInfo)
 	if err != nil {
-		return nil, false, err
+		return nil, err
 	}
 
-	return order, true, nil
+	return order, nil
 }
 
 func (os ordersService) GetLoadedOrdersByUserID(ctx context.Context, userID models.UserID) (*models.OrdersList, error) {

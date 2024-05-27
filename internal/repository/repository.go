@@ -18,6 +18,7 @@ type UserRepository interface {
 
 //go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=OrderRepository
 type OrderRepository interface {
+	GetOrderByNumber(ctx context.Context, num models.OrderNum) (*models.Order, error)
 	AddOrder(ctx context.Context, orderInfo models.OrderInfo) (*models.Order, error)
 	GetLoadedOrdersByUserID(ctx context.Context, userID models.UserID) (*models.OrdersList, error)
 }
