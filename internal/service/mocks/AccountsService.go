@@ -44,9 +44,9 @@ func (_m *AccountsService) CreateAccount(ctx context.Context, id models.UserID) 
 	return r0, r1
 }
 
-// GetAccountByUserID provides a mock function with given fields: ctx, id
-func (_m *AccountsService) GetAccountByUserID(ctx context.Context, id models.UserID) (*models.Account, error) {
-	ret := _m.Called(ctx, id)
+// GetAccountByUserID provides a mock function with given fields: ctx, userID
+func (_m *AccountsService) GetAccountByUserID(ctx context.Context, userID models.UserID) (*models.Account, error) {
+	ret := _m.Called(ctx, userID)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetAccountByUserID")
@@ -55,10 +55,10 @@ func (_m *AccountsService) GetAccountByUserID(ctx context.Context, id models.Use
 	var r0 *models.Account
 	var r1 error
 	if rf, ok := ret.Get(0).(func(context.Context, models.UserID) (*models.Account, error)); ok {
-		return rf(ctx, id)
+		return rf(ctx, userID)
 	}
 	if rf, ok := ret.Get(0).(func(context.Context, models.UserID) *models.Account); ok {
-		r0 = rf(ctx, id)
+		r0 = rf(ctx, userID)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*models.Account)
@@ -66,7 +66,7 @@ func (_m *AccountsService) GetAccountByUserID(ctx context.Context, id models.Use
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, models.UserID) error); ok {
-		r1 = rf(ctx, id)
+		r1 = rf(ctx, userID)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -74,29 +74,29 @@ func (_m *AccountsService) GetAccountByUserID(ctx context.Context, id models.Use
 	return r0, r1
 }
 
-// GetAccountInfoByUserID provides a mock function with given fields: ctx, id
-func (_m *AccountsService) GetAccountInfoByUserID(ctx context.Context, id models.UserID) (*models.AccountInfo, error) {
-	ret := _m.Called(ctx, id)
+// GetAccountInfo provides a mock function with given fields: ctx, account
+func (_m *AccountsService) GetAccountInfo(ctx context.Context, account *models.Account) (*models.AccountInfo, error) {
+	ret := _m.Called(ctx, account)
 
 	if len(ret) == 0 {
-		panic("no return value specified for GetAccountInfoByUserID")
+		panic("no return value specified for GetAccountInfo")
 	}
 
 	var r0 *models.AccountInfo
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, models.UserID) (*models.AccountInfo, error)); ok {
-		return rf(ctx, id)
+	if rf, ok := ret.Get(0).(func(context.Context, *models.Account) (*models.AccountInfo, error)); ok {
+		return rf(ctx, account)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, models.UserID) *models.AccountInfo); ok {
-		r0 = rf(ctx, id)
+	if rf, ok := ret.Get(0).(func(context.Context, *models.Account) *models.AccountInfo); ok {
+		r0 = rf(ctx, account)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*models.AccountInfo)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, models.UserID) error); ok {
-		r1 = rf(ctx, id)
+	if rf, ok := ret.Get(1).(func(context.Context, *models.Account) error); ok {
+		r1 = rf(ctx, account)
 	} else {
 		r1 = ret.Error(1)
 	}

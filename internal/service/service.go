@@ -11,8 +11,8 @@ import (
 
 //go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=AccountsService
 type AccountsService interface {
-	GetAccountByUserID(ctx context.Context, id models.UserID) (*models.Account, error)
-	GetAccountInfoByUserID(ctx context.Context, id models.UserID) (*models.AccountInfo, error)
+	GetAccountByUserID(ctx context.Context, userID models.UserID) (*models.Account, error)
+	GetAccountInfo(ctx context.Context, account *models.Account) (*models.AccountInfo, error)
 	GetWithdrawals(ctx context.Context, id models.UserID) (*models.WithdrawalsList, error)
 	CreateAccount(ctx context.Context, id models.UserID) (*models.Account, error)
 	UpdateBalance(ctx context.Context, id models.AccountID, amount int) (*models.Account, error)

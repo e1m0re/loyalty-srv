@@ -158,7 +158,7 @@ func TestHandler_SignUp(t *testing.T) {
 				mockAccountService := mockservice.NewAccountsService(t)
 				mockAccountService.
 					On("CreateAccount", mock.Anything, mock.AnythingOfType("models.UserID")).
-					Return(nil, fmt.Errorf("some repo error"))
+					Return(nil, fmt.Errorf("some repos error"))
 
 				mockSecurityService := mockservice.NewSecurityService(t)
 				mockSecurityService.

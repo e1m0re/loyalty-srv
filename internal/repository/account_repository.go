@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"math"
 
 	"github.com/jmoiron/sqlx"
 
@@ -30,4 +31,25 @@ func (repo *accountRepository) AddAccount(ctx context.Context, userID models.Use
 	}
 
 	return account, nil
+}
+
+func (repo *accountRepository) GetAccountByUserID(ctx context.Context, userID models.UserID) (*models.Account, error) {
+	account := &models.Account{}
+	err := repo.db.GetContext(ctx, account, "SELECT * FROM accounts WHERE \"user\" = $1", userID)
+	if err != nil {
+		return nil, err
+	}
+
+	return account, err
+}
+
+func (repo *accountRepository) GetWithdrawnTotalSum(ctx context.Context, accountID models.AccountID) (int, error) {
+	var sum float64
+	query := "SELECT sum(delta) FROM accounts_changes WHERE account = $1 AND delta::numeric < 0"
+	err := repo.db.QueryRowContext(ctx, query, accountID).Scan(&sum)
+	if err != nil {
+		return 0, err
+	}
+
+	return int(math.Abs(sum)), nil
 }

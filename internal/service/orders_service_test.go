@@ -125,7 +125,7 @@ func TestOrdersService_NewOrder(t *testing.T) {
 				mockOrderRepo := mocks.NewOrderRepository(t)
 				mockOrderRepo.
 					On("GetOrderByNumber", mock.Anything, mock.AnythingOfType("models.OrderNum")).
-					Return(nil, fmt.Errorf("some repo error"))
+					Return(nil, fmt.Errorf("some repos error"))
 
 				return &repository.Repositories{
 					OrderRepository: mockOrderRepo,
@@ -140,7 +140,7 @@ func TestOrdersService_NewOrder(t *testing.T) {
 			},
 			want: want{
 				order:  nil,
-				errMsg: "some repo error",
+				errMsg: "some repos error",
 			},
 		},
 		{
@@ -199,7 +199,7 @@ func TestOrdersService_NewOrder(t *testing.T) {
 					On("GetOrderByNumber", mock.Anything, mock.AnythingOfType("models.OrderNum")).
 					Return(nil, nil).
 					On("AddOrder", mock.Anything, mock.AnythingOfType("models.OrderInfo")).
-					Return(nil, fmt.Errorf("some repo error"))
+					Return(nil, fmt.Errorf("some repos error"))
 
 				return &repository.Repositories{
 					OrderRepository: mockOrderRepo,
@@ -214,7 +214,7 @@ func TestOrdersService_NewOrder(t *testing.T) {
 			},
 			want: want{
 				order:  nil,
-				errMsg: "some repo error",
+				errMsg: "some repos error",
 			},
 		},
 		{
@@ -297,7 +297,7 @@ func TestOrdersService_GetLoadedOrdersByUserID(t *testing.T) {
 				mockOrderRepo := mocks.NewOrderRepository(t)
 				mockOrderRepo.
 					On("GetLoadedOrdersByUserID", mock.Anything, models.UserID(1)).
-					Return(&models.OrdersList{}, fmt.Errorf("some repo error"))
+					Return(&models.OrdersList{}, fmt.Errorf("some repos error"))
 				return &repository.Repositories{
 					OrderRepository: mockOrderRepo,
 				}
@@ -308,7 +308,7 @@ func TestOrdersService_GetLoadedOrdersByUserID(t *testing.T) {
 			},
 			want: want{
 				ordersList: models.OrdersList{},
-				errMsg:     "some repo error",
+				errMsg:     "some repos error",
 			},
 		},
 		{
