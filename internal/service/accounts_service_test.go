@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
+	"e1m0re/loyalty-srv/internal/apperrors"
 	"e1m0re/loyalty-srv/internal/models"
 	"e1m0re/loyalty-srv/internal/repository"
 	"e1m0re/loyalty-srv/internal/repository/mocks"
@@ -330,6 +331,139 @@ func Test_accountsService_GetWithdrawals(t *testing.T) {
 			}
 			gotWithdrawalsList, gotErr := as.GetWithdrawals(test.args.ctx, test.args.account)
 			require.Equal(t, &test.want.withdrawalsList, &gotWithdrawalsList)
+			if len(test.want.errMsg) > 0 {
+				require.EqualError(t, gotErr, test.want.errMsg)
+			}
+		})
+	}
+}
+
+func Test_accountsService_Withdraw(t *testing.T) {
+	type args struct {
+		ctx      context.Context
+		account  models.Account
+		amount   float64
+		orderNum models.OrderNum
+	}
+	type want struct {
+		account *models.Account
+		errMsg  string
+	}
+	tests := []struct {
+		name             string
+		mockRepositories func() *repository.Repositories
+		args             args
+		want             want
+	}{
+		{
+			name: "ErrAccountHasNotEnoughFunds",
+			mockRepositories: func() *repository.Repositories {
+
+				return &repository.Repositories{}
+			},
+			args: args{
+				ctx: context.Background(),
+				account: models.Account{
+					Balance: 10,
+				},
+				amount:   100,
+				orderNum: "123",
+			},
+			want: want{
+				account: nil,
+				errMsg:  apperrors.ErrAccountHasNotEnoughFunds.Error(),
+			},
+		},
+		{
+			name: "AddAccountChange failed",
+			mockRepositories: func() *repository.Repositories {
+				mockAccountRepository := mocks.NewAccountRepository(t)
+				mockAccountRepository.
+					On("AddAccountChange", mock.Anything, mock.AnythingOfType("models.AccountID"), mock.AnythingOfType("float64"), mock.Anything).
+					Return(nil, fmt.Errorf("some repos error"))
+
+				return &repository.Repositories{
+					AccountRepository: mockAccountRepository,
+				}
+			},
+			args: args{
+				ctx: context.Background(),
+				account: models.Account{
+					Balance: 1000,
+				},
+				amount:   100,
+				orderNum: "123",
+			},
+			want: want{
+				account: nil,
+				errMsg:  "some repos error",
+			},
+		},
+		{
+			name: "UpdateAccount failed",
+			mockRepositories: func() *repository.Repositories {
+				mockAccountRepository := mocks.NewAccountRepository(t)
+				mockAccountRepository.
+					On("AddAccountChange", mock.Anything, mock.AnythingOfType("models.AccountID"), mock.AnythingOfType("float64"), mock.Anything).
+					Return(nil, nil).
+					On("UpdateAccount", mock.Anything, &models.Account{ID: 0, UserID: 0, Balance: 900}).
+					Return(fmt.Errorf("some repos error"))
+
+				return &repository.Repositories{
+					AccountRepository: mockAccountRepository,
+				}
+			},
+			args: args{
+				ctx: context.Background(),
+				account: models.Account{
+					Balance: 1000,
+				},
+				amount:   100,
+				orderNum: "123",
+			},
+			want: want{
+				account: nil,
+				errMsg:  "some repos error",
+			},
+		},
+		{
+			name: "Successfully case",
+			mockRepositories: func() *repository.Repositories {
+				mockAccountRepository := mocks.NewAccountRepository(t)
+				mockAccountRepository.
+					On("AddAccountChange", mock.Anything, mock.AnythingOfType("models.AccountID"), mock.AnythingOfType("float64"), mock.Anything).
+					Return(nil, nil).
+					On("UpdateAccount", mock.Anything, &models.Account{ID: 0, UserID: 0, Balance: 900}).
+					Return(nil)
+
+				return &repository.Repositories{
+					AccountRepository: mockAccountRepository,
+				}
+			},
+			args: args{
+				ctx: context.Background(),
+				account: models.Account{
+					Balance: 1000,
+				},
+				amount:   100,
+				orderNum: "123",
+			},
+			want: want{
+				account: &models.Account{
+					Balance: 900,
+				},
+				errMsg: "",
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			repo := test.mockRepositories()
+			as := accountsService{
+				accountRepository: repo.AccountRepository,
+			}
+			gotAccount, gotErr := as.Withdraw(test.args.ctx, test.args.account, test.args.amount, test.args.orderNum)
+			require.Equal(t, &test.want.account, &gotAccount)
 			if len(test.want.errMsg) > 0 {
 				require.EqualError(t, gotErr, test.want.errMsg)
 			}

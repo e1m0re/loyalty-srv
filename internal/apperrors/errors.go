@@ -13,4 +13,6 @@ var (
 	ErrEmptyOrderNumber            = errors.New("empty order number")
 	ErrOrderWasLoaded              = errors.New("order with this number was loaded")
 	ErrOrderWasLoadedByAnotherUser = errors.New("order with this number was loaded by another user")
+
+	ErrAccountHasNotEnoughFunds = errors.New("there are insufficient funds in the account")
 )

@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 
+	"e1m0re/loyalty-srv/internal/apperrors"
 	"e1m0re/loyalty-srv/internal/models"
 	"e1m0re/loyalty-srv/internal/repository"
 )
@@ -37,8 +38,23 @@ func (as accountsService) CreateAccount(ctx context.Context, id models.UserID) (
 	return as.accountRepository.AddAccount(ctx, id)
 }
 
-func (as accountsService) Withdraw(ctx context.Context, id models.AccountID, amount int, orderNum models.OrderNum) (*models.Account, error) {
-	return &models.Account{}, nil
+func (as accountsService) Withdraw(ctx context.Context, account models.Account, amount float64, orderNum models.OrderNum) (*models.Account, error) {
+	if account.Balance < amount {
+		return nil, apperrors.ErrAccountHasNotEnoughFunds
+	}
+
+	_, err := as.accountRepository.AddAccountChange(ctx, account.ID, amount, orderNum)
+	if err != nil {
+		return nil, err
+	}
+
+	account.Balance = account.Balance - amount
+	err = as.accountRepository.UpdateAccount(ctx, &account)
+	if err != nil {
+		return nil, err
+	}
+
+	return &account, nil
 }
 
 func (as accountsService) GetWithdrawals(ctx context.Context, account *models.Account) (*models.WithdrawalsList, error) {

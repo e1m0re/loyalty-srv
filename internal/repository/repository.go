@@ -12,9 +12,11 @@ import (
 //go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=AccountRepository
 type AccountRepository interface {
 	AddAccount(ctx context.Context, userID models.UserID) (*models.Account, error)
+	AddAccountChange(ctx context.Context, accountID models.AccountID, amount float64, orderNum models.OrderNum) (*models.AccountChanges, error)
 	GetAccountByUserID(ctx context.Context, userID models.UserID) (*models.Account, error)
 	GetWithdrawalsList(ctx context.Context, accountID models.AccountID) (*models.WithdrawalsList, error)
 	GetWithdrawnTotalSum(ctx context.Context, accountID models.AccountID) (int, error)
+	UpdateAccount(ctx context.Context, account *models.Account) error
 }
 
 //go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=OrderRepository

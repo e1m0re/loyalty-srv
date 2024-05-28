@@ -12,6 +12,7 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
+	"e1m0re/loyalty-srv/internal/apperrors"
 	"e1m0re/loyalty-srv/internal/models"
 	"e1m0re/loyalty-srv/internal/service"
 	mockservice "e1m0re/loyalty-srv/internal/service/mocks"
@@ -222,7 +223,7 @@ func TestHandler_WritingOff(t *testing.T) {
 				mockAccountsService.
 					On("GetAccountByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
 					Return(&models.Account{}, nil).
-					On("Withdraw", mock.Anything, mock.AnythingOfType("models.AccountID"), mock.AnythingOfType("int"), mock.AnythingOfType("models.OrderNum")).
+					On("Withdraw", mock.Anything, models.Account{}, mock.AnythingOfType("float64"), mock.AnythingOfType("models.OrderNum")).
 					Return(nil, fmt.Errorf("some error"))
 
 				return &service.Services{
@@ -244,6 +245,45 @@ func TestHandler_WritingOff(t *testing.T) {
 			},
 		},
 		{
+			name:   "402",
+			method: http.MethodPost,
+			mockServices: func() *service.Services {
+				mockSecurityService := mockservice.NewSecurityService(t)
+				mockSecurityService.
+					On("GenerateAuthToken").
+					Return(jwtAuth)
+
+				mockOrdersService := mockservice.NewOrdersService(t)
+				mockOrdersService.
+					On("ValidateNumber", mock.Anything, mock.AnythingOfType("models.OrderNum")).
+					Return(true, nil)
+
+				mockAccountsService := mockservice.NewAccountsService(t)
+				mockAccountsService.
+					On("GetAccountByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
+					Return(&models.Account{}, nil).
+					On("Withdraw", mock.Anything, models.Account{}, mock.AnythingOfType("float64"), mock.AnythingOfType("models.OrderNum")).
+					Return(nil, apperrors.ErrAccountHasNotEnoughFunds)
+
+				return &service.Services{
+					AccountsService: mockAccountsService,
+					OrdersService:   mockOrdersService,
+					SecurityService: mockSecurityService,
+				}
+			},
+			args: args{
+				ctx: context.WithValue(context.Background(), models.CKUserID, 1),
+				headers: map[string]string{
+					"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwidXNlcm5hbWUiOiJ1c2VyMiJ9.vY8OSC5qvDO-rLLnTUBGevkjIUm2oAjBuSsV75LO1Yw",
+				},
+				inputBody: "{\"order\":\"2377225624\",\"sum\":751}",
+			},
+			want: want{
+				expectedStatusCode:   http.StatusPaymentRequired,
+				expectedResponseBody: "",
+			},
+		},
+		{
 			name:   "200",
 			method: http.MethodPost,
 			mockServices: func() *service.Services {
@@ -261,7 +301,7 @@ func TestHandler_WritingOff(t *testing.T) {
 				mockAccountsService.
 					On("GetAccountByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
 					Return(&models.Account{}, nil).
-					On("Withdraw", mock.Anything, mock.AnythingOfType("models.AccountID"), mock.AnythingOfType("int"), mock.AnythingOfType("models.OrderNum")).
+					On("Withdraw", mock.Anything, models.Account{}, mock.AnythingOfType("float64"), mock.AnythingOfType("models.OrderNum")).
 					Return(nil, nil)
 
 				return &service.Services{

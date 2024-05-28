@@ -4,6 +4,7 @@ import (
 	"context"
 	"log/slog"
 	"math"
+	"time"
 
 	"github.com/jmoiron/sqlx"
 
@@ -21,17 +22,33 @@ func NewAccountRepository(db *sqlx.DB) AccountRepository {
 }
 
 func (repo *accountRepository) AddAccount(ctx context.Context, userID models.UserID) (*models.Account, error) {
-	account := &models.Account{
+	a := &models.Account{
 		UserID:  userID,
 		Balance: 0,
 	}
 	query := "INSERT INTO accounts (\"user\", current_value) VALUES ($1, $2) RETURNING id"
-	err := repo.db.QueryRowContext(ctx, query, account.UserID, account.Balance).Scan(&account.ID)
+	err := repo.db.QueryRowContext(ctx, query, a.UserID, a.Balance).Scan(&a.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	return account, nil
+	return a, nil
+}
+
+func (repo *accountRepository) AddAccountChange(ctx context.Context, accountID models.AccountID, amount float64, orderNum models.OrderNum) (*models.AccountChanges, error) {
+	ac := &models.AccountChanges{
+		AccountID: accountID,
+		OrderNum:  orderNum,
+		Amount:    amount,
+		TS:        time.Now(),
+	}
+	query := "INSERT INTO accounts_changes (account, amount, ts, \"order\") VALUES ($1, $2, $3, $4) RETURNING id"
+	err := repo.db.QueryRowContext(ctx, query, ac.AccountID, ac.Amount, ac.TS, ac.OrderNum).Scan(&ac.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	return ac, err
 }
 
 func (repo *accountRepository) GetAccountByUserID(ctx context.Context, userID models.UserID) (*models.Account, error) {
@@ -63,6 +80,10 @@ func (repo *accountRepository) GetWithdrawalsList(ctx context.Context, accountID
 		withdrawals = append(withdrawals, w)
 	}
 
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
 	return &withdrawals, nil
 }
 
@@ -75,4 +96,11 @@ func (repo *accountRepository) GetWithdrawnTotalSum(ctx context.Context, account
 	}
 
 	return int(math.Abs(sum)), nil
+}
+
+func (repo *accountRepository) UpdateAccount(ctx context.Context, account *models.Account) error {
+	query := "UPDATE accounts SET balance=$1 WHERE id = $1"
+	_, err := repo.db.ExecContext(ctx, query, account.Balance, account.ID)
+
+	return err
 }

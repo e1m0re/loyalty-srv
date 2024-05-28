@@ -44,6 +44,36 @@ func (_m *AccountRepository) AddAccount(ctx context.Context, userID models.UserI
 	return r0, r1
 }
 
+// AddAccountChange provides a mock function with given fields: ctx, accountID, sum, orderNum
+func (_m *AccountRepository) AddAccountChange(ctx context.Context, accountID models.AccountID, sum float64, orderNum models.OrderNum) (*models.AccountChanges, error) {
+	ret := _m.Called(ctx, accountID, sum, orderNum)
+
+	if len(ret) == 0 {
+		panic("no return value specified for AddAccountChange")
+	}
+
+	var r0 *models.AccountChanges
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, models.AccountID, float64, models.OrderNum) (*models.AccountChanges, error)); ok {
+		return rf(ctx, accountID, sum, orderNum)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, models.AccountID, float64, models.OrderNum) *models.AccountChanges); ok {
+		r0 = rf(ctx, accountID, sum, orderNum)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.AccountChanges)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, models.AccountID, float64, models.OrderNum) error); ok {
+		r1 = rf(ctx, accountID, sum, orderNum)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetAccountByUserID provides a mock function with given fields: ctx, userID
 func (_m *AccountRepository) GetAccountByUserID(ctx context.Context, userID models.UserID) (*models.Account, error) {
 	ret := _m.Called(ctx, userID)
@@ -130,6 +160,24 @@ func (_m *AccountRepository) GetWithdrawnTotalSum(ctx context.Context, accountID
 	}
 
 	return r0, r1
+}
+
+// UpdateAccount provides a mock function with given fields: ctx, account
+func (_m *AccountRepository) UpdateAccount(ctx context.Context, account *models.Account) error {
+	ret := _m.Called(ctx, account)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateAccount")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, *models.Account) error); ok {
+		r0 = rf(ctx, account)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
 }
 
 // NewAccountRepository creates a new instance of AccountRepository. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.

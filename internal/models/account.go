@@ -10,6 +10,14 @@ type Account struct {
 	Balance float64   `json:"balance,omitempty" db:"balance"`
 }
 
+type AccountChanges struct {
+	ID        int
+	AccountID AccountID
+	OrderNum  OrderNum
+	Amount    float64
+	TS        time.Time
+}
+
 type Withdrawal struct {
 	OrderNum    OrderNum  `json:"order"`
 	Sum         float64   `json:"sum"`

@@ -2,14 +2,16 @@ package handler
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 
+	"e1m0re/loyalty-srv/internal/apperrors"
 	"e1m0re/loyalty-srv/internal/models"
 )
 
 type writingOffRequest struct {
 	Order models.OrderNum `json:"order"`
-	Sum   int             `json:"sum"`
+	Sum   float64         `json:"sum"`
 }
 
 func (h *Handler) WritingOff(w http.ResponseWriter, r *http.Request) {
@@ -43,8 +45,13 @@ func (h *Handler) WritingOff(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = h.services.AccountsService.Withdraw(r.Context(), account.ID, requestData.Sum, requestData.Order)
+	_, err = h.services.AccountsService.Withdraw(r.Context(), *account, requestData.Sum, requestData.Order)
 	if err != nil {
+		if errors.Is(err, apperrors.ErrAccountHasNotEnoughFunds) {
+			w.WriteHeader(http.StatusPaymentRequired)
+			return
+		}
+
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
