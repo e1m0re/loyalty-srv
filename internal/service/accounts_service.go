@@ -2,15 +2,19 @@ package service
 
 import (
 	"context"
+	"e1m0re/loyalty-srv/internal/repository"
 
 	"e1m0re/loyalty-srv/internal/models"
 )
 
 type accountsService struct {
+	accountRepository repository.AccountRepository
 }
 
-func NewAccountsService() AccountsService {
-	return &accountsService{}
+func NewAccountsService(accountRepository repository.AccountRepository) AccountsService {
+	return &accountsService{
+		accountRepository: accountRepository,
+	}
 }
 
 func (as accountsService) GetAccountByUserID(ctx context.Context, id models.UserID) (*models.Account, error) {
@@ -19,6 +23,10 @@ func (as accountsService) GetAccountByUserID(ctx context.Context, id models.User
 
 func (as accountsService) GetAccountInfoByUserID(ctx context.Context, id models.UserID) (*models.AccountInfo, error) {
 	return &models.AccountInfo{}, nil
+}
+
+func (as accountsService) CreateAccount(ctx context.Context, id models.UserID) (*models.Account, error) {
+	return as.accountRepository.AddAccount(ctx, id)
 }
 
 func (as accountsService) Withdraw(ctx context.Context, id models.AccountID, amount int, orderNum models.OrderNum) (*models.Account, error) {

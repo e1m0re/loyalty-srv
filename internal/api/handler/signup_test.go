@@ -3,6 +3,7 @@ package handler
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -151,9 +152,14 @@ func TestHandler_SignUp(t *testing.T) {
 			},
 		},
 		{
-			name:   "500 — SignIn failed",
+			name:   "500 — CreateAccount failed",
 			method: http.MethodPost,
 			mockServices: func() *service.Services {
+				mockAccountService := mockservice.NewAccountsService(t)
+				mockAccountService.
+					On("CreateAccount", mock.Anything, mock.AnythingOfType("models.UserID")).
+					Return(nil, fmt.Errorf("some repo error"))
+
 				mockSecurityService := mockservice.NewSecurityService(t)
 				mockSecurityService.
 					On("GenerateAuthToken").
@@ -162,11 +168,45 @@ func TestHandler_SignUp(t *testing.T) {
 				mockUsersService := mockservice.NewUsersService(t)
 				mockUsersService.
 					On("CreateUser", mock.Anything, mock.AnythingOfType("models.UserInfo")).
-					Return(nil, nil).
+					Return(&models.User{}, nil)
+
+				return &service.Services{
+					AccountsService: mockAccountService,
+					SecurityService: mockSecurityService,
+					UsersService:    mockUsersService,
+				}
+			},
+			args: args{
+				inputBody: `{"login":"test","password":"password"}`,
+			},
+			want: want{
+				expectedStatusCode:   http.StatusInternalServerError,
+				expectedResponseBody: "",
+			},
+		},
+		{
+			name:   "500 — SignIn failed",
+			method: http.MethodPost,
+			mockServices: func() *service.Services {
+				mockAccountService := mockservice.NewAccountsService(t)
+				mockAccountService.
+					On("CreateAccount", mock.Anything, mock.AnythingOfType("models.UserID")).
+					Return(nil, nil)
+
+				mockSecurityService := mockservice.NewSecurityService(t)
+				mockSecurityService.
+					On("GenerateAuthToken").
+					Return(jwtAuth)
+
+				mockUsersService := mockservice.NewUsersService(t)
+				mockUsersService.
+					On("CreateUser", mock.Anything, mock.AnythingOfType("models.UserInfo")).
+					Return(&models.User{}, nil).
 					On("SignIn", mock.Anything, mock.AnythingOfType("models.UserInfo")).
 					Return("", errors.New("signin failed"))
 
 				return &service.Services{
+					AccountsService: mockAccountService,
 					SecurityService: mockSecurityService,
 					UsersService:    mockUsersService,
 				}
@@ -183,6 +223,11 @@ func TestHandler_SignUp(t *testing.T) {
 			name:   "200",
 			method: http.MethodPost,
 			mockServices: func() *service.Services {
+				mockAccountService := mockservice.NewAccountsService(t)
+				mockAccountService.
+					On("CreateAccount", mock.Anything, mock.AnythingOfType("models.UserID")).
+					Return(nil, nil)
+
 				mockSecurityService := mockservice.NewSecurityService(t)
 				mockSecurityService.
 					On("GenerateAuthToken").
@@ -191,11 +236,12 @@ func TestHandler_SignUp(t *testing.T) {
 				mockUsersService := mockservice.NewUsersService(t)
 				mockUsersService.
 					On("CreateUser", mock.Anything, mock.AnythingOfType("models.UserInfo")).
-					Return(nil, nil).
+					Return(&models.User{}, nil).
 					On("SignIn", mock.Anything, mock.AnythingOfType("models.UserInfo")).
 					Return("json-token", nil)
 
 				return &service.Services{
+					AccountsService: mockAccountService,
 					SecurityService: mockSecurityService,
 					UsersService:    mockUsersService,
 				}

@@ -14,6 +14,36 @@ type AccountsService struct {
 	mock.Mock
 }
 
+// CreateAccount provides a mock function with given fields: ctx, id
+func (_m *AccountsService) CreateAccount(ctx context.Context, id models.UserID) (*models.Account, error) {
+	ret := _m.Called(ctx, id)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateAccount")
+	}
+
+	var r0 *models.Account
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, models.UserID) (*models.Account, error)); ok {
+		return rf(ctx, id)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, models.UserID) *models.Account); ok {
+		r0 = rf(ctx, id)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.Account)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, models.UserID) error); ok {
+		r1 = rf(ctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetAccountByUserID provides a mock function with given fields: ctx, id
 func (_m *AccountsService) GetAccountByUserID(ctx context.Context, id models.UserID) (*models.Account, error) {
 	ret := _m.Called(ctx, id)

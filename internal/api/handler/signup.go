@@ -27,13 +27,19 @@ func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = h.services.UsersService.CreateUser(r.Context(), userInfo)
+	user, err := h.services.UsersService.CreateUser(r.Context(), userInfo)
 	if err != nil {
 		if errors.Is(err, apperrors.ErrBusyLogin) {
 			w.WriteHeader(http.StatusConflict)
 			return
 		}
 
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	_, err = h.services.AccountsService.CreateAccount(r.Context(), user.ID)
+	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

@@ -9,28 +9,35 @@ import (
 	"e1m0re/loyalty-srv/internal/models"
 )
 
-//go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=UserRepository
-type UserRepository interface {
-	GetUserByUsername(ctx context.Context, username string) (user *models.User, err error)
-	CreateUser(ctx context.Context, userInfo models.UserInfo) (user *models.User, err error)
-	UpdateUsersLastLogin(ctx context.Context, id models.UserID, t time.Time) error
+//go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=AccountRepository
+type AccountRepository interface {
+	AddAccount(ctx context.Context, userID models.UserID) (*models.Account, error)
 }
 
 //go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=OrderRepository
 type OrderRepository interface {
-	GetOrderByNumber(ctx context.Context, num models.OrderNum) (*models.Order, error)
 	AddOrder(ctx context.Context, orderInfo models.OrderInfo) (*models.Order, error)
 	GetLoadedOrdersByUserID(ctx context.Context, userID models.UserID) (*models.OrdersList, error)
+	GetOrderByNumber(ctx context.Context, num models.OrderNum) (*models.Order, error)
+}
+
+//go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=UserRepository
+type UserRepository interface {
+	CreateUser(ctx context.Context, userInfo models.UserInfo) (user *models.User, err error)
+	GetUserByUsername(ctx context.Context, username string) (user *models.User, err error)
+	UpdateUsersLastLogin(ctx context.Context, id models.UserID, t time.Time) error
 }
 
 type Repositories struct {
-	UserRepository
+	AccountRepository
 	OrderRepository
+	UserRepository
 }
 
 func NewRepositories(db *sqlx.DB) *Repositories {
 	return &Repositories{
-		UserRepository:  NewUserRepository(db),
-		OrderRepository: NewOrderRepository(db),
+		AccountRepository: NewAccountRepository(db),
+		OrderRepository:   NewOrderRepository(db),
+		UserRepository:    NewUserRepository(db),
 	}
 }

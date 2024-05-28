@@ -9,14 +9,14 @@ import (
 )
 
 type usersService struct {
-	userRepository  repository.UserRepository
 	securityService SecurityService
+	userRepository  repository.UserRepository
 }
 
 func NewUsersService(userRepository repository.UserRepository, securityService SecurityService) UsersService {
 	return &usersService{
-		userRepository:  userRepository,
 		securityService: securityService,
+		userRepository:  userRepository,
 	}
 }
 
