@@ -74,6 +74,36 @@ func (_m *AccountRepository) GetAccountByUserID(ctx context.Context, userID mode
 	return r0, r1
 }
 
+// GetWithdrawalsList provides a mock function with given fields: ctx, accountID
+func (_m *AccountRepository) GetWithdrawalsList(ctx context.Context, accountID models.AccountID) (*[]models.Withdrawal, error) {
+	ret := _m.Called(ctx, accountID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetWithdrawalsList")
+	}
+
+	var r0 *[]models.Withdrawal
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, models.AccountID) (*[]models.Withdrawal, error)); ok {
+		return rf(ctx, accountID)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, models.AccountID) *[]models.Withdrawal); ok {
+		r0 = rf(ctx, accountID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*[]models.Withdrawal)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, models.AccountID) error); ok {
+		r1 = rf(ctx, accountID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetWithdrawnTotalSum provides a mock function with given fields: ctx, accountID
 func (_m *AccountRepository) GetWithdrawnTotalSum(ctx context.Context, accountID models.AccountID) (int, error) {
 	ret := _m.Called(ctx, accountID)

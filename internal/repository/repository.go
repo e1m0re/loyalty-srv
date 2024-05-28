@@ -13,6 +13,7 @@ import (
 type AccountRepository interface {
 	AddAccount(ctx context.Context, userID models.UserID) (*models.Account, error)
 	GetAccountByUserID(ctx context.Context, userID models.UserID) (*models.Account, error)
+	GetWithdrawalsList(ctx context.Context, accountID models.AccountID) (*models.WithdrawalsList, error)
 	GetWithdrawnTotalSum(ctx context.Context, accountID models.AccountID) (int, error)
 }
 

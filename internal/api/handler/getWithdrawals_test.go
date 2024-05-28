@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -79,6 +80,36 @@ func TestHandler_GetWithdrawals(t *testing.T) {
 			},
 		},
 		{
+			name:   "500 — GetAccountByUserID failed",
+			method: http.MethodGet,
+			mockServices: func() *service.Services {
+				mockSecurityService := mockservice.NewSecurityService(t)
+				mockSecurityService.
+					On("GenerateAuthToken").
+					Return(jwtAuth)
+
+				mockAccountsService := mockservice.NewAccountsService(t)
+				mockAccountsService.
+					On("GetAccountByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
+					Return(nil, errors.New("some error"))
+
+				return &service.Services{
+					AccountsService: mockAccountsService,
+					SecurityService: mockSecurityService,
+				}
+			},
+			args: args{
+				ctx: context.WithValue(context.Background(), models.CKUserID, 1),
+				headers: map[string]string{
+					"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwidXNlcm5hbWUiOiJ1c2VyMiJ9.vY8OSC5qvDO-rLLnTUBGevkjIUm2oAjBuSsV75LO1Yw",
+				},
+			},
+			want: want{
+				expectedStatusCode:   http.StatusInternalServerError,
+				expectedResponseBody: "",
+			},
+		},
+		{
 			name:   "500 — GetWithdrawals failed",
 			method: http.MethodGet,
 			mockServices: func() *service.Services {
@@ -89,8 +120,10 @@ func TestHandler_GetWithdrawals(t *testing.T) {
 
 				mockAccountsService := mockservice.NewAccountsService(t)
 				mockAccountsService.
-					On("GetWithdrawals", mock.Anything, mock.AnythingOfType("models.UserID")).
-					Return(nil, errors.New("some error"))
+					On("GetAccountByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
+					Return(&models.Account{}, nil).
+					On("GetWithdrawals", mock.Anything, &models.Account{}).
+					Return(nil, fmt.Errorf("some error"))
 
 				return &service.Services{
 					AccountsService: mockAccountsService,
@@ -126,7 +159,9 @@ func TestHandler_GetWithdrawals(t *testing.T) {
 				}
 				mockAccountsService := mockservice.NewAccountsService(t)
 				mockAccountsService.
-					On("GetWithdrawals", mock.Anything, mock.AnythingOfType("models.UserID")).
+					On("GetAccountByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
+					Return(&models.Account{}, nil).
+					On("GetWithdrawals", mock.Anything, &models.Account{}).
 					Return(withdrawalsList, nil)
 
 				return &service.Services{

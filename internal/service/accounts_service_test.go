@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
@@ -244,6 +245,91 @@ func Test_accountsService_GetAccountInfo(t *testing.T) {
 			}
 			gotAccountInfo, gotErr := as.GetAccountInfo(test.args.ctx, test.args.account)
 			require.Equal(t, &test.want.accountInfo, &gotAccountInfo)
+			if len(test.want.errMsg) > 0 {
+				require.EqualError(t, gotErr, test.want.errMsg)
+			}
+		})
+	}
+}
+
+func Test_accountsService_GetWithdrawals(t *testing.T) {
+	type args struct {
+		ctx     context.Context
+		account *models.Account
+	}
+	type want struct {
+		withdrawalsList *models.WithdrawalsList
+		errMsg          string
+	}
+	tests := []struct {
+		name             string
+		mockRepositories func() *repository.Repositories
+		args             args
+		want             want
+	}{
+		{
+			name: "GetAccountByUserID failed",
+			mockRepositories: func() *repository.Repositories {
+				mockAccountRepository := mocks.NewAccountRepository(t)
+				mockAccountRepository.
+					On("GetWithdrawalsList", mock.Anything, mock.AnythingOfType("models.AccountID")).
+					Return(nil, fmt.Errorf("some repos error"))
+
+				return &repository.Repositories{
+					AccountRepository: mockAccountRepository,
+				}
+			},
+			args: args{
+				ctx:     context.Background(),
+				account: &models.Account{},
+			},
+			want: want{
+				withdrawalsList: nil,
+				errMsg:          "some repos error",
+			},
+		},
+		{
+			name: "Successfully case",
+			mockRepositories: func() *repository.Repositories {
+				mockAccountRepository := mocks.NewAccountRepository(t)
+				mockAccountRepository.
+					On("GetWithdrawalsList", mock.Anything, mock.AnythingOfType("models.AccountID")).
+					Return(&models.WithdrawalsList{
+						{
+							OrderNum:    "2377225624",
+							Sum:         500,
+							ProcessedAt: time.Date(1703, time.May, 27, 12, 0, 0, 0, time.UTC),
+						},
+					}, nil)
+
+				return &repository.Repositories{
+					AccountRepository: mockAccountRepository,
+				}
+			},
+			args: args{
+				ctx:     context.Background(),
+				account: &models.Account{},
+			},
+			want: want{
+				withdrawalsList: &models.WithdrawalsList{
+					{
+						OrderNum:    "2377225624",
+						Sum:         500,
+						ProcessedAt: time.Date(1703, time.May, 27, 12, 0, 0, 0, time.UTC),
+					},
+				},
+				errMsg: "",
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			repo := test.mockRepositories()
+			as := accountsService{
+				accountRepository: repo.AccountRepository,
+			}
+			gotWithdrawalsList, gotErr := as.GetWithdrawals(test.args.ctx, test.args.account)
+			require.Equal(t, &test.want.withdrawalsList, &gotWithdrawalsList)
 			if len(test.want.errMsg) > 0 {
 				require.EqualError(t, gotErr, test.want.errMsg)
 			}

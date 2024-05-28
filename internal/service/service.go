@@ -13,7 +13,7 @@ import (
 type AccountsService interface {
 	GetAccountByUserID(ctx context.Context, userID models.UserID) (*models.Account, error)
 	GetAccountInfo(ctx context.Context, account *models.Account) (*models.AccountInfo, error)
-	GetWithdrawals(ctx context.Context, id models.UserID) (*models.WithdrawalsList, error)
+	GetWithdrawals(ctx context.Context, account *models.Account) (*models.WithdrawalsList, error)
 	CreateAccount(ctx context.Context, id models.UserID) (*models.Account, error)
 	UpdateBalance(ctx context.Context, id models.AccountID, amount int) (*models.Account, error)
 	Withdraw(ctx context.Context, id models.AccountID, amount int, orderNum models.OrderNum) (*models.Account, error)

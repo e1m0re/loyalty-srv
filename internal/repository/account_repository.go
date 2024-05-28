@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"log/slog"
 	"math"
 
 	"github.com/jmoiron/sqlx"
@@ -35,12 +36,34 @@ func (repo *accountRepository) AddAccount(ctx context.Context, userID models.Use
 
 func (repo *accountRepository) GetAccountByUserID(ctx context.Context, userID models.UserID) (*models.Account, error) {
 	account := &models.Account{}
-	err := repo.db.GetContext(ctx, account, "SELECT * FROM accounts WHERE \"user\" = $1", userID)
+	err := repo.db.GetContext(ctx, account, "SELECT id, \"user\", balance::numeric FROM accounts WHERE \"user\" = $1", userID)
 	if err != nil {
 		return nil, err
 	}
 
 	return account, err
+}
+
+func (repo *accountRepository) GetWithdrawalsList(ctx context.Context, accountID models.AccountID) (*models.WithdrawalsList, error) {
+	rows, err := repo.db.QueryContext(ctx, "SELECT \"order\", ABS(delta::numeric), ts FROM accounts_changes WHERE account = $1 and delta::numeric < 0", accountID)
+	if err != nil {
+		return nil, err
+	}
+
+	withdrawals := make(models.WithdrawalsList, 0)
+	defer rows.Close()
+	for rows.Next() {
+		w := models.Withdrawal{}
+		err := rows.Scan(&w.OrderNum, &w.Sum, &w.ProcessedAt)
+		if err != nil {
+			slog.Error("GetWithdrawalsList", slog.Any("accountID", accountID), slog.String("err", err.Error()))
+			continue
+		}
+
+		withdrawals = append(withdrawals, w)
+	}
+
+	return &withdrawals, nil
 }
 
 func (repo *accountRepository) GetWithdrawnTotalSum(ctx context.Context, accountID models.AccountID) (int, error) {

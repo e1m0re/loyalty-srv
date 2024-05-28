@@ -104,9 +104,9 @@ func (_m *AccountsService) GetAccountInfo(ctx context.Context, account *models.A
 	return r0, r1
 }
 
-// GetWithdrawals provides a mock function with given fields: ctx, id
-func (_m *AccountsService) GetWithdrawals(ctx context.Context, id models.UserID) (*[]models.Withdrawal, error) {
-	ret := _m.Called(ctx, id)
+// GetWithdrawals provides a mock function with given fields: ctx, account
+func (_m *AccountsService) GetWithdrawals(ctx context.Context, account *models.Account) (*[]models.Withdrawal, error) {
+	ret := _m.Called(ctx, account)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetWithdrawals")
@@ -114,19 +114,19 @@ func (_m *AccountsService) GetWithdrawals(ctx context.Context, id models.UserID)
 
 	var r0 *[]models.Withdrawal
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, models.UserID) (*[]models.Withdrawal, error)); ok {
-		return rf(ctx, id)
+	if rf, ok := ret.Get(0).(func(context.Context, *models.Account) (*[]models.Withdrawal, error)); ok {
+		return rf(ctx, account)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, models.UserID) *[]models.Withdrawal); ok {
-		r0 = rf(ctx, id)
+	if rf, ok := ret.Get(0).(func(context.Context, *models.Account) *[]models.Withdrawal); ok {
+		r0 = rf(ctx, account)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*[]models.Withdrawal)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, models.UserID) error); ok {
-		r1 = rf(ctx, id)
+	if rf, ok := ret.Get(1).(func(context.Context, *models.Account) error); ok {
+		r1 = rf(ctx, account)
 	} else {
 		r1 = ret.Error(1)
 	}

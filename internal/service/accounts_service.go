@@ -41,8 +41,8 @@ func (as accountsService) Withdraw(ctx context.Context, id models.AccountID, amo
 	return &models.Account{}, nil
 }
 
-func (as accountsService) GetWithdrawals(ctx context.Context, id models.UserID) (*models.WithdrawalsList, error) {
-	return &models.WithdrawalsList{}, nil
+func (as accountsService) GetWithdrawals(ctx context.Context, account *models.Account) (*models.WithdrawalsList, error) {
+	return as.accountRepository.GetWithdrawalsList(ctx, account.ID)
 }
 
 func (as accountsService) UpdateBalance(ctx context.Context, id models.AccountID, amount int) (*models.Account, error) {
