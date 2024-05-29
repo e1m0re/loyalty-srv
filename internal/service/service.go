@@ -23,7 +23,8 @@ type AccountsService interface {
 type OrdersService interface {
 	GetLoadedOrdersByUserID(ctx context.Context, userID models.UserID) (*models.OrdersList, error)
 	NewOrder(ctx context.Context, orderInfo models.OrderInfo) (*models.Order, error)
-	UpdateOrder(ctx context.Context, id models.OrderID, status models.OrdersStatus, accrual int) (models.Order, error)
+	UpdateOrdersCalculated(ctx context.Context, order models.Order, calculated bool) (*models.Order, error)
+	UpdateOrdersStatus(ctx context.Context, order models.Order, status models.OrdersStatus, accrual int) (*models.Order, error)
 	ValidateNumber(ctx context.Context, orderNum models.OrderNum) (ok bool, err error)
 }
 

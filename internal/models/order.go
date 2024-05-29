@@ -25,6 +25,7 @@ type Order struct {
 	Status     OrdersStatus `db:"status" json:"status"`
 	Accrual    *int         `db:"accrual" json:"accrual,omitempty"`
 	UploadedAt time.Time    `db:"created_at" json:"uploaded_at"`
+	Calculated bool         `db:"calculated" json:"-"`
 }
 
 func (o *Order) MarshalJSON() ([]byte, error) {

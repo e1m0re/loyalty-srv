@@ -81,6 +81,10 @@ func (os ordersService) GetLoadedOrdersByUserID(ctx context.Context, userID mode
 	return os.orderRepository.GetLoadedOrdersByUserID(ctx, userID)
 }
 
-func (os ordersService) UpdateOrder(ctx context.Context, id models.OrderID, status models.OrdersStatus, accrual int) (models.Order, error) {
-	return models.Order{}, nil
+func (os ordersService) UpdateOrdersCalculated(ctx context.Context, order models.Order, calculated bool) (*models.Order, error) {
+	return os.orderRepository.UpdateOrdersCalculated(ctx, order, calculated)
+}
+
+func (os ordersService) UpdateOrdersStatus(ctx context.Context, order models.Order, status models.OrdersStatus, accrual int) (*models.Order, error) {
+	return os.orderRepository.UpdateOrdersStatus(ctx, order, status, accrual)
 }

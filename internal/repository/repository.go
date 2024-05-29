@@ -24,6 +24,8 @@ type OrderRepository interface {
 	AddOrder(ctx context.Context, orderInfo models.OrderInfo) (*models.Order, error)
 	GetLoadedOrdersByUserID(ctx context.Context, userID models.UserID) (*models.OrdersList, error)
 	GetOrderByNumber(ctx context.Context, num models.OrderNum) (*models.Order, error)
+	UpdateOrdersCalculated(ctx context.Context, order models.Order, calculated bool) (*models.Order, error)
+	UpdateOrdersStatus(ctx context.Context, order models.Order, status models.OrdersStatus, accrual int) (*models.Order, error)
 }
 
 //go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=UserRepository

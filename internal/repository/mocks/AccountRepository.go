@@ -44,9 +44,9 @@ func (_m *AccountRepository) AddAccount(ctx context.Context, userID models.UserI
 	return r0, r1
 }
 
-// AddAccountChange provides a mock function with given fields: ctx, accountID, sum, orderNum
-func (_m *AccountRepository) AddAccountChange(ctx context.Context, accountID models.AccountID, sum float64, orderNum models.OrderNum) (*models.AccountChanges, error) {
-	ret := _m.Called(ctx, accountID, sum, orderNum)
+// AddAccountChange provides a mock function with given fields: ctx, accountID, amount, orderNum
+func (_m *AccountRepository) AddAccountChange(ctx context.Context, accountID models.AccountID, amount float64, orderNum models.OrderNum) (*models.AccountChanges, error) {
+	ret := _m.Called(ctx, accountID, amount, orderNum)
 
 	if len(ret) == 0 {
 		panic("no return value specified for AddAccountChange")
@@ -55,10 +55,10 @@ func (_m *AccountRepository) AddAccountChange(ctx context.Context, accountID mod
 	var r0 *models.AccountChanges
 	var r1 error
 	if rf, ok := ret.Get(0).(func(context.Context, models.AccountID, float64, models.OrderNum) (*models.AccountChanges, error)); ok {
-		return rf(ctx, accountID, sum, orderNum)
+		return rf(ctx, accountID, amount, orderNum)
 	}
 	if rf, ok := ret.Get(0).(func(context.Context, models.AccountID, float64, models.OrderNum) *models.AccountChanges); ok {
-		r0 = rf(ctx, accountID, sum, orderNum)
+		r0 = rf(ctx, accountID, amount, orderNum)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*models.AccountChanges)
@@ -66,7 +66,7 @@ func (_m *AccountRepository) AddAccountChange(ctx context.Context, accountID mod
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, models.AccountID, float64, models.OrderNum) error); ok {
-		r1 = rf(ctx, accountID, sum, orderNum)
+		r1 = rf(ctx, accountID, amount, orderNum)
 	} else {
 		r1 = ret.Error(1)
 	}

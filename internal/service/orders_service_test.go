@@ -426,3 +426,165 @@ func TestOrdersService_GetLoadedOrdersByUserID(t *testing.T) {
 		})
 	}
 }
+
+func Test_ordersService_UpdateOrdersCalculated(t *testing.T) {
+	type args struct {
+		ctx        context.Context
+		order      models.Order
+		calculated bool
+	}
+	type want struct {
+		order  *models.Order
+		errMsg string
+	}
+	tests := []struct {
+		name             string
+		mockRepositories func() *repository.Repositories
+		args             args
+		want             want
+	}{
+		{
+			name: "Error in repo",
+			mockRepositories: func() *repository.Repositories {
+				mockOrderRepo := mocks.NewOrderRepository(t)
+				mockOrderRepo.
+					On("UpdateOrdersCalculated", mock.Anything, mock.AnythingOfType("models.Order"), mock.AnythingOfType("bool")).
+					Return(nil, fmt.Errorf("some repos error"))
+
+				return &repository.Repositories{
+					OrderRepository: mockOrderRepo,
+				}
+			},
+			args: args{
+				ctx:        context.Background(),
+				order:      models.Order{},
+				calculated: true,
+			},
+			want: want{
+				order:  nil,
+				errMsg: "some repos error",
+			},
+		},
+		{
+			name: "Successfully case",
+			mockRepositories: func() *repository.Repositories {
+				mockOrderRepo := mocks.NewOrderRepository(t)
+				mockOrderRepo.
+					On("UpdateOrdersCalculated", mock.Anything, mock.AnythingOfType("models.Order"), mock.AnythingOfType("bool")).
+					Return(&models.Order{Calculated: true}, nil)
+
+				return &repository.Repositories{
+					OrderRepository: mockOrderRepo,
+				}
+			},
+			args: args{
+				ctx:        context.Background(),
+				order:      models.Order{},
+				calculated: true,
+			},
+			want: want{
+				order:  &models.Order{Calculated: true},
+				errMsg: "",
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			repo := test.mockRepositories()
+			os := ordersService{
+				orderRepository: repo.OrderRepository,
+			}
+			gotOrder, gotErr := os.UpdateOrdersCalculated(test.args.ctx, test.args.order, test.args.calculated)
+			require.Equal(t, test.want.order, gotOrder)
+			if len(test.want.errMsg) > 0 {
+				require.EqualError(t, gotErr, test.want.errMsg)
+			}
+		})
+	}
+}
+
+func Test_ordersService_UpdateOrdersStatus(t *testing.T) {
+	accrual := 500
+	type args struct {
+		ctx     context.Context
+		order   models.Order
+		status  models.OrdersStatus
+		accrual int
+	}
+	type want struct {
+		order  *models.Order
+		errMsg string
+	}
+	tests := []struct {
+		name             string
+		mockRepositories func() *repository.Repositories
+		args             args
+		want             want
+	}{
+		{
+			name: "Error in repo",
+			mockRepositories: func() *repository.Repositories {
+				mockOrderRepo := mocks.NewOrderRepository(t)
+				mockOrderRepo.
+					On("UpdateOrdersStatus", mock.Anything, mock.AnythingOfType("models.Order"), mock.Anything, mock.AnythingOfType("int")).
+					Return(nil, fmt.Errorf("some repos error"))
+
+				return &repository.Repositories{
+					OrderRepository: mockOrderRepo,
+				}
+			},
+			args: args{
+				ctx:     context.Background(),
+				order:   models.Order{},
+				status:  models.OrderStatusProcessed,
+				accrual: accrual,
+			},
+			want: want{
+				order:  nil,
+				errMsg: "some repos error",
+			},
+		},
+		{
+			name: "Successfully case",
+			mockRepositories: func() *repository.Repositories {
+				mockOrderRepo := mocks.NewOrderRepository(t)
+				mockOrderRepo.
+					On("UpdateOrdersStatus", mock.Anything, mock.AnythingOfType("models.Order"), mock.Anything, mock.AnythingOfType("int")).
+					Return(&models.Order{
+						Status:  models.OrderStatusProcessed,
+						Accrual: &accrual,
+					}, nil)
+
+				return &repository.Repositories{
+					OrderRepository: mockOrderRepo,
+				}
+			},
+			args: args{
+				ctx:     context.Background(),
+				order:   models.Order{},
+				status:  models.OrderStatusProcessed,
+				accrual: accrual,
+			},
+			want: want{
+				order: &models.Order{
+					Status:  models.OrderStatusProcessed,
+					Accrual: &accrual,
+				},
+				errMsg: "",
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			repo := test.mockRepositories()
+			os := ordersService{
+				orderRepository: repo.OrderRepository,
+			}
+			gotOrder, gotErr := os.UpdateOrdersStatus(test.args.ctx, test.args.order, test.args.status, test.args.accrual)
+			require.Equal(t, test.want.order, gotOrder)
+			if len(test.want.errMsg) > 0 {
+				require.EqualError(t, gotErr, test.want.errMsg)
+			}
+		})
+	}
+}

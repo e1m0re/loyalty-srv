@@ -61,3 +61,24 @@ func (repo orderRepository) GetLoadedOrdersByUserID(ctx context.Context, userID 
 
 	return &orders, nil
 }
+
+func (repo orderRepository) UpdateOrdersCalculated(ctx context.Context, order models.Order, calculated bool) (*models.Order, error) {
+	_, err := repo.db.ExecContext(ctx, "UPDATE orders SET calculated = $1 WHERE number = $2", calculated, order.Number)
+	if err != nil {
+		return nil, err
+	}
+
+	order.Calculated = calculated
+	return &order, nil
+}
+
+func (repo orderRepository) UpdateOrdersStatus(ctx context.Context, order models.Order, status models.OrdersStatus, accrual int) (*models.Order, error) {
+	_, err := repo.db.ExecContext(ctx, "UPDATE orders set status = $1, accrual = $2 WHERE number = $3", status, accrual, order.Number)
+	if err != nil {
+		return nil, err
+	}
+
+	order.Status = status
+	order.Accrual = &accrual
+	return &order, nil
+}

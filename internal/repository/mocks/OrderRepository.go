@@ -104,6 +104,66 @@ func (_m *OrderRepository) GetOrderByNumber(ctx context.Context, num models.Orde
 	return r0, r1
 }
 
+// UpdateOrdersCalculated provides a mock function with given fields: ctx, order, calculated
+func (_m *OrderRepository) UpdateOrdersCalculated(ctx context.Context, order models.Order, calculated bool) (*models.Order, error) {
+	ret := _m.Called(ctx, order, calculated)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateOrdersCalculated")
+	}
+
+	var r0 *models.Order
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, models.Order, bool) (*models.Order, error)); ok {
+		return rf(ctx, order, calculated)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, models.Order, bool) *models.Order); ok {
+		r0 = rf(ctx, order, calculated)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.Order)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, models.Order, bool) error); ok {
+		r1 = rf(ctx, order, calculated)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UpdateOrdersStatus provides a mock function with given fields: ctx, order, status, accrual
+func (_m *OrderRepository) UpdateOrdersStatus(ctx context.Context, order models.Order, status models.OrdersStatus, accrual int) (*models.Order, error) {
+	ret := _m.Called(ctx, order, status, accrual)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateOrdersStatus")
+	}
+
+	var r0 *models.Order
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, models.Order, models.OrdersStatus, int) (*models.Order, error)); ok {
+		return rf(ctx, order, status, accrual)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, models.Order, models.OrdersStatus, int) *models.Order); ok {
+		r0 = rf(ctx, order, status, accrual)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.Order)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, models.Order, models.OrdersStatus, int) error); ok {
+		r1 = rf(ctx, order, status, accrual)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // NewOrderRepository creates a new instance of OrderRepository. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewOrderRepository(t interface {
