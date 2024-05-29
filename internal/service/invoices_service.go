@@ -9,21 +9,25 @@ import (
 )
 
 type invoicesService struct {
-	accountRepository repository.InvoiceRepository
+	invoiceRepository repository.InvoiceRepository
 }
 
 func NewInvoicesService(accountRepository repository.InvoiceRepository) InvoicesService {
 	return &invoicesService{
-		accountRepository: accountRepository,
+		invoiceRepository: accountRepository,
 	}
 }
 
-func (as invoicesService) GetInvoiceByUserID(ctx context.Context, userID models.UserID) (*models.Invoice, error) {
-	return as.accountRepository.GetInvoiceByUserID(ctx, userID)
+func (is invoicesService) GetInvoiceByID(ctx context.Context, invoiceID models.InvoiceID) (*models.Invoice, error) {
+	return is.invoiceRepository.GetInvoiceByID(ctx, invoiceID)
 }
 
-func (as invoicesService) GetInvoiceInfo(ctx context.Context, account *models.Invoice) (*models.InvoiceInfo, error) {
-	withdrawnTotalSum, err := as.accountRepository.GetWithdrawnTotalSum(ctx, account.ID)
+func (is invoicesService) GetInvoiceByUserID(ctx context.Context, userID models.UserID) (*models.Invoice, error) {
+	return is.invoiceRepository.GetInvoiceByUserID(ctx, userID)
+}
+
+func (is invoicesService) GetInvoiceInfo(ctx context.Context, account *models.Invoice) (*models.InvoiceInfo, error) {
+	withdrawnTotalSum, err := is.invoiceRepository.GetWithdrawnTotalSum(ctx, account.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -34,23 +38,23 @@ func (as invoicesService) GetInvoiceInfo(ctx context.Context, account *models.In
 	}, nil
 }
 
-func (as invoicesService) CreateInvoice(ctx context.Context, id models.UserID) (*models.Invoice, error) {
-	return as.accountRepository.AddInvoice(ctx, id)
+func (is invoicesService) CreateInvoice(ctx context.Context, id models.UserID) (*models.Invoice, error) {
+	return is.invoiceRepository.AddInvoice(ctx, id)
 }
 
-func (as invoicesService) UpdateBalance(ctx context.Context, account models.Invoice, amount float64, orderNum models.OrderNum) (*models.Invoice, error) {
+func (is invoicesService) UpdateBalance(ctx context.Context, account models.Invoice, amount float64, orderNum models.OrderNum) (*models.Invoice, error) {
 	if account.Balance < amount {
-		return nil, apperrors.ErrAccountHasNotEnoughFunds
+		return nil, apperrors.ErrInvoiceHasNotEnoughFunds
 	}
 
-	_, err := as.accountRepository.AddInvoiceChange(ctx, account.ID, amount, orderNum)
+	_, err := is.invoiceRepository.AddInvoiceChange(ctx, account.ID, amount, orderNum)
 	if err != nil {
 		return nil, err
 	}
 
-	return as.accountRepository.UpdateBalance(ctx, account, amount)
+	return is.invoiceRepository.UpdateBalance(ctx, account, amount)
 }
 
-func (as invoicesService) GetWithdrawals(ctx context.Context, account *models.Invoice) (*models.WithdrawalsList, error) {
-	return as.accountRepository.GetWithdrawalsList(ctx, account.ID)
+func (is invoicesService) GetWithdrawals(ctx context.Context, account *models.Invoice) (*models.WithdrawalsList, error) {
+	return is.invoiceRepository.GetWithdrawalsList(ctx, account.ID)
 }

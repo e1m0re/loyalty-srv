@@ -85,7 +85,7 @@ func Test_invoicesService_CreateAccount(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			repo := test.mockRepositories()
 			as := invoicesService{
-				accountRepository: repo.InvoiceRepository,
+				invoiceRepository: repo.InvoiceRepository,
 			}
 			gotAccount, gotErr := as.CreateInvoice(test.args.ctx, test.args.userID)
 			require.Equal(t, &test.want.account, &gotAccount)
@@ -166,7 +166,7 @@ func Test_invoicesService_GetAccountByUserID(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			repo := test.mockRepositories()
 			as := invoicesService{
-				accountRepository: repo.InvoiceRepository,
+				invoiceRepository: repo.InvoiceRepository,
 			}
 			gotAccount, gotErr := as.GetInvoiceByUserID(test.args.ctx, test.args.userID)
 			require.Equal(t, &test.want.account, &gotAccount)
@@ -242,7 +242,7 @@ func Test_invoicesService_GetAccountInfo(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			repo := test.mockRepositories()
 			as := invoicesService{
-				accountRepository: repo.InvoiceRepository,
+				invoiceRepository: repo.InvoiceRepository,
 			}
 			gotAccountInfo, gotErr := as.GetInvoiceInfo(test.args.ctx, test.args.account)
 			require.Equal(t, &test.want.accountInfo, &gotAccountInfo)
@@ -327,7 +327,7 @@ func Test_invoicesService_GetWithdrawals(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			repo := test.mockRepositories()
 			as := invoicesService{
-				accountRepository: repo.InvoiceRepository,
+				invoiceRepository: repo.InvoiceRepository,
 			}
 			gotWithdrawalsList, gotErr := as.GetWithdrawals(test.args.ctx, test.args.account)
 			require.Equal(t, &test.want.withdrawalsList, &gotWithdrawalsList)
@@ -356,7 +356,7 @@ func Test_invoicesService_UpdateBalance(t *testing.T) {
 		want             want
 	}{
 		{
-			name: "ErrAccountHasNotEnoughFunds",
+			name: "ErrInvoiceHasNotEnoughFunds",
 			mockRepositories: func() *repository.Repositories {
 
 				return &repository.Repositories{}
@@ -371,7 +371,7 @@ func Test_invoicesService_UpdateBalance(t *testing.T) {
 			},
 			want: want{
 				account: nil,
-				errMsg:  apperrors.ErrAccountHasNotEnoughFunds.Error(),
+				errMsg:  apperrors.ErrInvoiceHasNotEnoughFunds.Error(),
 			},
 		},
 		{
@@ -462,7 +462,7 @@ func Test_invoicesService_UpdateBalance(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			repo := test.mockRepositories()
 			as := invoicesService{
-				accountRepository: repo.InvoiceRepository,
+				invoiceRepository: repo.InvoiceRepository,
 			}
 			gotAccount, gotErr := as.UpdateBalance(test.args.ctx, test.args.account, test.args.amount, test.args.orderNum)
 			require.Equal(t, &test.want.account, &gotAccount)

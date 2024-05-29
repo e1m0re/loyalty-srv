@@ -263,7 +263,7 @@ func TestHandler_WritingOff(t *testing.T) {
 					On("GetInvoiceByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
 					Return(&models.Invoice{}, nil).
 					On("UpdateBalance", mock.Anything, models.Invoice{}, mock.AnythingOfType("float64"), mock.AnythingOfType("models.OrderNum")).
-					Return(nil, apperrors.ErrAccountHasNotEnoughFunds)
+					Return(nil, apperrors.ErrInvoiceHasNotEnoughFunds)
 
 				return &service.Services{
 					InvoicesService: mockInvoicesService,

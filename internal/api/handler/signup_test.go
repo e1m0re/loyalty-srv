@@ -151,8 +151,8 @@ func TestHandler_SignUp(t *testing.T) {
 			name:   "500 — CreateInvoice failed",
 			method: http.MethodPost,
 			mockServices: func() *service.Services {
-				mockAccountService := mockservice.NewInvoicesService(t)
-				mockAccountService.
+				mockInvoicesService := mockservice.NewInvoicesService(t)
+				mockInvoicesService.
 					On("CreateInvoice", mock.Anything, mock.AnythingOfType("models.UserID")).
 					Return(nil, fmt.Errorf("some repos error"))
 
@@ -167,7 +167,7 @@ func TestHandler_SignUp(t *testing.T) {
 					Return(&models.User{}, nil)
 
 				return &service.Services{
-					InvoicesService: mockAccountService,
+					InvoicesService: mockInvoicesService,
 					SecurityService: mockSecurityService,
 					UsersService:    mockUsersService,
 				}
@@ -183,8 +183,8 @@ func TestHandler_SignUp(t *testing.T) {
 			name:   "500 — SignIn failed",
 			method: http.MethodPost,
 			mockServices: func() *service.Services {
-				mockAccountService := mockservice.NewInvoicesService(t)
-				mockAccountService.
+				mockInvoicesService := mockservice.NewInvoicesService(t)
+				mockInvoicesService.
 					On("CreateInvoice", mock.Anything, mock.AnythingOfType("models.UserID")).
 					Return(nil, nil)
 
@@ -201,7 +201,7 @@ func TestHandler_SignUp(t *testing.T) {
 					Return("", errors.New("signin failed"))
 
 				return &service.Services{
-					InvoicesService: mockAccountService,
+					InvoicesService: mockInvoicesService,
 					SecurityService: mockSecurityService,
 					UsersService:    mockUsersService,
 				}
@@ -217,8 +217,8 @@ func TestHandler_SignUp(t *testing.T) {
 			name:   "200",
 			method: http.MethodPost,
 			mockServices: func() *service.Services {
-				mockAccountService := mockservice.NewInvoicesService(t)
-				mockAccountService.
+				mockInvoicesService := mockservice.NewInvoicesService(t)
+				mockInvoicesService.
 					On("CreateInvoice", mock.Anything, mock.AnythingOfType("models.UserID")).
 					Return(nil, nil)
 
@@ -235,7 +235,7 @@ func TestHandler_SignUp(t *testing.T) {
 					Return("json-token", nil)
 
 				return &service.Services{
-					InvoicesService: mockAccountService,
+					InvoicesService: mockInvoicesService,
 					SecurityService: mockSecurityService,
 					UsersService:    mockUsersService,
 				}

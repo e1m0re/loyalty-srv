@@ -47,7 +47,7 @@ func (h *Handler) WritingOff(w http.ResponseWriter, r *http.Request) {
 
 	_, err = h.services.InvoicesService.UpdateBalance(r.Context(), *account, requestData.Sum, requestData.Order)
 	if err != nil {
-		if errors.Is(err, apperrors.ErrAccountHasNotEnoughFunds) {
+		if errors.Is(err, apperrors.ErrInvoiceHasNotEnoughFunds) {
 			w.WriteHeader(http.StatusPaymentRequired)
 			return
 		}

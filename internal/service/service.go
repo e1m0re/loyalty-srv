@@ -11,6 +11,7 @@ import (
 
 //go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=InvoicesService
 type InvoicesService interface {
+	GetInvoiceByID(ctx context.Context, invoiceID models.InvoiceID) (*models.Invoice, error)
 	GetInvoiceByUserID(ctx context.Context, userID models.UserID) (*models.Invoice, error)
 	GetInvoiceInfo(ctx context.Context, invoice *models.Invoice) (*models.InvoiceInfo, error)
 	GetWithdrawals(ctx context.Context, invoice *models.Invoice) (*models.WithdrawalsList, error)

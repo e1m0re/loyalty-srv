@@ -26,8 +26,7 @@ func (p orderProcessor) RecalculateProcessedOrders(ctx context.Context) error {
 	//		continue
 	//	}
 	//
-	//	account, err := invoicesService.
-	//		invoicesService.UpdateBalance(ctx)
+	//	account, err := invoicesService
 	//}
 
 	return nil
