@@ -2,18 +2,19 @@ package api
 
 import (
 	"context"
-	"e1m0re/loyalty-srv/internal/db/migrations"
 	"errors"
 	"fmt"
-	"github.com/jackc/pgx/v5/stdlib"
-	"github.com/pressly/goose/v3"
 	"log/slog"
 	"net/http"
+	"time"
 
+	"github.com/jackc/pgx/v5/stdlib"
 	"github.com/jmoiron/sqlx"
+	"github.com/pressly/goose/v3"
 	"golang.org/x/sync/errgroup"
 
 	appHandler "e1m0re/loyalty-srv/internal/api/handler"
+	"e1m0re/loyalty-srv/internal/db/migrations"
 	"e1m0re/loyalty-srv/internal/repository"
 	"e1m0re/loyalty-srv/internal/service"
 )
@@ -87,6 +88,18 @@ func (srv *Server) Start(ctx context.Context) error {
 
 	grp.Go(func() error {
 		return srv.startHTTPServer(ctx)
+	})
+
+	// Invoices Processing
+	grp.Go(func() error {
+		for {
+			select {
+			case <-ctx.Done():
+				return nil
+			case <-time.After(srv.config.delays.invoiceProcessing):
+				slog.Info("invoice processing")
+			}
+		}
 	})
 
 	grp.Go(func() error {
