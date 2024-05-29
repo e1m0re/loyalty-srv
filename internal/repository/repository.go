@@ -16,7 +16,7 @@ type AccountRepository interface {
 	GetAccountByUserID(ctx context.Context, userID models.UserID) (*models.Account, error)
 	GetWithdrawalsList(ctx context.Context, accountID models.AccountID) (*models.WithdrawalsList, error)
 	GetWithdrawnTotalSum(ctx context.Context, accountID models.AccountID) (int, error)
-	UpdateAccount(ctx context.Context, account *models.Account) error
+	UpdateBalance(ctx context.Context, account models.Account, amount float64) (*models.Account, error)
 }
 
 //go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=OrderRepository

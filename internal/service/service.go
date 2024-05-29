@@ -15,8 +15,7 @@ type AccountsService interface {
 	GetAccountInfo(ctx context.Context, account *models.Account) (*models.AccountInfo, error)
 	GetWithdrawals(ctx context.Context, account *models.Account) (*models.WithdrawalsList, error)
 	CreateAccount(ctx context.Context, id models.UserID) (*models.Account, error)
-	UpdateBalance(ctx context.Context, id models.AccountID, amount int) (*models.Account, error)
-	Withdraw(ctx context.Context, account models.Account, amount float64, orderNum models.OrderNum) (*models.Account, error)
+	UpdateBalance(ctx context.Context, account models.Account, amount float64, orderNum models.OrderNum) (*models.Account, error)
 }
 
 //go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=OrdersService

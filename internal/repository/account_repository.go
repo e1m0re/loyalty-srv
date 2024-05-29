@@ -62,7 +62,7 @@ func (repo *accountRepository) GetAccountByUserID(ctx context.Context, userID mo
 }
 
 func (repo *accountRepository) GetWithdrawalsList(ctx context.Context, accountID models.AccountID) (*models.WithdrawalsList, error) {
-	rows, err := repo.db.QueryContext(ctx, "SELECT \"order\", ABS(delta::numeric), ts FROM accounts_changes WHERE account = $1 and delta::numeric < 0", accountID)
+	rows, err := repo.db.QueryContext(ctx, "SELECT \"order\", ABS(delta::numeric), ts FROM accounts_changes WHERE account = $1 and amount::numeric < 0", accountID)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +89,7 @@ func (repo *accountRepository) GetWithdrawalsList(ctx context.Context, accountID
 
 func (repo *accountRepository) GetWithdrawnTotalSum(ctx context.Context, accountID models.AccountID) (int, error) {
 	var sum float64
-	query := "SELECT sum(delta) FROM accounts_changes WHERE account = $1 AND delta::numeric < 0"
+	query := "SELECT sum(amount) FROM accounts_changes WHERE account = $1 AND amount::numeric < 0"
 	err := repo.db.QueryRowContext(ctx, query, accountID).Scan(&sum)
 	if err != nil {
 		return 0, err
@@ -98,9 +98,13 @@ func (repo *accountRepository) GetWithdrawnTotalSum(ctx context.Context, account
 	return int(math.Abs(sum)), nil
 }
 
-func (repo *accountRepository) UpdateAccount(ctx context.Context, account *models.Account) error {
-	query := "UPDATE accounts SET balance=$1 WHERE id = $1"
+func (repo *accountRepository) UpdateBalance(ctx context.Context, account models.Account, amount float64) (*models.Account, error) {
+	account.Balance = account.Balance - amount
+	query := "UPDATE accounts SET balance = $1 WHERE id = $2"
 	_, err := repo.db.ExecContext(ctx, query, account.Balance, account.ID)
+	if err != nil {
+		return nil, err
+	}
 
-	return err
+	return &account, nil
 }

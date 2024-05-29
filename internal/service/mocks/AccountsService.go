@@ -134,42 +134,12 @@ func (_m *AccountsService) GetWithdrawals(ctx context.Context, account *models.A
 	return r0, r1
 }
 
-// UpdateBalance provides a mock function with given fields: ctx, id, amount
-func (_m *AccountsService) UpdateBalance(ctx context.Context, id models.AccountID, amount int) (*models.Account, error) {
-	ret := _m.Called(ctx, id, amount)
-
-	if len(ret) == 0 {
-		panic("no return value specified for UpdateBalance")
-	}
-
-	var r0 *models.Account
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, models.AccountID, int) (*models.Account, error)); ok {
-		return rf(ctx, id, amount)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, models.AccountID, int) *models.Account); ok {
-		r0 = rf(ctx, id, amount)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.Account)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, models.AccountID, int) error); ok {
-		r1 = rf(ctx, id, amount)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// Withdraw provides a mock function with given fields: ctx, account, amount, orderNum
-func (_m *AccountsService) Withdraw(ctx context.Context, account models.Account, amount float64, orderNum models.OrderNum) (*models.Account, error) {
+// UpdateBalance provides a mock function with given fields: ctx, account, amount, orderNum
+func (_m *AccountsService) UpdateBalance(ctx context.Context, account models.Account, amount float64, orderNum models.OrderNum) (*models.Account, error) {
 	ret := _m.Called(ctx, account, amount, orderNum)
 
 	if len(ret) == 0 {
-		panic("no return value specified for Withdraw")
+		panic("no return value specified for UpdateBalance")
 	}
 
 	var r0 *models.Account

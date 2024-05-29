@@ -162,22 +162,34 @@ func (_m *AccountRepository) GetWithdrawnTotalSum(ctx context.Context, accountID
 	return r0, r1
 }
 
-// UpdateAccount provides a mock function with given fields: ctx, account
-func (_m *AccountRepository) UpdateAccount(ctx context.Context, account *models.Account) error {
-	ret := _m.Called(ctx, account)
+// UpdateBalance provides a mock function with given fields: ctx, account, balance
+func (_m *AccountRepository) UpdateBalance(ctx context.Context, account models.Account, balance float64) (*models.Account, error) {
+	ret := _m.Called(ctx, account, balance)
 
 	if len(ret) == 0 {
-		panic("no return value specified for UpdateAccount")
+		panic("no return value specified for UpdateBalance")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, *models.Account) error); ok {
-		r0 = rf(ctx, account)
+	var r0 *models.Account
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, models.Account, float64) (*models.Account, error)); ok {
+		return rf(ctx, account, balance)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, models.Account, float64) *models.Account); ok {
+		r0 = rf(ctx, account, balance)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.Account)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, models.Account, float64) error); ok {
+		r1 = rf(ctx, account, balance)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // NewAccountRepository creates a new instance of AccountRepository. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.

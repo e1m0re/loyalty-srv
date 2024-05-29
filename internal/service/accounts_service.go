@@ -38,7 +38,7 @@ func (as accountsService) CreateAccount(ctx context.Context, id models.UserID) (
 	return as.accountRepository.AddAccount(ctx, id)
 }
 
-func (as accountsService) Withdraw(ctx context.Context, account models.Account, amount float64, orderNum models.OrderNum) (*models.Account, error) {
+func (as accountsService) UpdateBalance(ctx context.Context, account models.Account, amount float64, orderNum models.OrderNum) (*models.Account, error) {
 	if account.Balance < amount {
 		return nil, apperrors.ErrAccountHasNotEnoughFunds
 	}
@@ -48,19 +48,9 @@ func (as accountsService) Withdraw(ctx context.Context, account models.Account, 
 		return nil, err
 	}
 
-	account.Balance = account.Balance - amount
-	err = as.accountRepository.UpdateAccount(ctx, &account)
-	if err != nil {
-		return nil, err
-	}
-
-	return &account, nil
+	return as.accountRepository.UpdateBalance(ctx, account, amount)
 }
 
 func (as accountsService) GetWithdrawals(ctx context.Context, account *models.Account) (*models.WithdrawalsList, error) {
 	return as.accountRepository.GetWithdrawalsList(ctx, account.ID)
-}
-
-func (as accountsService) UpdateBalance(ctx context.Context, id models.AccountID, amount int) (*models.Account, error) {
-	return &models.Account{}, nil
 }

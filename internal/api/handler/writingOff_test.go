@@ -223,7 +223,7 @@ func TestHandler_WritingOff(t *testing.T) {
 				mockAccountsService.
 					On("GetAccountByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
 					Return(&models.Account{}, nil).
-					On("Withdraw", mock.Anything, models.Account{}, mock.AnythingOfType("float64"), mock.AnythingOfType("models.OrderNum")).
+					On("UpdateBalance", mock.Anything, models.Account{}, mock.AnythingOfType("float64"), mock.AnythingOfType("models.OrderNum")).
 					Return(nil, fmt.Errorf("some error"))
 
 				return &service.Services{
@@ -262,7 +262,7 @@ func TestHandler_WritingOff(t *testing.T) {
 				mockAccountsService.
 					On("GetAccountByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
 					Return(&models.Account{}, nil).
-					On("Withdraw", mock.Anything, models.Account{}, mock.AnythingOfType("float64"), mock.AnythingOfType("models.OrderNum")).
+					On("UpdateBalance", mock.Anything, models.Account{}, mock.AnythingOfType("float64"), mock.AnythingOfType("models.OrderNum")).
 					Return(nil, apperrors.ErrAccountHasNotEnoughFunds)
 
 				return &service.Services{
@@ -301,7 +301,7 @@ func TestHandler_WritingOff(t *testing.T) {
 				mockAccountsService.
 					On("GetAccountByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
 					Return(&models.Account{}, nil).
-					On("Withdraw", mock.Anything, models.Account{}, mock.AnythingOfType("float64"), mock.AnythingOfType("models.OrderNum")).
+					On("UpdateBalance", mock.Anything, models.Account{}, mock.AnythingOfType("float64"), mock.AnythingOfType("models.OrderNum")).
 					Return(nil, nil)
 
 				return &service.Services{

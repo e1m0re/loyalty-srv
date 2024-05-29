@@ -338,7 +338,7 @@ func Test_accountsService_GetWithdrawals(t *testing.T) {
 	}
 }
 
-func Test_accountsService_Withdraw(t *testing.T) {
+func Test_accountsService_UpdateBalance(t *testing.T) {
 	type args struct {
 		ctx      context.Context
 		account  models.Account
@@ -406,8 +406,8 @@ func Test_accountsService_Withdraw(t *testing.T) {
 				mockAccountRepository.
 					On("AddAccountChange", mock.Anything, mock.AnythingOfType("models.AccountID"), mock.AnythingOfType("float64"), mock.Anything).
 					Return(nil, nil).
-					On("UpdateAccount", mock.Anything, &models.Account{ID: 0, UserID: 0, Balance: 900}).
-					Return(fmt.Errorf("some repos error"))
+					On("UpdateBalance", mock.Anything, mock.AnythingOfType("models.Account"), mock.AnythingOfType("float64")).
+					Return(nil, fmt.Errorf("some repos error"))
 
 				return &repository.Repositories{
 					AccountRepository: mockAccountRepository,
@@ -433,8 +433,10 @@ func Test_accountsService_Withdraw(t *testing.T) {
 				mockAccountRepository.
 					On("AddAccountChange", mock.Anything, mock.AnythingOfType("models.AccountID"), mock.AnythingOfType("float64"), mock.Anything).
 					Return(nil, nil).
-					On("UpdateAccount", mock.Anything, &models.Account{ID: 0, UserID: 0, Balance: 900}).
-					Return(nil)
+					On("UpdateBalance", mock.Anything, mock.AnythingOfType("models.Account"), mock.AnythingOfType("float64")).
+					Return(&models.Account{
+						Balance: 900,
+					}, nil)
 
 				return &repository.Repositories{
 					AccountRepository: mockAccountRepository,
@@ -462,7 +464,7 @@ func Test_accountsService_Withdraw(t *testing.T) {
 			as := accountsService{
 				accountRepository: repo.AccountRepository,
 			}
-			gotAccount, gotErr := as.Withdraw(test.args.ctx, test.args.account, test.args.amount, test.args.orderNum)
+			gotAccount, gotErr := as.UpdateBalance(test.args.ctx, test.args.account, test.args.amount, test.args.orderNum)
 			require.Equal(t, &test.want.account, &gotAccount)
 			if len(test.want.errMsg) > 0 {
 				require.EqualError(t, gotErr, test.want.errMsg)
