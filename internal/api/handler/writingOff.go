@@ -39,13 +39,13 @@ func (h *Handler) WritingOff(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userID := r.Context().Value(models.CKUserID).(models.UserID)
-	account, err := h.services.AccountsService.GetAccountByUserID(r.Context(), userID)
+	account, err := h.services.InvoicesService.GetInvoiceByUserID(r.Context(), userID)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	_, err = h.services.AccountsService.UpdateBalance(r.Context(), *account, requestData.Sum, requestData.Order)
+	_, err = h.services.InvoicesService.UpdateBalance(r.Context(), *account, requestData.Sum, requestData.Order)
 	if err != nil {
 		if errors.Is(err, apperrors.ErrAccountHasNotEnoughFunds) {
 			w.WriteHeader(http.StatusPaymentRequired)

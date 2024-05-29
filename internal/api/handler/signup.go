@@ -39,7 +39,7 @@ func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = h.services.AccountsService.CreateAccount(r.Context(), user.ID)
+	_, err = h.services.InvoicesService.CreateInvoice(r.Context(), user.ID)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

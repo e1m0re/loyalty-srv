@@ -2,17 +2,17 @@ package models
 
 import "time"
 
-type AccountID int
+type InvoiceID int
 
-type Account struct {
-	ID      AccountID `json:"id" db:"id"`
+type Invoice struct {
+	ID      InvoiceID `json:"id" db:"id"`
 	UserID  UserID    `json:"user" db:"user"`
 	Balance float64   `json:"balance,omitempty" db:"balance"`
 }
 
-type AccountChanges struct {
+type InvoiceChanges struct {
 	ID        int
-	AccountID AccountID
+	InvoiceID InvoiceID
 	OrderNum  OrderNum
 	Amount    float64
 	TS        time.Time
@@ -24,7 +24,7 @@ type Withdrawal struct {
 	ProcessedAt time.Time `json:"processed_at"`
 }
 
-type AccountInfo struct {
+type InvoiceInfo struct {
 	CurrentBalance float64 `json:"current"`
 	Withdrawals    int     `json:"withdrawals"`
 }

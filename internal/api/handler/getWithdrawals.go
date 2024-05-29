@@ -15,14 +15,14 @@ func (h *Handler) GetWithdrawals(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userID := r.Context().Value(models.CKUserID).(models.UserID)
-	account, err := h.services.AccountsService.GetAccountByUserID(r.Context(), userID)
+	account, err := h.services.InvoicesService.GetInvoiceByUserID(r.Context(), userID)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		slog.Error("GetWithdrawals", slog.String("GetWithdrawals", err.Error()))
 		return
 	}
 
-	withdrawalsList, err := h.services.AccountsService.GetWithdrawals(r.Context(), account)
+	withdrawalsList, err := h.services.InvoicesService.GetWithdrawals(r.Context(), account)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

@@ -15,13 +15,13 @@ import (
 	"e1m0re/loyalty-srv/internal/repository/mocks"
 )
 
-func Test_accountsService_CreateAccount(t *testing.T) {
+func Test_invoicesService_CreateAccount(t *testing.T) {
 	type args struct {
 		ctx    context.Context
 		userID models.UserID
 	}
 	type want struct {
-		account *models.Account
+		account *models.Invoice
 		errMsg  string
 	}
 	tests := []struct {
@@ -31,15 +31,15 @@ func Test_accountsService_CreateAccount(t *testing.T) {
 		want             want
 	}{
 		{
-			name: "AddAccount failed",
+			name: "AddInvoice failed",
 			mockRepositories: func() *repository.Repositories {
-				mockAccountRepository := mocks.NewAccountRepository(t)
+				mockAccountRepository := mocks.NewInvoiceRepository(t)
 				mockAccountRepository.
-					On("AddAccount", mock.Anything, mock.AnythingOfType("models.UserID")).
+					On("AddInvoice", mock.Anything, mock.AnythingOfType("models.UserID")).
 					Return(nil, fmt.Errorf("some repos error"))
 
 				return &repository.Repositories{
-					AccountRepository: mockAccountRepository,
+					InvoiceRepository: mockAccountRepository,
 				}
 			},
 			args: args{
@@ -54,17 +54,17 @@ func Test_accountsService_CreateAccount(t *testing.T) {
 		{
 			name: "Successfully case",
 			mockRepositories: func() *repository.Repositories {
-				mockAccountRepository := mocks.NewAccountRepository(t)
+				mockAccountRepository := mocks.NewInvoiceRepository(t)
 				mockAccountRepository.
-					On("AddAccount", mock.Anything, mock.AnythingOfType("models.UserID")).
-					Return(&models.Account{
+					On("AddInvoice", mock.Anything, mock.AnythingOfType("models.UserID")).
+					Return(&models.Invoice{
 						ID:      1,
 						UserID:  1,
 						Balance: 0,
 					}, nil)
 
 				return &repository.Repositories{
-					AccountRepository: mockAccountRepository,
+					InvoiceRepository: mockAccountRepository,
 				}
 			},
 			args: args{
@@ -72,7 +72,7 @@ func Test_accountsService_CreateAccount(t *testing.T) {
 				userID: 1,
 			},
 			want: want{
-				account: &models.Account{
+				account: &models.Invoice{
 					ID:      1,
 					UserID:  1,
 					Balance: 0,
@@ -84,10 +84,10 @@ func Test_accountsService_CreateAccount(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			repo := test.mockRepositories()
-			as := accountsService{
-				accountRepository: repo.AccountRepository,
+			as := invoicesService{
+				accountRepository: repo.InvoiceRepository,
 			}
-			gotAccount, gotErr := as.CreateAccount(test.args.ctx, test.args.userID)
+			gotAccount, gotErr := as.CreateInvoice(test.args.ctx, test.args.userID)
 			require.Equal(t, &test.want.account, &gotAccount)
 			if len(test.want.errMsg) > 0 {
 				require.EqualError(t, gotErr, test.want.errMsg)
@@ -96,13 +96,13 @@ func Test_accountsService_CreateAccount(t *testing.T) {
 	}
 }
 
-func Test_accountsService_GetAccountByUserID(t *testing.T) {
+func Test_invoicesService_GetAccountByUserID(t *testing.T) {
 	type args struct {
 		ctx    context.Context
 		userID models.UserID
 	}
 	type want struct {
-		account *models.Account
+		account *models.Invoice
 		errMsg  string
 	}
 	tests := []struct {
@@ -112,15 +112,15 @@ func Test_accountsService_GetAccountByUserID(t *testing.T) {
 		want             want
 	}{
 		{
-			name: "GetAccountByUserID failed",
+			name: "GetInvoiceByUserID failed",
 			mockRepositories: func() *repository.Repositories {
-				mockAccountRepository := mocks.NewAccountRepository(t)
+				mockAccountRepository := mocks.NewInvoiceRepository(t)
 				mockAccountRepository.
-					On("GetAccountByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
+					On("GetInvoiceByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
 					Return(nil, fmt.Errorf("some repos error"))
 
 				return &repository.Repositories{
-					AccountRepository: mockAccountRepository,
+					InvoiceRepository: mockAccountRepository,
 				}
 			},
 			args: args{
@@ -135,17 +135,17 @@ func Test_accountsService_GetAccountByUserID(t *testing.T) {
 		{
 			name: "Successfully case",
 			mockRepositories: func() *repository.Repositories {
-				mockAccountRepository := mocks.NewAccountRepository(t)
+				mockAccountRepository := mocks.NewInvoiceRepository(t)
 				mockAccountRepository.
-					On("GetAccountByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
-					Return(&models.Account{
+					On("GetInvoiceByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
+					Return(&models.Invoice{
 						ID:      1,
 						UserID:  1,
 						Balance: 0,
 					}, nil)
 
 				return &repository.Repositories{
-					AccountRepository: mockAccountRepository,
+					InvoiceRepository: mockAccountRepository,
 				}
 			},
 			args: args{
@@ -153,7 +153,7 @@ func Test_accountsService_GetAccountByUserID(t *testing.T) {
 				userID: 1,
 			},
 			want: want{
-				account: &models.Account{
+				account: &models.Invoice{
 					ID:      1,
 					UserID:  1,
 					Balance: 0,
@@ -165,10 +165,10 @@ func Test_accountsService_GetAccountByUserID(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			repo := test.mockRepositories()
-			as := accountsService{
-				accountRepository: repo.AccountRepository,
+			as := invoicesService{
+				accountRepository: repo.InvoiceRepository,
 			}
-			gotAccount, gotErr := as.GetAccountByUserID(test.args.ctx, test.args.userID)
+			gotAccount, gotErr := as.GetInvoiceByUserID(test.args.ctx, test.args.userID)
 			require.Equal(t, &test.want.account, &gotAccount)
 			if len(test.want.errMsg) > 0 {
 				require.EqualError(t, gotErr, test.want.errMsg)
@@ -177,13 +177,13 @@ func Test_accountsService_GetAccountByUserID(t *testing.T) {
 	}
 }
 
-func Test_accountsService_GetAccountInfo(t *testing.T) {
+func Test_invoicesService_GetAccountInfo(t *testing.T) {
 	type args struct {
 		ctx     context.Context
-		account *models.Account
+		account *models.Invoice
 	}
 	type want struct {
-		accountInfo *models.AccountInfo
+		accountInfo *models.InvoiceInfo
 		errMsg      string
 	}
 	tests := []struct {
@@ -195,21 +195,21 @@ func Test_accountsService_GetAccountInfo(t *testing.T) {
 		{
 			name: "Successfully case",
 			mockRepositories: func() *repository.Repositories {
-				mockAccountRepository := mocks.NewAccountRepository(t)
+				mockAccountRepository := mocks.NewInvoiceRepository(t)
 				mockAccountRepository.
-					On("GetWithdrawnTotalSum", mock.Anything, mock.AnythingOfType("models.AccountID")).
+					On("GetWithdrawnTotalSum", mock.Anything, mock.AnythingOfType("models.InvoiceID")).
 					Return(100, nil)
 
 				return &repository.Repositories{
-					AccountRepository: mockAccountRepository,
+					InvoiceRepository: mockAccountRepository,
 				}
 			},
 			args: args{
 				ctx:     context.Background(),
-				account: &models.Account{ID: 1, Balance: 777},
+				account: &models.Invoice{ID: 1, Balance: 777},
 			},
 			want: want{
-				accountInfo: &models.AccountInfo{
+				accountInfo: &models.InvoiceInfo{
 					CurrentBalance: 777,
 					Withdrawals:    100,
 				},
@@ -219,18 +219,18 @@ func Test_accountsService_GetAccountInfo(t *testing.T) {
 		{
 			name: "GetWithdrawnTotalSum failed",
 			mockRepositories: func() *repository.Repositories {
-				mockAccountRepository := mocks.NewAccountRepository(t)
+				mockAccountRepository := mocks.NewInvoiceRepository(t)
 				mockAccountRepository.
-					On("GetWithdrawnTotalSum", mock.Anything, mock.AnythingOfType("models.AccountID")).
+					On("GetWithdrawnTotalSum", mock.Anything, mock.AnythingOfType("models.InvoiceID")).
 					Return(0, fmt.Errorf("some repos error"))
 
 				return &repository.Repositories{
-					AccountRepository: mockAccountRepository,
+					InvoiceRepository: mockAccountRepository,
 				}
 			},
 			args: args{
 				ctx:     context.Background(),
-				account: &models.Account{ID: 1},
+				account: &models.Invoice{ID: 1},
 			},
 			want: want{
 				accountInfo: nil,
@@ -241,10 +241,10 @@ func Test_accountsService_GetAccountInfo(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			repo := test.mockRepositories()
-			as := accountsService{
-				accountRepository: repo.AccountRepository,
+			as := invoicesService{
+				accountRepository: repo.InvoiceRepository,
 			}
-			gotAccountInfo, gotErr := as.GetAccountInfo(test.args.ctx, test.args.account)
+			gotAccountInfo, gotErr := as.GetInvoiceInfo(test.args.ctx, test.args.account)
 			require.Equal(t, &test.want.accountInfo, &gotAccountInfo)
 			if len(test.want.errMsg) > 0 {
 				require.EqualError(t, gotErr, test.want.errMsg)
@@ -253,10 +253,10 @@ func Test_accountsService_GetAccountInfo(t *testing.T) {
 	}
 }
 
-func Test_accountsService_GetWithdrawals(t *testing.T) {
+func Test_invoicesService_GetWithdrawals(t *testing.T) {
 	type args struct {
 		ctx     context.Context
-		account *models.Account
+		account *models.Invoice
 	}
 	type want struct {
 		withdrawalsList *models.WithdrawalsList
@@ -269,20 +269,20 @@ func Test_accountsService_GetWithdrawals(t *testing.T) {
 		want             want
 	}{
 		{
-			name: "GetAccountByUserID failed",
+			name: "GetInvoiceByUserID failed",
 			mockRepositories: func() *repository.Repositories {
-				mockAccountRepository := mocks.NewAccountRepository(t)
+				mockAccountRepository := mocks.NewInvoiceRepository(t)
 				mockAccountRepository.
-					On("GetWithdrawalsList", mock.Anything, mock.AnythingOfType("models.AccountID")).
+					On("GetWithdrawalsList", mock.Anything, mock.AnythingOfType("models.InvoiceID")).
 					Return(nil, fmt.Errorf("some repos error"))
 
 				return &repository.Repositories{
-					AccountRepository: mockAccountRepository,
+					InvoiceRepository: mockAccountRepository,
 				}
 			},
 			args: args{
 				ctx:     context.Background(),
-				account: &models.Account{},
+				account: &models.Invoice{},
 			},
 			want: want{
 				withdrawalsList: nil,
@@ -292,9 +292,9 @@ func Test_accountsService_GetWithdrawals(t *testing.T) {
 		{
 			name: "Successfully case",
 			mockRepositories: func() *repository.Repositories {
-				mockAccountRepository := mocks.NewAccountRepository(t)
+				mockAccountRepository := mocks.NewInvoiceRepository(t)
 				mockAccountRepository.
-					On("GetWithdrawalsList", mock.Anything, mock.AnythingOfType("models.AccountID")).
+					On("GetWithdrawalsList", mock.Anything, mock.AnythingOfType("models.InvoiceID")).
 					Return(&models.WithdrawalsList{
 						{
 							OrderNum:    "2377225624",
@@ -304,12 +304,12 @@ func Test_accountsService_GetWithdrawals(t *testing.T) {
 					}, nil)
 
 				return &repository.Repositories{
-					AccountRepository: mockAccountRepository,
+					InvoiceRepository: mockAccountRepository,
 				}
 			},
 			args: args{
 				ctx:     context.Background(),
-				account: &models.Account{},
+				account: &models.Invoice{},
 			},
 			want: want{
 				withdrawalsList: &models.WithdrawalsList{
@@ -326,8 +326,8 @@ func Test_accountsService_GetWithdrawals(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			repo := test.mockRepositories()
-			as := accountsService{
-				accountRepository: repo.AccountRepository,
+			as := invoicesService{
+				accountRepository: repo.InvoiceRepository,
 			}
 			gotWithdrawalsList, gotErr := as.GetWithdrawals(test.args.ctx, test.args.account)
 			require.Equal(t, &test.want.withdrawalsList, &gotWithdrawalsList)
@@ -338,15 +338,15 @@ func Test_accountsService_GetWithdrawals(t *testing.T) {
 	}
 }
 
-func Test_accountsService_UpdateBalance(t *testing.T) {
+func Test_invoicesService_UpdateBalance(t *testing.T) {
 	type args struct {
 		ctx      context.Context
-		account  models.Account
+		account  models.Invoice
 		amount   float64
 		orderNum models.OrderNum
 	}
 	type want struct {
-		account *models.Account
+		account *models.Invoice
 		errMsg  string
 	}
 	tests := []struct {
@@ -363,7 +363,7 @@ func Test_accountsService_UpdateBalance(t *testing.T) {
 			},
 			args: args{
 				ctx: context.Background(),
-				account: models.Account{
+				account: models.Invoice{
 					Balance: 10,
 				},
 				amount:   100,
@@ -375,20 +375,20 @@ func Test_accountsService_UpdateBalance(t *testing.T) {
 			},
 		},
 		{
-			name: "AddAccountChange failed",
+			name: "AddInvoiceChange failed",
 			mockRepositories: func() *repository.Repositories {
-				mockAccountRepository := mocks.NewAccountRepository(t)
+				mockAccountRepository := mocks.NewInvoiceRepository(t)
 				mockAccountRepository.
-					On("AddAccountChange", mock.Anything, mock.AnythingOfType("models.AccountID"), mock.AnythingOfType("float64"), mock.Anything).
+					On("AddInvoiceChange", mock.Anything, mock.AnythingOfType("models.InvoiceID"), mock.AnythingOfType("float64"), mock.Anything).
 					Return(nil, fmt.Errorf("some repos error"))
 
 				return &repository.Repositories{
-					AccountRepository: mockAccountRepository,
+					InvoiceRepository: mockAccountRepository,
 				}
 			},
 			args: args{
 				ctx: context.Background(),
-				account: models.Account{
+				account: models.Invoice{
 					Balance: 1000,
 				},
 				amount:   100,
@@ -402,20 +402,20 @@ func Test_accountsService_UpdateBalance(t *testing.T) {
 		{
 			name: "UpdateAccount failed",
 			mockRepositories: func() *repository.Repositories {
-				mockAccountRepository := mocks.NewAccountRepository(t)
+				mockAccountRepository := mocks.NewInvoiceRepository(t)
 				mockAccountRepository.
-					On("AddAccountChange", mock.Anything, mock.AnythingOfType("models.AccountID"), mock.AnythingOfType("float64"), mock.Anything).
+					On("AddInvoiceChange", mock.Anything, mock.AnythingOfType("models.InvoiceID"), mock.AnythingOfType("float64"), mock.Anything).
 					Return(nil, nil).
-					On("UpdateBalance", mock.Anything, mock.AnythingOfType("models.Account"), mock.AnythingOfType("float64")).
+					On("UpdateBalance", mock.Anything, mock.AnythingOfType("models.Invoice"), mock.AnythingOfType("float64")).
 					Return(nil, fmt.Errorf("some repos error"))
 
 				return &repository.Repositories{
-					AccountRepository: mockAccountRepository,
+					InvoiceRepository: mockAccountRepository,
 				}
 			},
 			args: args{
 				ctx: context.Background(),
-				account: models.Account{
+				account: models.Invoice{
 					Balance: 1000,
 				},
 				amount:   100,
@@ -429,29 +429,29 @@ func Test_accountsService_UpdateBalance(t *testing.T) {
 		{
 			name: "Successfully case",
 			mockRepositories: func() *repository.Repositories {
-				mockAccountRepository := mocks.NewAccountRepository(t)
+				mockAccountRepository := mocks.NewInvoiceRepository(t)
 				mockAccountRepository.
-					On("AddAccountChange", mock.Anything, mock.AnythingOfType("models.AccountID"), mock.AnythingOfType("float64"), mock.Anything).
+					On("AddInvoiceChange", mock.Anything, mock.AnythingOfType("models.InvoiceID"), mock.AnythingOfType("float64"), mock.Anything).
 					Return(nil, nil).
-					On("UpdateBalance", mock.Anything, mock.AnythingOfType("models.Account"), mock.AnythingOfType("float64")).
-					Return(&models.Account{
+					On("UpdateBalance", mock.Anything, mock.AnythingOfType("models.Invoice"), mock.AnythingOfType("float64")).
+					Return(&models.Invoice{
 						Balance: 900,
 					}, nil)
 
 				return &repository.Repositories{
-					AccountRepository: mockAccountRepository,
+					InvoiceRepository: mockAccountRepository,
 				}
 			},
 			args: args{
 				ctx: context.Background(),
-				account: models.Account{
+				account: models.Invoice{
 					Balance: 1000,
 				},
 				amount:   100,
 				orderNum: "123",
 			},
 			want: want{
-				account: &models.Account{
+				account: &models.Invoice{
 					Balance: 900,
 				},
 				errMsg: "",
@@ -461,8 +461,8 @@ func Test_accountsService_UpdateBalance(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			repo := test.mockRepositories()
-			as := accountsService{
-				accountRepository: repo.AccountRepository,
+			as := invoicesService{
+				accountRepository: repo.InvoiceRepository,
 			}
 			gotAccount, gotErr := as.UpdateBalance(test.args.ctx, test.args.account, test.args.amount, test.args.orderNum)
 			require.Equal(t, &test.want.account, &gotAccount)

@@ -169,7 +169,7 @@ func TestHandler_WritingOff(t *testing.T) {
 			},
 		},
 		{
-			name:   "500 — GetAccountByUserID failed",
+			name:   "500 — GetInvoiceByUserID failed",
 			method: http.MethodPost,
 			mockServices: func() *service.Services {
 				mockSecurityService := mockservice.NewSecurityService(t)
@@ -182,13 +182,13 @@ func TestHandler_WritingOff(t *testing.T) {
 					On("ValidateNumber", mock.Anything, mock.AnythingOfType("models.OrderNum")).
 					Return(true, nil)
 
-				mockAccountsService := mockservice.NewAccountsService(t)
-				mockAccountsService.
-					On("GetAccountByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
+				mockInvoicesService := mockservice.NewInvoicesService(t)
+				mockInvoicesService.
+					On("GetInvoiceByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
 					Return(nil, fmt.Errorf("some error"))
 
 				return &service.Services{
-					AccountsService: mockAccountsService,
+					InvoicesService: mockInvoicesService,
 					OrdersService:   mockOrdersService,
 					SecurityService: mockSecurityService,
 				}
@@ -219,15 +219,15 @@ func TestHandler_WritingOff(t *testing.T) {
 					On("ValidateNumber", mock.Anything, mock.AnythingOfType("models.OrderNum")).
 					Return(true, nil)
 
-				mockAccountsService := mockservice.NewAccountsService(t)
-				mockAccountsService.
-					On("GetAccountByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
-					Return(&models.Account{}, nil).
-					On("UpdateBalance", mock.Anything, models.Account{}, mock.AnythingOfType("float64"), mock.AnythingOfType("models.OrderNum")).
+				mockInvoicesService := mockservice.NewInvoicesService(t)
+				mockInvoicesService.
+					On("GetInvoiceByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
+					Return(&models.Invoice{}, nil).
+					On("UpdateBalance", mock.Anything, models.Invoice{}, mock.AnythingOfType("float64"), mock.AnythingOfType("models.OrderNum")).
 					Return(nil, fmt.Errorf("some error"))
 
 				return &service.Services{
-					AccountsService: mockAccountsService,
+					InvoicesService: mockInvoicesService,
 					OrdersService:   mockOrdersService,
 					SecurityService: mockSecurityService,
 				}
@@ -258,15 +258,15 @@ func TestHandler_WritingOff(t *testing.T) {
 					On("ValidateNumber", mock.Anything, mock.AnythingOfType("models.OrderNum")).
 					Return(true, nil)
 
-				mockAccountsService := mockservice.NewAccountsService(t)
-				mockAccountsService.
-					On("GetAccountByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
-					Return(&models.Account{}, nil).
-					On("UpdateBalance", mock.Anything, models.Account{}, mock.AnythingOfType("float64"), mock.AnythingOfType("models.OrderNum")).
+				mockInvoicesService := mockservice.NewInvoicesService(t)
+				mockInvoicesService.
+					On("GetInvoiceByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
+					Return(&models.Invoice{}, nil).
+					On("UpdateBalance", mock.Anything, models.Invoice{}, mock.AnythingOfType("float64"), mock.AnythingOfType("models.OrderNum")).
 					Return(nil, apperrors.ErrAccountHasNotEnoughFunds)
 
 				return &service.Services{
-					AccountsService: mockAccountsService,
+					InvoicesService: mockInvoicesService,
 					OrdersService:   mockOrdersService,
 					SecurityService: mockSecurityService,
 				}
@@ -297,15 +297,15 @@ func TestHandler_WritingOff(t *testing.T) {
 					On("ValidateNumber", mock.Anything, mock.AnythingOfType("models.OrderNum")).
 					Return(true, nil)
 
-				mockAccountsService := mockservice.NewAccountsService(t)
-				mockAccountsService.
-					On("GetAccountByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
-					Return(&models.Account{}, nil).
-					On("UpdateBalance", mock.Anything, models.Account{}, mock.AnythingOfType("float64"), mock.AnythingOfType("models.OrderNum")).
+				mockInvoicesService := mockservice.NewInvoicesService(t)
+				mockInvoicesService.
+					On("GetInvoiceByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
+					Return(&models.Invoice{}, nil).
+					On("UpdateBalance", mock.Anything, models.Invoice{}, mock.AnythingOfType("float64"), mock.AnythingOfType("models.OrderNum")).
 					Return(nil, nil)
 
 				return &service.Services{
-					AccountsService: mockAccountsService,
+					InvoicesService: mockInvoicesService,
 					OrdersService:   mockOrdersService,
 					SecurityService: mockSecurityService,
 				}

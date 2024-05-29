@@ -26,25 +26,25 @@ CREATE TABLE orders
     calculated BOOLEAN   DEFAULT false             NOT NULL
 );
 
-CREATE TABLE accounts
+CREATE TABLE invoices
 (
     id      SERIAL
-        CONSTRAINT accounts_pk
+        CONSTRAINT invoices_pk
             PRIMARY KEY,
     "user"  INTEGER NOT NULL
-        CONSTRAINT accounts_users_id_fk
+        CONSTRAINT invoices_users_id_fk
             REFERENCES users,
     balance money   NOT NULL
 );
 
-CREATE TABLE accounts_changes
+CREATE TABLE invoices_changes
 (
     id      SERIAL
-        CONSTRAINT accounts_changes_pk
+        CONSTRAINT invoices_changes_pk
             PRIMARY KEY,
     account INTEGER   NOT NULL
-        CONSTRAINT accounts_changes_accounts_id_fk
-            REFERENCES accounts,
+        CONSTRAINT invoices_changes_accounts_id_fk
+            REFERENCES invoices,
     amount  money     NOT NULL,
     ts      TIMESTAMP NOT NULL,
     "order" VARCHAR(50)

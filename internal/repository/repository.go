@@ -9,14 +9,14 @@ import (
 	"e1m0re/loyalty-srv/internal/models"
 )
 
-//go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=AccountRepository
-type AccountRepository interface {
-	AddAccount(ctx context.Context, userID models.UserID) (*models.Account, error)
-	AddAccountChange(ctx context.Context, accountID models.AccountID, amount float64, orderNum models.OrderNum) (*models.AccountChanges, error)
-	GetAccountByUserID(ctx context.Context, userID models.UserID) (*models.Account, error)
-	GetWithdrawalsList(ctx context.Context, accountID models.AccountID) (*models.WithdrawalsList, error)
-	GetWithdrawnTotalSum(ctx context.Context, accountID models.AccountID) (int, error)
-	UpdateBalance(ctx context.Context, account models.Account, amount float64) (*models.Account, error)
+//go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=InvoiceRepository
+type InvoiceRepository interface {
+	AddInvoice(ctx context.Context, userID models.UserID) (*models.Invoice, error)
+	AddInvoiceChange(ctx context.Context, invoiceID models.InvoiceID, amount float64, orderNum models.OrderNum) (*models.InvoiceChanges, error)
+	GetInvoiceByUserID(ctx context.Context, userID models.UserID) (*models.Invoice, error)
+	GetWithdrawalsList(ctx context.Context, invoiceID models.InvoiceID) (*models.WithdrawalsList, error)
+	GetWithdrawnTotalSum(ctx context.Context, invoiceID models.InvoiceID) (int, error)
+	UpdateBalance(ctx context.Context, invoice models.Invoice, amount float64) (*models.Invoice, error)
 }
 
 //go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=OrderRepository
@@ -36,14 +36,14 @@ type UserRepository interface {
 }
 
 type Repositories struct {
-	AccountRepository
+	InvoiceRepository
 	OrderRepository
 	UserRepository
 }
 
 func NewRepositories(db *sqlx.DB) *Repositories {
 	return &Repositories{
-		AccountRepository: NewAccountRepository(db),
+		InvoiceRepository: NewInvoiceRepository(db),
 		OrderRepository:   NewOrderRepository(db),
 		UserRepository:    NewUserRepository(db),
 	}

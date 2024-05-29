@@ -148,12 +148,12 @@ func TestHandler_SignUp(t *testing.T) {
 			},
 		},
 		{
-			name:   "500 — CreateAccount failed",
+			name:   "500 — CreateInvoice failed",
 			method: http.MethodPost,
 			mockServices: func() *service.Services {
-				mockAccountService := mockservice.NewAccountsService(t)
+				mockAccountService := mockservice.NewInvoicesService(t)
 				mockAccountService.
-					On("CreateAccount", mock.Anything, mock.AnythingOfType("models.UserID")).
+					On("CreateInvoice", mock.Anything, mock.AnythingOfType("models.UserID")).
 					Return(nil, fmt.Errorf("some repos error"))
 
 				mockSecurityService := mockservice.NewSecurityService(t)
@@ -167,7 +167,7 @@ func TestHandler_SignUp(t *testing.T) {
 					Return(&models.User{}, nil)
 
 				return &service.Services{
-					AccountsService: mockAccountService,
+					InvoicesService: mockAccountService,
 					SecurityService: mockSecurityService,
 					UsersService:    mockUsersService,
 				}
@@ -183,9 +183,9 @@ func TestHandler_SignUp(t *testing.T) {
 			name:   "500 — SignIn failed",
 			method: http.MethodPost,
 			mockServices: func() *service.Services {
-				mockAccountService := mockservice.NewAccountsService(t)
+				mockAccountService := mockservice.NewInvoicesService(t)
 				mockAccountService.
-					On("CreateAccount", mock.Anything, mock.AnythingOfType("models.UserID")).
+					On("CreateInvoice", mock.Anything, mock.AnythingOfType("models.UserID")).
 					Return(nil, nil)
 
 				mockSecurityService := mockservice.NewSecurityService(t)
@@ -201,7 +201,7 @@ func TestHandler_SignUp(t *testing.T) {
 					Return("", errors.New("signin failed"))
 
 				return &service.Services{
-					AccountsService: mockAccountService,
+					InvoicesService: mockAccountService,
 					SecurityService: mockSecurityService,
 					UsersService:    mockUsersService,
 				}
@@ -217,9 +217,9 @@ func TestHandler_SignUp(t *testing.T) {
 			name:   "200",
 			method: http.MethodPost,
 			mockServices: func() *service.Services {
-				mockAccountService := mockservice.NewAccountsService(t)
+				mockAccountService := mockservice.NewInvoicesService(t)
 				mockAccountService.
-					On("CreateAccount", mock.Anything, mock.AnythingOfType("models.UserID")).
+					On("CreateInvoice", mock.Anything, mock.AnythingOfType("models.UserID")).
 					Return(nil, nil)
 
 				mockSecurityService := mockservice.NewSecurityService(t)
@@ -235,7 +235,7 @@ func TestHandler_SignUp(t *testing.T) {
 					Return("json-token", nil)
 
 				return &service.Services{
-					AccountsService: mockAccountService,
+					InvoicesService: mockAccountService,
 					SecurityService: mockSecurityService,
 					UsersService:    mockUsersService,
 				}

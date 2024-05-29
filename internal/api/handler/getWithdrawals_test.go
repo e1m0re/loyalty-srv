@@ -80,7 +80,7 @@ func TestHandler_GetWithdrawals(t *testing.T) {
 			},
 		},
 		{
-			name:   "500 — GetAccountByUserID failed",
+			name:   "500 — GetInvoiceByUserID failed",
 			method: http.MethodGet,
 			mockServices: func() *service.Services {
 				mockSecurityService := mockservice.NewSecurityService(t)
@@ -88,13 +88,13 @@ func TestHandler_GetWithdrawals(t *testing.T) {
 					On("GenerateAuthToken").
 					Return(jwtAuth)
 
-				mockAccountsService := mockservice.NewAccountsService(t)
-				mockAccountsService.
-					On("GetAccountByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
+				mockInvoicesService := mockservice.NewInvoicesService(t)
+				mockInvoicesService.
+					On("GetInvoiceByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
 					Return(nil, errors.New("some error"))
 
 				return &service.Services{
-					AccountsService: mockAccountsService,
+					InvoicesService: mockInvoicesService,
 					SecurityService: mockSecurityService,
 				}
 			},
@@ -118,15 +118,15 @@ func TestHandler_GetWithdrawals(t *testing.T) {
 					On("GenerateAuthToken").
 					Return(jwtAuth)
 
-				mockAccountsService := mockservice.NewAccountsService(t)
-				mockAccountsService.
-					On("GetAccountByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
-					Return(&models.Account{}, nil).
-					On("GetWithdrawals", mock.Anything, &models.Account{}).
+				mockInvoicesService := mockservice.NewInvoicesService(t)
+				mockInvoicesService.
+					On("GetInvoiceByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
+					Return(&models.Invoice{}, nil).
+					On("GetWithdrawals", mock.Anything, &models.Invoice{}).
 					Return(nil, fmt.Errorf("some error"))
 
 				return &service.Services{
-					AccountsService: mockAccountsService,
+					InvoicesService: mockInvoicesService,
 					SecurityService: mockSecurityService,
 				}
 			},
@@ -157,15 +157,15 @@ func TestHandler_GetWithdrawals(t *testing.T) {
 						ProcessedAt: time.Date(1984, time.April, 5, 6, 7, 8, 0, time.UTC),
 					},
 				}
-				mockAccountsService := mockservice.NewAccountsService(t)
-				mockAccountsService.
-					On("GetAccountByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
-					Return(&models.Account{}, nil).
-					On("GetWithdrawals", mock.Anything, &models.Account{}).
+				mockInvoicesService := mockservice.NewInvoicesService(t)
+				mockInvoicesService.
+					On("GetInvoiceByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
+					Return(&models.Invoice{}, nil).
+					On("GetWithdrawals", mock.Anything, &models.Invoice{}).
 					Return(withdrawalsList, nil)
 
 				return &service.Services{
-					AccountsService: mockAccountsService,
+					InvoicesService: mockInvoicesService,
 					SecurityService: mockSecurityService,
 				}
 			},

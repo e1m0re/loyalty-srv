@@ -80,7 +80,7 @@ func TestHandler_GetBalance(t *testing.T) {
 			},
 		},
 		{
-			name:   "500 — GetAccountByUserID failed",
+			name:   "500 — GetInvoiceByUserID failed",
 			method: http.MethodGet,
 			mockServices: func() *service.Services {
 				mockSecurityService := mockservice.NewSecurityService(t)
@@ -88,13 +88,13 @@ func TestHandler_GetBalance(t *testing.T) {
 					On("GenerateAuthToken").
 					Return(jwtAuth)
 
-				mockAccountsService := mockservice.NewAccountsService(t)
-				mockAccountsService.
-					On("GetAccountByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
+				mockInvoicesService := mockservice.NewInvoicesService(t)
+				mockInvoicesService.
+					On("GetInvoiceByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
 					Return(nil, errors.New("some error"))
 
 				return &service.Services{
-					AccountsService: mockAccountsService,
+					InvoicesService: mockInvoicesService,
 					SecurityService: mockSecurityService,
 				}
 			},
@@ -110,7 +110,7 @@ func TestHandler_GetBalance(t *testing.T) {
 			},
 		},
 		{
-			name:   "500 — GetAccountInfo failed",
+			name:   "500 — GetInvoiceInfo failed",
 			method: http.MethodGet,
 			mockServices: func() *service.Services {
 				mockSecurityService := mockservice.NewSecurityService(t)
@@ -118,13 +118,13 @@ func TestHandler_GetBalance(t *testing.T) {
 					On("GenerateAuthToken").
 					Return(jwtAuth)
 
-				mockAccountsService := mockservice.NewAccountsService(t)
-				mockAccountsService.
-					On("GetAccountByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
-					Return(&models.Account{}, errors.New("some error"))
+				mockInvoicesService := mockservice.NewInvoicesService(t)
+				mockInvoicesService.
+					On("GetInvoiceByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
+					Return(&models.Invoice{}, errors.New("some error"))
 
 				return &service.Services{
-					AccountsService: mockAccountsService,
+					InvoicesService: mockInvoicesService,
 					SecurityService: mockSecurityService,
 				}
 			},
@@ -148,18 +148,18 @@ func TestHandler_GetBalance(t *testing.T) {
 					On("GenerateAuthToken").
 					Return(jwtAuth)
 
-				mockAccountsService := mockservice.NewAccountsService(t)
-				mockAccountsService.
-					On("GetAccountByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
-					Return(&models.Account{}, nil).
-					On("GetAccountInfo", mock.Anything, &models.Account{}).
-					Return(&models.AccountInfo{
+				mockInvoicesService := mockservice.NewInvoicesService(t)
+				mockInvoicesService.
+					On("GetInvoiceByUserID", mock.Anything, mock.AnythingOfType("models.UserID")).
+					Return(&models.Invoice{}, nil).
+					On("GetInvoiceInfo", mock.Anything, &models.Invoice{}).
+					Return(&models.InvoiceInfo{
 						CurrentBalance: 500.5,
 						Withdrawals:    42,
 					}, nil)
 
 				return &service.Services{
-					AccountsService: mockAccountsService,
+					InvoicesService: mockInvoicesService,
 					SecurityService: mockSecurityService,
 				}
 			},
