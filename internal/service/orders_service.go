@@ -92,3 +92,7 @@ func (os ordersService) UpdateOrdersCalculated(ctx context.Context, order models
 func (os ordersService) UpdateOrdersStatus(ctx context.Context, order models.Order, status models.OrdersStatus, accrual int) (*models.Order, error) {
 	return os.orderRepository.UpdateOrdersStatus(ctx, order, status, accrual)
 }
+
+func (os ordersService) GetNotCalculatedOrder(ctx context.Context, limit int) (*models.OrdersList, error) {
+	return os.orderRepository.GetNotCalculatedOrder(ctx, limit)
+}

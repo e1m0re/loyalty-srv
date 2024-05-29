@@ -21,7 +21,7 @@ func NewInvoiceRepository(db *sqlx.DB) InvoiceRepository {
 	}
 }
 
-func (repo *invoiceRepository) AddInvoice(ctx context.Context, userID models.UserID) (*models.Invoice, error) {
+func (repo invoiceRepository) AddInvoice(ctx context.Context, userID models.UserID) (*models.Invoice, error) {
 	a := &models.Invoice{
 		UserID:  userID,
 		Balance: 0,
@@ -35,34 +35,44 @@ func (repo *invoiceRepository) AddInvoice(ctx context.Context, userID models.Use
 	return a, nil
 }
 
-func (repo *invoiceRepository) AddInvoiceChange(ctx context.Context, accountID models.InvoiceID, amount float64, orderNum models.OrderNum) (*models.InvoiceChanges, error) {
-	ac := &models.InvoiceChanges{
-		InvoiceID: accountID,
+func (repo invoiceRepository) AddInvoiceChange(ctx context.Context, invoiceID models.InvoiceID, amount float64, orderNum models.OrderNum) (*models.InvoiceChanges, error) {
+	ic := &models.InvoiceChanges{
+		InvoiceID: invoiceID,
 		OrderNum:  orderNum,
 		Amount:    amount,
 		TS:        time.Now(),
 	}
 	query := "INSERT INTO invoices_changes (account, amount, ts, \"order\") VALUES ($1, $2, $3, $4) RETURNING id"
-	err := repo.db.QueryRowContext(ctx, query, ac.InvoiceID, ac.Amount, ac.TS, ac.OrderNum).Scan(&ac.ID)
+	err := repo.db.QueryRowContext(ctx, query, ic.InvoiceID, ic.Amount, ic.TS, ic.OrderNum).Scan(&ic.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	return ac, err
+	return ic, err
 }
 
-func (repo *invoiceRepository) GetInvoiceByUserID(ctx context.Context, userID models.UserID) (*models.Invoice, error) {
-	account := &models.Invoice{}
-	err := repo.db.GetContext(ctx, account, "SELECT id, \"user\", balance::numeric FROM invoices WHERE \"user\" = $1", userID)
+func (repo invoiceRepository) GetInvoiceByID(ctx context.Context, invoiceID models.InvoiceID) (*models.Invoice, error) {
+	invoice := &models.Invoice{}
+	err := repo.db.GetContext(ctx, invoice, "SELECT id, \"user\", balance::numeric FROM invoices WHERE id = $1", invoiceID)
 	if err != nil {
 		return nil, err
 	}
 
-	return account, err
+	return invoice, err
 }
 
-func (repo *invoiceRepository) GetWithdrawalsList(ctx context.Context, accountID models.InvoiceID) (*models.WithdrawalsList, error) {
-	rows, err := repo.db.QueryContext(ctx, "SELECT \"order\", ABS(delta::numeric), ts FROM invoices_changes WHERE account = $1 and amount::numeric < 0", accountID)
+func (repo invoiceRepository) GetInvoiceByUserID(ctx context.Context, userID models.UserID) (*models.Invoice, error) {
+	invoice := &models.Invoice{}
+	err := repo.db.GetContext(ctx, invoice, "SELECT id, \"user\", balance::numeric FROM invoices WHERE \"user\" = $1", userID)
+	if err != nil {
+		return nil, err
+	}
+
+	return invoice, err
+}
+
+func (repo invoiceRepository) GetWithdrawalsList(ctx context.Context, invoiceID models.InvoiceID) (*models.WithdrawalsList, error) {
+	rows, err := repo.db.QueryContext(ctx, "SELECT \"order\", ABS(delta::numeric), ts FROM invoices_changes WHERE account = $1 and amount::numeric < 0", invoiceID)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +83,7 @@ func (repo *invoiceRepository) GetWithdrawalsList(ctx context.Context, accountID
 		w := models.Withdrawal{}
 		err := rows.Scan(&w.OrderNum, &w.Sum, &w.ProcessedAt)
 		if err != nil {
-			slog.Error("GetWithdrawalsList", slog.Any("accountID", accountID), slog.String("err", err.Error()))
+			slog.Error("GetWithdrawalsList", slog.Any("invoiceID", invoiceID), slog.String("err", err.Error()))
 			continue
 		}
 
@@ -87,10 +97,10 @@ func (repo *invoiceRepository) GetWithdrawalsList(ctx context.Context, accountID
 	return &withdrawals, nil
 }
 
-func (repo *invoiceRepository) GetWithdrawnTotalSum(ctx context.Context, accountID models.InvoiceID) (int, error) {
+func (repo invoiceRepository) GetWithdrawnTotalSum(ctx context.Context, invoiceID models.InvoiceID) (int, error) {
 	var sum float64
 	query := "SELECT sum(amount) FROM invoices_changes WHERE account = $1 AND amount::numeric < 0"
-	err := repo.db.QueryRowContext(ctx, query, accountID).Scan(&sum)
+	err := repo.db.QueryRowContext(ctx, query, invoiceID).Scan(&sum)
 	if err != nil {
 		return 0, err
 	}
@@ -98,13 +108,13 @@ func (repo *invoiceRepository) GetWithdrawnTotalSum(ctx context.Context, account
 	return int(math.Abs(sum)), nil
 }
 
-func (repo *invoiceRepository) UpdateBalance(ctx context.Context, account models.Invoice, amount float64) (*models.Invoice, error) {
-	account.Balance = account.Balance - amount
+func (repo invoiceRepository) UpdateBalance(ctx context.Context, invoice models.Invoice, amount float64) (*models.Invoice, error) {
+	invoice.Balance = invoice.Balance - amount
 	query := "UPDATE invoices SET balance = $1 WHERE id = $2"
-	_, err := repo.db.ExecContext(ctx, query, account.Balance, account.ID)
+	_, err := repo.db.ExecContext(ctx, query, invoice.Balance, invoice.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	return &account, nil
+	return &invoice, nil
 }

@@ -13,6 +13,7 @@ import (
 type InvoiceRepository interface {
 	AddInvoice(ctx context.Context, userID models.UserID) (*models.Invoice, error)
 	AddInvoiceChange(ctx context.Context, invoiceID models.InvoiceID, amount float64, orderNum models.OrderNum) (*models.InvoiceChanges, error)
+	GetInvoiceByID(ctx context.Context, invoiceID models.InvoiceID) (*models.Invoice, error)
 	GetInvoiceByUserID(ctx context.Context, userID models.UserID) (*models.Invoice, error)
 	GetWithdrawalsList(ctx context.Context, invoiceID models.InvoiceID) (*models.WithdrawalsList, error)
 	GetWithdrawnTotalSum(ctx context.Context, invoiceID models.InvoiceID) (int, error)
@@ -23,6 +24,7 @@ type InvoiceRepository interface {
 type OrderRepository interface {
 	AddOrder(ctx context.Context, orderInfo models.OrderInfo) (*models.Order, error)
 	GetLoadedOrdersByUserID(ctx context.Context, userID models.UserID) (*models.OrdersList, error)
+	GetNotCalculatedOrder(ctx context.Context, limit int) (*models.OrdersList, error)
 	GetOrderByNumber(ctx context.Context, num models.OrderNum) (*models.Order, error)
 	UpdateOrdersCalculated(ctx context.Context, order models.Order, calculated bool) (*models.Order, error)
 	UpdateOrdersStatus(ctx context.Context, order models.Order, status models.OrdersStatus, accrual int) (*models.Order, error)

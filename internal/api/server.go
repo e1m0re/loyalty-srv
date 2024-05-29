@@ -20,8 +20,9 @@ import (
 )
 
 type Server struct {
-	config     *Config
-	httpServer *http.Server
+	config          *Config
+	httpServer      *http.Server
+	ordersProcessor service.OrdersProcessor
 }
 
 func NewServer(ctx context.Context, cfg *Config) (*Server, error) {
@@ -41,6 +42,7 @@ func NewServer(ctx context.Context, cfg *Config) (*Server, error) {
 			Addr:    cfg.serverAddress,
 			Handler: handler.NewRouter(),
 		},
+		ordersProcessor: service.NewOrdersProcessor(&services.InvoicesService, &services.OrdersService),
 	}
 
 	return srv, nil
@@ -97,7 +99,10 @@ func (srv *Server) Start(ctx context.Context) error {
 			case <-ctx.Done():
 				return nil
 			case <-time.After(srv.config.delays.invoiceProcessing):
-				slog.Info("invoice processing")
+				err := srv.ordersProcessor.RecalculateProcessedOrders(ctx)
+				if err != nil {
+					slog.Warn("Invoices Processing", slog.String("error", err.Error()))
+				}
 			}
 		}
 	})

@@ -23,7 +23,7 @@ func NewUserRepository(db *sqlx.DB) UserRepository {
 	}
 }
 
-func (repo *userRepository) CreateUser(ctx context.Context, userInfo models.UserInfo) (user *models.User, err error) {
+func (repo userRepository) CreateUser(ctx context.Context, userInfo models.UserInfo) (user *models.User, err error) {
 	user = &models.User{
 		Username: userInfo.Username,
 		Password: userInfo.Password,
@@ -41,7 +41,7 @@ func (repo *userRepository) CreateUser(ctx context.Context, userInfo models.User
 	return user, nil
 }
 
-func (repo *userRepository) GetUserByUsername(ctx context.Context, username string) (user *models.User, err error) {
+func (repo userRepository) GetUserByUsername(ctx context.Context, username string) (user *models.User, err error) {
 	user = &models.User{}
 	query := "SELECT * FROM users WHERE username = $1 LIMIT 1"
 	err = repo.db.GetContext(ctx, user, query, username)
@@ -55,7 +55,7 @@ func (repo *userRepository) GetUserByUsername(ctx context.Context, username stri
 	}
 }
 
-func (repo *userRepository) UpdateUsersLastLogin(ctx context.Context, id models.UserID, t time.Time) error {
+func (repo userRepository) UpdateUsersLastLogin(ctx context.Context, id models.UserID, t time.Time) error {
 	query := "UPDATE users SET last_login = $1 WHERE id = $2"
 	_, err := repo.db.ExecContext(ctx, query, t, id)
 

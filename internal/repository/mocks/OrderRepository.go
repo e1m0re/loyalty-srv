@@ -74,6 +74,36 @@ func (_m *OrderRepository) GetLoadedOrdersByUserID(ctx context.Context, userID m
 	return r0, r1
 }
 
+// GetNotCalculatedOrder provides a mock function with given fields: ctx, limit
+func (_m *OrderRepository) GetNotCalculatedOrder(ctx context.Context, limit int) (*[]models.Order, error) {
+	ret := _m.Called(ctx, limit)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetNotCalculatedOrder")
+	}
+
+	var r0 *[]models.Order
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, int) (*[]models.Order, error)); ok {
+		return rf(ctx, limit)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, int) *[]models.Order); ok {
+		r0 = rf(ctx, limit)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*[]models.Order)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, int) error); ok {
+		r1 = rf(ctx, limit)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetOrderByNumber provides a mock function with given fields: ctx, num
 func (_m *OrderRepository) GetOrderByNumber(ctx context.Context, num models.OrderNum) (*models.Order, error) {
 	ret := _m.Called(ctx, num)

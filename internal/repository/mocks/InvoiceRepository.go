@@ -74,6 +74,36 @@ func (_m *InvoiceRepository) AddInvoiceChange(ctx context.Context, invoiceID mod
 	return r0, r1
 }
 
+// GetInvoiceByID provides a mock function with given fields: ctx, invoiceID
+func (_m *InvoiceRepository) GetInvoiceByID(ctx context.Context, invoiceID models.InvoiceID) (*models.Invoice, error) {
+	ret := _m.Called(ctx, invoiceID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetInvoiceByID")
+	}
+
+	var r0 *models.Invoice
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, models.InvoiceID) (*models.Invoice, error)); ok {
+		return rf(ctx, invoiceID)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, models.InvoiceID) *models.Invoice); ok {
+		r0 = rf(ctx, invoiceID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.Invoice)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, models.InvoiceID) error); ok {
+		r1 = rf(ctx, invoiceID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetInvoiceByUserID provides a mock function with given fields: ctx, userID
 func (_m *InvoiceRepository) GetInvoiceByUserID(ctx context.Context, userID models.UserID) (*models.Invoice, error) {
 	ret := _m.Called(ctx, userID)
