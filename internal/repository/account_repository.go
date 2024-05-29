@@ -26,7 +26,7 @@ func (repo *accountRepository) AddAccount(ctx context.Context, userID models.Use
 		UserID:  userID,
 		Balance: 0,
 	}
-	query := "INSERT INTO accounts (\"user\", current_value) VALUES ($1, $2) RETURNING id"
+	query := "INSERT INTO accounts (\"user\", balance) VALUES ($1, $2) RETURNING id"
 	err := repo.db.QueryRowContext(ctx, query, a.UserID, a.Balance).Scan(&a.ID)
 	if err != nil {
 		return nil, err

@@ -1,11 +1,12 @@
 package handler
 
 import (
-	"e1m0re/loyalty-srv/internal/apperrors"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 
+	"e1m0re/loyalty-srv/internal/apperrors"
 	"e1m0re/loyalty-srv/internal/models"
 )
 
@@ -34,8 +35,8 @@ func (h *Handler) SignIn(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(token) > 0 {
+		w.Header().Add("Authorization", fmt.Sprintf("Bearer %s", token))
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(token))
 		return
 	}
 

@@ -52,8 +52,12 @@ func (os ordersService) ValidateNumber(ctx context.Context, orderNum models.Orde
 
 func (os ordersService) NewOrder(ctx context.Context, orderInfo models.OrderInfo) (*models.Order, error) {
 	ok, err := os.ValidateNumber(ctx, orderInfo.OrderNum)
-	if !ok {
+	if err != nil {
 		return nil, err
+	}
+
+	if !ok {
+		return nil, apperrors.ErrInvalidOrderNumber
 	}
 
 	order, err := os.orderRepository.GetOrderByNumber(ctx, orderInfo.OrderNum)

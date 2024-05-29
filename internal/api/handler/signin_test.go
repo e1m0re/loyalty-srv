@@ -26,6 +26,7 @@ func TestHandler_SignIn(t *testing.T) {
 	type want struct {
 		expectedStatusCode   int
 		expectedResponseBody string
+		expectedAuthHeader   string
 	}
 	tests := []struct {
 		name         string
@@ -49,8 +50,7 @@ func TestHandler_SignIn(t *testing.T) {
 			},
 			args: args{},
 			want: want{
-				expectedStatusCode:   http.StatusMethodNotAllowed,
-				expectedResponseBody: "",
+				expectedStatusCode: http.StatusMethodNotAllowed,
 			},
 		},
 		{
@@ -70,8 +70,7 @@ func TestHandler_SignIn(t *testing.T) {
 				inputBody: "{\"login\":\"\",\"password\":\"}",
 			},
 			want: want{
-				expectedStatusCode:   http.StatusBadRequest,
-				expectedResponseBody: "",
+				expectedStatusCode: http.StatusBadRequest,
 			},
 		},
 		{
@@ -91,8 +90,7 @@ func TestHandler_SignIn(t *testing.T) {
 				inputBody: "{\"login\":\"\",\"password\":\"\"}",
 			},
 			want: want{
-				expectedStatusCode:   http.StatusBadRequest,
-				expectedResponseBody: "",
+				expectedStatusCode: http.StatusBadRequest,
 			},
 		},
 		{
@@ -118,8 +116,7 @@ func TestHandler_SignIn(t *testing.T) {
 				inputBody: "{\"login\":\"login\",\"password\":\"password\"}",
 			},
 			want: want{
-				expectedStatusCode:   http.StatusInternalServerError,
-				expectedResponseBody: "",
+				expectedStatusCode: http.StatusInternalServerError,
 			},
 		},
 		{
@@ -145,8 +142,7 @@ func TestHandler_SignIn(t *testing.T) {
 				inputBody: "{\"login\":\"login\",\"password\":\"password\"}",
 			},
 			want: want{
-				expectedStatusCode:   http.StatusUnauthorized,
-				expectedResponseBody: "",
+				expectedStatusCode: http.StatusUnauthorized,
 			},
 		},
 		{
@@ -172,8 +168,8 @@ func TestHandler_SignIn(t *testing.T) {
 				inputBody: "{\"login\":\"login\",\"password\":\"password\"}",
 			},
 			want: want{
-				expectedStatusCode:   http.StatusOK,
-				expectedResponseBody: "json-token",
+				expectedStatusCode: http.StatusOK,
+				expectedAuthHeader: "Bearer json-token",
 			},
 		},
 	}
@@ -195,6 +191,7 @@ func TestHandler_SignIn(t *testing.T) {
 			router.ServeHTTP(rr, req)
 
 			require.Equal(t, test.want.expectedStatusCode, rr.Code)
+			require.Equal(t, test.want.expectedAuthHeader, rr.Header().Get("Authorization"))
 			require.Equal(t, test.want.expectedResponseBody, rr.Body.String())
 		})
 	}
