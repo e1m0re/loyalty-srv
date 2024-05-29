@@ -43,7 +43,7 @@ func (is invoicesService) CreateInvoice(ctx context.Context, id models.UserID) (
 }
 
 func (is invoicesService) UpdateBalance(ctx context.Context, account models.Invoice, amount float64, orderNum models.OrderNum) (*models.Invoice, error) {
-	if account.Balance < amount {
+	if account.Balance+amount < 0 {
 		return nil, apperrors.ErrInvoiceHasNotEnoughFunds
 	}
 

@@ -4,14 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log/slog"
-	"net/http"
-	"time"
-
 	"github.com/jackc/pgx/v5/stdlib"
 	"github.com/jmoiron/sqlx"
 	"github.com/pressly/goose/v3"
 	"golang.org/x/sync/errgroup"
+	"log/slog"
+	"net/http"
 
 	appHandler "e1m0re/loyalty-srv/internal/api/handler"
 	"e1m0re/loyalty-srv/internal/db/migrations"
@@ -42,7 +40,7 @@ func NewServer(ctx context.Context, cfg *Config) (*Server, error) {
 			Addr:    cfg.serverAddress,
 			Handler: handler.NewRouter(),
 		},
-		ordersProcessor: service.NewOrdersProcessor(&services.InvoicesService, &services.OrdersService),
+		ordersProcessor: service.NewOrdersProcessor(services.InvoicesService, services.OrdersService),
 	}
 
 	return srv, nil
@@ -92,16 +90,31 @@ func (srv *Server) Start(ctx context.Context) error {
 		return srv.startHTTPServer(ctx)
 	})
 
-	// Invoices Processing
+	// Checking processing of orders
 	grp.Go(func() error {
 		for {
 			select {
 			case <-ctx.Done():
 				return nil
-			case <-time.After(srv.config.delays.invoiceProcessing):
+			default:
 				err := srv.ordersProcessor.RecalculateProcessedOrders(ctx)
 				if err != nil {
-					slog.Warn("Invoices Processing", slog.String("error", err.Error()))
+					slog.Warn("Checking processing of orders", slog.String("error", err.Error()))
+				}
+			}
+		}
+	})
+
+	// Recalculate processed orders
+	grp.Go(func() error {
+		for {
+			select {
+			case <-ctx.Done():
+				return nil
+			default:
+				err := srv.ordersProcessor.RecalculateProcessedOrders(ctx)
+				if err != nil {
+					slog.Warn("Recalculate processed orders", slog.String("error", err.Error()))
 				}
 			}
 		}

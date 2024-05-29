@@ -109,7 +109,7 @@ func (repo invoiceRepository) GetWithdrawnTotalSum(ctx context.Context, invoiceI
 }
 
 func (repo invoiceRepository) UpdateBalance(ctx context.Context, invoice models.Invoice, amount float64) (*models.Invoice, error) {
-	invoice.Balance = invoice.Balance - amount
+	invoice.Balance = invoice.Balance + amount
 	query := "UPDATE invoices SET balance = $1 WHERE id = $2"
 	_, err := repo.db.ExecContext(ctx, query, invoice.Balance, invoice.ID)
 	if err != nil {

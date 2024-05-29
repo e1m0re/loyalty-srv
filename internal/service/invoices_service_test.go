@@ -366,7 +366,7 @@ func Test_invoicesService_UpdateBalance(t *testing.T) {
 				account: models.Invoice{
 					Balance: 10,
 				},
-				amount:   100,
+				amount:   -100,
 				orderNum: "123",
 			},
 			want: want{
@@ -391,7 +391,7 @@ func Test_invoicesService_UpdateBalance(t *testing.T) {
 				account: models.Invoice{
 					Balance: 1000,
 				},
-				amount:   100,
+				amount:   -100,
 				orderNum: "123",
 			},
 			want: want{
@@ -418,7 +418,7 @@ func Test_invoicesService_UpdateBalance(t *testing.T) {
 				account: models.Invoice{
 					Balance: 1000,
 				},
-				amount:   100,
+				amount:   -100,
 				orderNum: "123",
 			},
 			want: want{
@@ -447,7 +447,7 @@ func Test_invoicesService_UpdateBalance(t *testing.T) {
 				account: models.Invoice{
 					Balance: 1000,
 				},
-				amount:   100,
+				amount:   -100,
 				orderNum: "123",
 			},
 			want: want{

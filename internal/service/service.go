@@ -46,6 +46,7 @@ type UsersService interface {
 
 type OrdersProcessor interface {
 	RecalculateProcessedOrders(ctx context.Context) error
+	CheckProcessingOrders(ctx context.Context) error
 }
 
 type Services struct {
