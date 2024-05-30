@@ -22,7 +22,8 @@ type InvoicesService interface {
 //go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=OrdersService
 type OrdersService interface {
 	GetLoadedOrdersByUserID(ctx context.Context, userID models.UserID) (*models.OrdersList, error)
-	GetNotCalculatedOrder(ctx context.Context, limit int) (*models.OrdersList, error)
+	GetNotCalculatedOrder(ctx context.Context) (*models.Order, error)
+	GetNotProcessedOrder(ctx context.Context) (*models.Order, error)
 	NewOrder(ctx context.Context, orderInfo models.OrderInfo) (*models.Order, error)
 	UpdateOrdersCalculated(ctx context.Context, order models.Order, calculated bool) (*models.Order, error)
 	UpdateOrdersStatus(ctx context.Context, order models.Order, status models.OrdersStatus, accrual int) (*models.Order, error)
@@ -44,9 +45,11 @@ type UsersService interface {
 	SignIn(ctx context.Context, userInfo models.UserInfo) (token string, err error)
 }
 
+//go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=OrdersProcessor
 type OrdersProcessor interface {
 	RecalculateProcessedOrders(ctx context.Context) error
 	CheckProcessingOrders(ctx context.Context) error
+	RequestOrdersStatus(ctx context.Context, orderNum models.OrderNum) (*models.OrdersStatusInfo, error)
 }
 
 type Services struct {

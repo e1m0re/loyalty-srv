@@ -45,3 +45,9 @@ type OrderInfo struct {
 	UserID
 	OrderNum
 }
+
+type OrdersStatusInfo struct {
+	OrderNumber OrderNum     `json:"order"`
+	Status      OrdersStatus `json:"status"`
+	Accrual     int          `json:"accrual"`
+}

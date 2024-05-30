@@ -83,12 +83,31 @@ func (repo orderRepository) UpdateOrdersStatus(ctx context.Context, order models
 	return &order, nil
 }
 
-func (repo orderRepository) GetNotCalculatedOrder(ctx context.Context, limit int) (*models.OrdersList, error) {
+func (repo orderRepository) GetNotCalculatedOrder(ctx context.Context) (*models.Order, error) {
 	orders := models.OrdersList{}
-	err := repo.db.SelectContext(ctx, &orders, "SELECT * FROM orders WHERE status = $1 AND calculated = $2 LIMIT $3", models.OrderStatusProcessed, false, limit)
+	err := repo.db.SelectContext(ctx, &orders, "SELECT * FROM orders WHERE status = $1 AND calculated = $2 LIMIT 1", models.OrderStatusProcessed, false)
 	if err != nil {
 		return nil, err
 	}
 
-	return &orders, nil
+	var order models.Order
+	if len(orders) > 0 {
+		order = orders[0]
+	}
+
+	return &order, nil
+}
+
+func (repo orderRepository) GetNotProcessedOrder(ctx context.Context) (*models.Order, error) {
+	orders := models.OrdersList{}
+	err := repo.db.SelectContext(ctx, &orders, "SELECT * FROM orders WHERE status = $1 OR status = $2 LIMIT 1 ", models.OrderStatusNew, models.OrderStatusProcessing)
+	switch {
+	case errors.Is(err, sql.ErrNoRows):
+		return nil, nil
+	case err != nil:
+		return nil, err
+	default:
+		order := orders[0]
+		return &order, nil
+	}
 }

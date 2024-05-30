@@ -44,29 +44,59 @@ func (_m *OrdersService) GetLoadedOrdersByUserID(ctx context.Context, userID mod
 	return r0, r1
 }
 
-// GetNotCalculatedOrder provides a mock function with given fields: ctx, limit
-func (_m *OrdersService) GetNotCalculatedOrder(ctx context.Context, limit int) (*[]models.Order, error) {
-	ret := _m.Called(ctx, limit)
+// GetNotCalculatedOrder provides a mock function with given fields: ctx
+func (_m *OrdersService) GetNotCalculatedOrder(ctx context.Context) (*models.Order, error) {
+	ret := _m.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetNotCalculatedOrder")
 	}
 
-	var r0 *[]models.Order
+	var r0 *models.Order
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, int) (*[]models.Order, error)); ok {
-		return rf(ctx, limit)
+	if rf, ok := ret.Get(0).(func(context.Context) (*models.Order, error)); ok {
+		return rf(ctx)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, int) *[]models.Order); ok {
-		r0 = rf(ctx, limit)
+	if rf, ok := ret.Get(0).(func(context.Context) *models.Order); ok {
+		r0 = rf(ctx)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*[]models.Order)
+			r0 = ret.Get(0).(*models.Order)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, int) error); ok {
-		r1 = rf(ctx, limit)
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(ctx)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetNotProcessedOrder provides a mock function with given fields: ctx
+func (_m *OrdersService) GetNotProcessedOrder(ctx context.Context) (*models.Order, error) {
+	ret := _m.Called(ctx)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetNotProcessedOrder")
+	}
+
+	var r0 *models.Order
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context) (*models.Order, error)); ok {
+		return rf(ctx)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context) *models.Order); ok {
+		r0 = rf(ctx)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.Order)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(ctx)
 	} else {
 		r1 = ret.Error(1)
 	}

@@ -24,7 +24,8 @@ type InvoiceRepository interface {
 type OrderRepository interface {
 	AddOrder(ctx context.Context, orderInfo models.OrderInfo) (*models.Order, error)
 	GetLoadedOrdersByUserID(ctx context.Context, userID models.UserID) (*models.OrdersList, error)
-	GetNotCalculatedOrder(ctx context.Context, limit int) (*models.OrdersList, error)
+	GetNotCalculatedOrder(ctx context.Context) (*models.Order, error)
+	GetNotProcessedOrder(ctx context.Context) (*models.Order, error)
 	GetOrderByNumber(ctx context.Context, num models.OrderNum) (*models.Order, error)
 	UpdateOrdersCalculated(ctx context.Context, order models.Order, calculated bool) (*models.Order, error)
 	UpdateOrdersStatus(ctx context.Context, order models.Order, status models.OrdersStatus, accrual int) (*models.Order, error)
