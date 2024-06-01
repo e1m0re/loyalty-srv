@@ -588,3 +588,93 @@ func Test_ordersService_UpdateOrdersStatus(t *testing.T) {
 		})
 	}
 }
+
+func Test_ordersService_GetNotCalculatedOrder(t *testing.T) {
+	type args struct {
+		ctx context.Context
+	}
+	type want struct {
+		order  *models.Order
+		errMsg string
+	}
+	tests := []struct {
+		name             string
+		mockRepositories func() *repository.Repositories
+		args             args
+		want             want
+	}{
+		{
+			name: "Error in repo",
+			mockRepositories: func() *repository.Repositories {
+				mockOrderRepo := mocks.NewOrderRepository(t)
+				mockOrderRepo.
+					On("GetNotCalculatedOrder", mock.Anything).
+					Return(nil, fmt.Errorf("some repos error"))
+
+				return &repository.Repositories{
+					OrderRepository: mockOrderRepo,
+				}
+			},
+			args: args{
+				ctx: context.Background(),
+			},
+			want: want{
+				order:  &models.Order{},
+				errMsg: "some repos error",
+			},
+		},
+		{
+			name: "All orders are calculated",
+			mockRepositories: func() *repository.Repositories {
+				mockOrderRepo := mocks.NewOrderRepository(t)
+				mockOrderRepo.
+					On("GetNotCalculatedOrder", mock.Anything).
+					Return(nil, nil)
+
+				return &repository.Repositories{
+					OrderRepository: mockOrderRepo,
+				}
+			},
+			args: args{
+				ctx: context.Background(),
+			},
+			want: want{
+				order:  nil,
+				errMsg: "",
+			},
+		},
+		{
+			name: "Successfully case",
+			mockRepositories: func() *repository.Repositories {
+				mockOrderRepo := mocks.NewOrderRepository(t)
+				mockOrderRepo.
+					On("GetNotCalculatedOrder", mock.Anything).
+					Return(&models.Order{Calculated: false}, nil)
+
+				return &repository.Repositories{
+					OrderRepository: mockOrderRepo,
+				}
+			},
+			args: args{
+				ctx: context.Background(),
+			},
+			want: want{
+				order:  &models.Order{Calculated: false},
+				errMsg: "",
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			repo := test.mockRepositories()
+			os := ordersService{
+				orderRepository: repo.OrderRepository,
+			}
+			gotOrder, gotErr := os.GetNotCalculatedOrder(test.args.ctx)
+			require.ElementsMatch(t, test.want.order, gotOrder)
+			if len(test.want.errMsg) > 0 {
+				require.EqualError(t, gotErr, test.want.errMsg)
+			}
+		})
+	}
+}
