@@ -44,9 +44,11 @@ func (p orderProcessor) RecalculateProcessedOrders(ctx context.Context) error {
 			slog.String("order", strconv.Itoa(int(order.UserID))),
 			slog.String("error", err.Error()),
 		)
+
+		return err
 	}
 
-	_, err = p.invoicesService.UpdateBalance(ctx, *invoice, float64(*order.Accrual), order.Number)
+	_, err = p.invoicesService.UpdateBalance(ctx, *invoice, *order.Accrual, order.Number)
 	if err != nil {
 		slog.Warn("Recalculate processed orders",
 			slog.String("step", "update balance of invoice"),
