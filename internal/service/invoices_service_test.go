@@ -180,10 +180,10 @@ func Test_invoicesService_GetAccountByUserID(t *testing.T) {
 func Test_invoicesService_GetAccountInfo(t *testing.T) {
 	type args struct {
 		ctx     context.Context
-		account *models.Invoice
+		invoice *models.Invoice
 	}
 	type want struct {
-		accountInfo *models.InvoiceInfo
+		invoiceInfo *models.InvoiceInfo
 		errMsg      string
 	}
 	tests := []struct {
@@ -198,7 +198,7 @@ func Test_invoicesService_GetAccountInfo(t *testing.T) {
 				mockAccountRepository := mocks.NewInvoiceRepository(t)
 				mockAccountRepository.
 					On("GetWithdrawnTotalSum", mock.Anything, mock.AnythingOfType("models.InvoiceID")).
-					Return(100, nil)
+					Return(float64(100), nil)
 
 				return &repository.Repositories{
 					InvoiceRepository: mockAccountRepository,
@@ -206,12 +206,12 @@ func Test_invoicesService_GetAccountInfo(t *testing.T) {
 			},
 			args: args{
 				ctx:     context.Background(),
-				account: &models.Invoice{ID: 1, Balance: 777},
+				invoice: &models.Invoice{ID: 1, Balance: 777},
 			},
 			want: want{
-				accountInfo: &models.InvoiceInfo{
-					CurrentBalance: 777,
-					Withdrawals:    100,
+				invoiceInfo: &models.InvoiceInfo{
+					CurrentBalance: float64(777),
+					Withdrawn:      float64(100),
 				},
 				errMsg: "",
 			},
@@ -222,7 +222,7 @@ func Test_invoicesService_GetAccountInfo(t *testing.T) {
 				mockAccountRepository := mocks.NewInvoiceRepository(t)
 				mockAccountRepository.
 					On("GetWithdrawnTotalSum", mock.Anything, mock.AnythingOfType("models.InvoiceID")).
-					Return(0, fmt.Errorf("some repos error"))
+					Return(float64(0), fmt.Errorf("some repos error"))
 
 				return &repository.Repositories{
 					InvoiceRepository: mockAccountRepository,
@@ -230,10 +230,10 @@ func Test_invoicesService_GetAccountInfo(t *testing.T) {
 			},
 			args: args{
 				ctx:     context.Background(),
-				account: &models.Invoice{ID: 1},
+				invoice: &models.Invoice{ID: 1},
 			},
 			want: want{
-				accountInfo: nil,
+				invoiceInfo: nil,
 				errMsg:      "some repos error",
 			},
 		},
@@ -244,8 +244,8 @@ func Test_invoicesService_GetAccountInfo(t *testing.T) {
 			as := invoicesService{
 				invoiceRepository: repo.InvoiceRepository,
 			}
-			gotAccountInfo, gotErr := as.GetInvoiceInfo(test.args.ctx, test.args.account)
-			require.Equal(t, &test.want.accountInfo, &gotAccountInfo)
+			gotInvoiceInfo, gotErr := as.GetInvoiceInfo(test.args.ctx, test.args.invoice)
+			require.Equal(t, &test.want.invoiceInfo, &gotInvoiceInfo)
 			if len(test.want.errMsg) > 0 {
 				require.EqualError(t, gotErr, test.want.errMsg)
 			}

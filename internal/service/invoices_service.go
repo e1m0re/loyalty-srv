@@ -26,15 +26,15 @@ func (is invoicesService) GetInvoiceByUserID(ctx context.Context, userID models.
 	return is.invoiceRepository.GetInvoiceByUserID(ctx, userID)
 }
 
-func (is invoicesService) GetInvoiceInfo(ctx context.Context, account *models.Invoice) (*models.InvoiceInfo, error) {
-	withdrawnTotalSum, err := is.invoiceRepository.GetWithdrawnTotalSum(ctx, account.ID)
+func (is invoicesService) GetInvoiceInfo(ctx context.Context, invoice *models.Invoice) (*models.InvoiceInfo, error) {
+	withdrawnTotalSum, err := is.invoiceRepository.GetWithdrawnTotalSum(ctx, invoice.ID)
 	if err != nil {
 		return nil, err
 	}
 
 	return &models.InvoiceInfo{
-		CurrentBalance: account.Balance,
-		Withdrawals:    withdrawnTotalSum,
+		CurrentBalance: invoice.Balance,
+		Withdrawn:      withdrawnTotalSum,
 	}, nil
 }
 

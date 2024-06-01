@@ -23,7 +23,7 @@ type Order struct {
 	UserID     UserID       `db:"user" json:"-"`
 	Number     OrderNum     `db:"number" json:"number"`
 	Status     OrdersStatus `db:"status" json:"status"`
-	Accrual    *int         `db:"accrual" json:"accrual,omitempty"`
+	Accrual    *float64     `db:"accrual" json:"accrual,omitempty"`
 	UploadedAt time.Time    `db:"created_at" json:"uploaded_at"`
 	Calculated bool         `db:"calculated" json:"-"`
 }
@@ -49,5 +49,5 @@ type OrderInfo struct {
 type OrdersStatusInfo struct {
 	OrderNumber OrderNum     `json:"order"`
 	Status      OrdersStatus `json:"status"`
-	Accrual     int          `json:"accrual"`
+	Accrual     float64      `json:"accrual"`
 }

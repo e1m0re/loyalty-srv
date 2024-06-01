@@ -155,7 +155,7 @@ func TestHandler_GetBalance(t *testing.T) {
 					On("GetInvoiceInfo", mock.Anything, &models.Invoice{}).
 					Return(&models.InvoiceInfo{
 						CurrentBalance: 500.5,
-						Withdrawals:    42,
+						Withdrawn:      42,
 					}, nil)
 
 				return &service.Services{
@@ -171,7 +171,7 @@ func TestHandler_GetBalance(t *testing.T) {
 			},
 			want: want{
 				expectedStatusCode:   http.StatusOK,
-				expectedResponseBody: "{\"current\":500.5,\"withdrawals\":42}",
+				expectedResponseBody: "{\"current\":500.5,\"withdrawn\":42}",
 			},
 		},
 	}

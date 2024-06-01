@@ -195,7 +195,7 @@ func (_m *OrderRepository) UpdateOrdersCalculated(ctx context.Context, order mod
 }
 
 // UpdateOrdersStatus provides a mock function with given fields: ctx, order, status, accrual
-func (_m *OrderRepository) UpdateOrdersStatus(ctx context.Context, order models.Order, status models.OrdersStatus, accrual int) (*models.Order, error) {
+func (_m *OrderRepository) UpdateOrdersStatus(ctx context.Context, order models.Order, status models.OrdersStatus, accrual float64) (*models.Order, error) {
 	ret := _m.Called(ctx, order, status, accrual)
 
 	if len(ret) == 0 {
@@ -204,10 +204,10 @@ func (_m *OrderRepository) UpdateOrdersStatus(ctx context.Context, order models.
 
 	var r0 *models.Order
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, models.Order, models.OrdersStatus, int) (*models.Order, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, models.Order, models.OrdersStatus, float64) (*models.Order, error)); ok {
 		return rf(ctx, order, status, accrual)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, models.Order, models.OrdersStatus, int) *models.Order); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, models.Order, models.OrdersStatus, float64) *models.Order); ok {
 		r0 = rf(ctx, order, status, accrual)
 	} else {
 		if ret.Get(0) != nil {
@@ -215,7 +215,7 @@ func (_m *OrderRepository) UpdateOrdersStatus(ctx context.Context, order models.
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, models.Order, models.OrdersStatus, int) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, models.Order, models.OrdersStatus, float64) error); ok {
 		r1 = rf(ctx, order, status, accrual)
 	} else {
 		r1 = ret.Error(1)

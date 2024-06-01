@@ -128,7 +128,7 @@ func TestHandler_GetOrders(t *testing.T) {
 					On("GenerateAuthToken").
 					Return(jwtAuth)
 
-				accrual := 500
+				accrual := float64(500)
 				ordersList := &models.OrdersList{
 					{
 						ID:         1,

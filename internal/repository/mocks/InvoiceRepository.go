@@ -165,22 +165,22 @@ func (_m *InvoiceRepository) GetWithdrawalsList(ctx context.Context, invoiceID m
 }
 
 // GetWithdrawnTotalSum provides a mock function with given fields: ctx, invoiceID
-func (_m *InvoiceRepository) GetWithdrawnTotalSum(ctx context.Context, invoiceID models.InvoiceID) (int, error) {
+func (_m *InvoiceRepository) GetWithdrawnTotalSum(ctx context.Context, invoiceID models.InvoiceID) (float64, error) {
 	ret := _m.Called(ctx, invoiceID)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetWithdrawnTotalSum")
 	}
 
-	var r0 int
+	var r0 float64
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, models.InvoiceID) (int, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, models.InvoiceID) (float64, error)); ok {
 		return rf(ctx, invoiceID)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, models.InvoiceID) int); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, models.InvoiceID) float64); ok {
 		r0 = rf(ctx, invoiceID)
 	} else {
-		r0 = ret.Get(0).(int)
+		r0 = ret.Get(0).(float64)
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, models.InvoiceID) error); ok {

@@ -26,7 +26,7 @@ type OrdersService interface {
 	GetNotProcessedOrder(ctx context.Context) (*models.Order, error)
 	NewOrder(ctx context.Context, orderInfo models.OrderInfo) (*models.Order, error)
 	UpdateOrdersCalculated(ctx context.Context, order models.Order, calculated bool) (*models.Order, error)
-	UpdateOrdersStatus(ctx context.Context, order models.Order, status models.OrdersStatus, accrual int) (*models.Order, error)
+	UpdateOrdersStatus(ctx context.Context, order models.Order, status models.OrdersStatus, accrual float64) (*models.Order, error)
 	ValidateNumber(ctx context.Context, orderNum models.OrderNum) (ok bool, err error)
 }
 

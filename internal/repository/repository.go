@@ -16,7 +16,7 @@ type InvoiceRepository interface {
 	GetInvoiceByID(ctx context.Context, invoiceID models.InvoiceID) (*models.Invoice, error)
 	GetInvoiceByUserID(ctx context.Context, userID models.UserID) (*models.Invoice, error)
 	GetWithdrawalsList(ctx context.Context, invoiceID models.InvoiceID) (*models.WithdrawalsList, error)
-	GetWithdrawnTotalSum(ctx context.Context, invoiceID models.InvoiceID) (int, error)
+	GetWithdrawnTotalSum(ctx context.Context, invoiceID models.InvoiceID) (float64, error)
 	UpdateBalance(ctx context.Context, invoice models.Invoice, amount float64) (*models.Invoice, error)
 }
 
@@ -28,7 +28,7 @@ type OrderRepository interface {
 	GetNotProcessedOrder(ctx context.Context) (*models.Order, error)
 	GetOrderByNumber(ctx context.Context, num models.OrderNum) (*models.Order, error)
 	UpdateOrdersCalculated(ctx context.Context, order models.Order, calculated bool) (*models.Order, error)
-	UpdateOrdersStatus(ctx context.Context, order models.Order, status models.OrdersStatus, accrual int) (*models.Order, error)
+	UpdateOrdersStatus(ctx context.Context, order models.Order, status models.OrdersStatus, accrual float64) (*models.Order, error)
 }
 
 //go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=UserRepository

@@ -4,14 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log/slog"
-	"net/http"
-	"time"
-
 	"github.com/jackc/pgx/v5/stdlib"
 	"github.com/jmoiron/sqlx"
 	"github.com/pressly/goose/v3"
 	"golang.org/x/sync/errgroup"
+	"log/slog"
+	"net/http"
+	"time"
 
 	appHandler "e1m0re/loyalty-srv/internal/api/handler"
 	"e1m0re/loyalty-srv/internal/db/migrations"
@@ -98,7 +97,7 @@ func (srv *Server) Start(ctx context.Context) error {
 			select {
 			case <-ctx.Done():
 				return nil
-			default:
+			case <-time.After(500):
 				err := srv.ordersProcessor.CheckProcessingOrders(ctx)
 				if err != nil {
 					slog.Warn("Checking processing of orders", slog.String("error", err.Error()))
@@ -113,7 +112,7 @@ func (srv *Server) Start(ctx context.Context) error {
 			select {
 			case <-ctx.Done():
 				return nil
-			case <-time.After(time.Duration(1)):
+			case <-time.After(500):
 				err := srv.ordersProcessor.RecalculateProcessedOrders(ctx)
 				if err != nil {
 					slog.Warn("Recalculate processed orders", slog.String("error", err.Error()))

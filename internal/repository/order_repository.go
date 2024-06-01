@@ -54,7 +54,7 @@ func (repo orderRepository) GetOrderByNumber(ctx context.Context, num models.Ord
 
 func (repo orderRepository) GetLoadedOrdersByUserID(ctx context.Context, userID models.UserID) (*models.OrdersList, error) {
 	orders := models.OrdersList{}
-	err := repo.db.SelectContext(ctx, &orders, "SELECT * FROM orders WHERE \"user\" = $1", userID)
+	err := repo.db.SelectContext(ctx, &orders, "SELECT id, \"user\", created_at, status, number, accrual::numeric, calculated FROM orders WHERE \"user\" = $1", userID)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func (repo orderRepository) UpdateOrdersCalculated(ctx context.Context, order mo
 	return &order, nil
 }
 
-func (repo orderRepository) UpdateOrdersStatus(ctx context.Context, order models.Order, status models.OrdersStatus, accrual int) (*models.Order, error) {
+func (repo orderRepository) UpdateOrdersStatus(ctx context.Context, order models.Order, status models.OrdersStatus, accrual float64) (*models.Order, error) {
 	_, err := repo.db.ExecContext(ctx, "UPDATE orders set status = $1, accrual = $2 WHERE number = $3", status, accrual, order.Number)
 	if err != nil {
 		return nil, err
@@ -85,27 +85,26 @@ func (repo orderRepository) UpdateOrdersStatus(ctx context.Context, order models
 
 func (repo orderRepository) GetNotCalculatedOrder(ctx context.Context) (*models.Order, error) {
 	orders := models.OrdersList{}
-	err := repo.db.SelectContext(ctx, &orders, "SELECT * FROM orders WHERE status = $1 AND calculated = $2 LIMIT 1", models.OrderStatusProcessed, false)
+	err := repo.db.SelectContext(ctx, &orders, "SELECT id, \"user\", created_at, status, number, accrual::numeric, calculated FROM orders WHERE status = $1 AND calculated = $2 LIMIT 1", models.OrderStatusProcessed, false)
 	if err != nil {
 		return nil, err
 	}
 
-	var order models.Order
 	if len(orders) > 0 {
-		order = orders[0]
+		return &orders[0], nil
 	}
 
-	return &order, nil
+	return nil, nil
 }
 
 func (repo orderRepository) GetNotProcessedOrder(ctx context.Context) (*models.Order, error) {
 	orders := models.OrdersList{}
 	err := repo.db.SelectContext(ctx, &orders, "SELECT * FROM orders WHERE status = $1 OR status = $2 LIMIT 1 ", models.OrderStatusNew, models.OrderStatusProcessing)
 	switch {
-	case errors.Is(err, sql.ErrNoRows):
-		return nil, nil
 	case err != nil:
 		return nil, err
+	case len(orders) == 0:
+		return nil, nil
 	default:
 		order := orders[0]
 		return &order, nil

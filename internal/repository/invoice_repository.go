@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"log/slog"
-	"math"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -72,7 +71,7 @@ func (repo invoiceRepository) GetInvoiceByUserID(ctx context.Context, userID mod
 }
 
 func (repo invoiceRepository) GetWithdrawalsList(ctx context.Context, invoiceID models.InvoiceID) (*models.WithdrawalsList, error) {
-	rows, err := repo.db.QueryContext(ctx, "SELECT \"order\", ABS(delta::numeric), ts FROM invoices_changes WHERE account = $1 and amount::numeric < 0", invoiceID)
+	rows, err := repo.db.QueryContext(ctx, "SELECT \"order\", ABS(amount::numeric), ts FROM invoices_changes WHERE account = $1 and amount::numeric < 0", invoiceID)
 	if err != nil {
 		return nil, err
 	}
@@ -97,15 +96,15 @@ func (repo invoiceRepository) GetWithdrawalsList(ctx context.Context, invoiceID 
 	return &withdrawals, nil
 }
 
-func (repo invoiceRepository) GetWithdrawnTotalSum(ctx context.Context, invoiceID models.InvoiceID) (int, error) {
+func (repo invoiceRepository) GetWithdrawnTotalSum(ctx context.Context, invoiceID models.InvoiceID) (float64, error) {
 	var sum float64
-	query := "SELECT sum(amount) FROM invoices_changes WHERE account = $1 AND amount::numeric < 0"
+	query := "SELECT COALESCE(SUM(amount), 0::money)::numeric FROM invoices_changes WHERE account = $1 AND amount::numeric < 0"
 	err := repo.db.QueryRowContext(ctx, query, invoiceID).Scan(&sum)
 	if err != nil {
 		return 0, err
 	}
 
-	return int(math.Abs(sum)), nil
+	return -sum, nil
 }
 
 func (repo invoiceRepository) UpdateBalance(ctx context.Context, invoice models.Invoice, amount float64) (*models.Invoice, error) {

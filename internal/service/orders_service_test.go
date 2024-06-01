@@ -276,7 +276,7 @@ func TestOrdersService_NewOrder(t *testing.T) {
 }
 
 func TestOrdersService_GetLoadedOrdersByUserID(t *testing.T) {
-	accrual := 500
+	accrual := float64(500)
 	type args struct {
 		ctx    context.Context
 		userID models.UserID
@@ -504,12 +504,12 @@ func Test_ordersService_UpdateOrdersCalculated(t *testing.T) {
 }
 
 func Test_ordersService_UpdateOrdersStatus(t *testing.T) {
-	accrual := 500
+	accrual := float64(500)
 	type args struct {
 		ctx     context.Context
 		order   models.Order
 		status  models.OrdersStatus
-		accrual int
+		accrual float64
 	}
 	type want struct {
 		order  *models.Order
@@ -526,7 +526,7 @@ func Test_ordersService_UpdateOrdersStatus(t *testing.T) {
 			mockRepositories: func() *repository.Repositories {
 				mockOrderRepo := mocks.NewOrderRepository(t)
 				mockOrderRepo.
-					On("UpdateOrdersStatus", mock.Anything, mock.AnythingOfType("models.Order"), mock.Anything, mock.AnythingOfType("int")).
+					On("UpdateOrdersStatus", mock.Anything, mock.AnythingOfType("models.Order"), mock.Anything, mock.AnythingOfType("float64")).
 					Return(nil, fmt.Errorf("some repos error"))
 
 				return &repository.Repositories{
@@ -549,7 +549,7 @@ func Test_ordersService_UpdateOrdersStatus(t *testing.T) {
 			mockRepositories: func() *repository.Repositories {
 				mockOrderRepo := mocks.NewOrderRepository(t)
 				mockOrderRepo.
-					On("UpdateOrdersStatus", mock.Anything, mock.AnythingOfType("models.Order"), mock.Anything, mock.AnythingOfType("int")).
+					On("UpdateOrdersStatus", mock.Anything, mock.AnythingOfType("models.Order"), mock.Anything, mock.AnythingOfType("float64")).
 					Return(&models.Order{
 						Status:  models.OrderStatusProcessed,
 						Accrual: &accrual,

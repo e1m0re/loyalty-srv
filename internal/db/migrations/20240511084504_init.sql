@@ -22,7 +22,7 @@ CREATE TABLE orders
     status     VARCHAR(50)                         NOT NULL,
     number     VARCHAR(50)
         UNIQUE,
-    accrual    INTEGER,
+    accrual    money,
     calculated BOOLEAN   DEFAULT false             NOT NULL
 );
 

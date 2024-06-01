@@ -26,7 +26,7 @@ type Withdrawal struct {
 
 type InvoiceInfo struct {
 	CurrentBalance float64 `json:"current"`
-	Withdrawals    int     `json:"withdrawals"`
+	Withdrawn      float64 `json:"withdrawn"`
 }
 
 type WithdrawalsList = []Withdrawal
