@@ -7,8 +7,8 @@ import (
 )
 
 type delays struct {
-	invoiceProcessing time.Duration
-	orderProcessing   time.Duration
+	ordersCalculation time.Duration
+	ordersProcessing  time.Duration
 }
 
 type Config struct {
@@ -22,12 +22,12 @@ type Config struct {
 func InitConfig() *Config {
 	config := Config{
 		delays: delays{
-			invoiceProcessing: time.Duration(1),
-			orderProcessing:   time.Duration(1),
+			ordersCalculation: time.Duration(500) * time.Millisecond,
+			ordersProcessing:  time.Duration(500) * time.Millisecond,
 		},
 	}
 	flag.StringVar(&config.serverAddress, "a", "0.0.0.0:80", "server address")
-	flag.StringVar(&config.databaseDSN, "d", "postgresql://loyalty:loyalty@192.168.33.26:5432/loyalty?sslmode=disable", "database URI")
+	flag.StringVar(&config.databaseDSN, "d", "", "database URI")
 	flag.StringVar(&config.accrualSystemAddress, "r", "http://127.0.0.1:8080", "accrual system address")
 	flag.StringVar(&config.jwtSecretKey, "k", "very secret key", "secret key for JWT")
 	flag.Parse()

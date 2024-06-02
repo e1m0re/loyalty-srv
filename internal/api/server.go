@@ -98,7 +98,8 @@ func (srv *Server) Start(ctx context.Context) error {
 			select {
 			case <-ctx.Done():
 				return nil
-			case <-time.After(100):
+			case <-time.After(srv.config.delays.ordersProcessing):
+				slog.Info("Checking processing of orders: start")
 				timeout, err := srv.ordersProcessor.CheckProcessingOrders(ctx)
 				if err != nil {
 					slog.Warn("Checking processing of orders", slog.String("error", err.Error()))
@@ -116,7 +117,8 @@ func (srv *Server) Start(ctx context.Context) error {
 			select {
 			case <-ctx.Done():
 				return nil
-			case <-time.After(500):
+			case <-time.After(srv.config.delays.ordersCalculation):
+				slog.Info("Recalculate processed orders: start")
 				err := srv.ordersProcessor.RecalculateProcessedOrders(ctx)
 				if err != nil {
 					slog.Warn("Recalculate processed orders", slog.String("error", err.Error()))

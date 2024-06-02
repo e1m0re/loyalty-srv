@@ -34,7 +34,7 @@ func (p orderProcessor) RecalculateProcessedOrders(ctx context.Context) error {
 
 		return err
 	}
-
+	slog.Info("RecalculateProcessedOrders", slog.String("order", fmt.Sprintf("%v", order)))
 	if order == nil {
 
 		return nil
