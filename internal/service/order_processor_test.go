@@ -67,7 +67,9 @@ func Test_orderProcessor_RecalculateProcessedOrders(t *testing.T) {
 				mockOrderService := mocks.NewOrdersService(t)
 				mockOrderService.
 					On("GetNotCalculatedOrder", mock.Anything).
-					Return(&models.Order{Accrual: nil}, nil)
+					Return(&models.Order{Accrual: nil}, nil).
+					On("UpdateOrdersCalculated", mock.Anything, mock.AnythingOfType("models.Order"), true).
+					Return(nil, nil)
 
 				return &orderProcessor{
 					ordersService: mockOrderService,
@@ -82,7 +84,9 @@ func Test_orderProcessor_RecalculateProcessedOrders(t *testing.T) {
 				mockOrderService := mocks.NewOrdersService(t)
 				mockOrderService.
 					On("GetNotCalculatedOrder", mock.Anything).
-					Return(&models.Order{Accrual: &zeroAccrual}, nil)
+					Return(&models.Order{Accrual: &zeroAccrual}, nil).
+					On("UpdateOrdersCalculated", mock.Anything, mock.AnythingOfType("models.Order"), true).
+					Return(nil, nil)
 
 				return &orderProcessor{
 					ordersService: mockOrderService,

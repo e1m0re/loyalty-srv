@@ -35,39 +35,40 @@ func (p orderProcessor) RecalculateProcessedOrders(ctx context.Context) error {
 		return err
 	}
 
-	if order == nil || order.Accrual == nil || *order.Accrual == 0 {
+	if order == nil {
 
 		return nil
 	}
 
-	invoice, err := p.invoicesService.GetInvoiceByUserID(ctx, order.UserID)
-	if err != nil {
-		slog.Warn("Recalculate processed orders",
-			slog.String("step", "getting invoice"),
-			slog.String("order", strconv.Itoa(int(order.UserID))),
-			slog.String("error", err.Error()),
-		)
+	if order.Accrual != nil && *order.Accrual > 0 {
+		invoice, err := p.invoicesService.GetInvoiceByUserID(ctx, order.UserID)
+		if err != nil {
+			slog.Warn("Recalculate processed orders",
+				slog.String("step", "getting invoice"),
+				slog.String("order", strconv.Itoa(int(order.UserID))),
+				slog.String("error", err.Error()),
+			)
 
-		return err
-	}
+			return err
+		}
 
-	_, err = p.invoicesService.UpdateBalance(ctx, *invoice, *order.Accrual, order.Number)
-	if err != nil {
-		slog.Warn("Recalculate processed orders",
-			slog.String("step", "update balance of invoice"),
-			slog.String("invoice", strconv.Itoa(int(invoice.ID))),
-			slog.String("order", strconv.Itoa(int(order.UserID))),
-			slog.String("error", err.Error()),
-		)
+		_, err = p.invoicesService.UpdateBalance(ctx, *invoice, *order.Accrual, order.Number)
+		if err != nil {
+			slog.Warn("Recalculate processed orders",
+				slog.String("step", "update balance of invoice"),
+				slog.String("invoice", strconv.Itoa(int(invoice.ID))),
+				slog.String("order", strconv.Itoa(int(order.UserID))),
+				slog.String("error", err.Error()),
+			)
 
-		return err
+			return err
+		}
 	}
 
 	_, err = p.ordersService.UpdateOrdersCalculated(ctx, *order, true)
 	if err != nil {
 		slog.Warn("Recalculate processed orders",
 			slog.String("step", "mark order as calculated"),
-			slog.String("invoice", strconv.Itoa(int(invoice.ID))),
 			slog.String("order", strconv.Itoa(int(order.UserID))),
 			slog.String("error", err.Error()),
 		)

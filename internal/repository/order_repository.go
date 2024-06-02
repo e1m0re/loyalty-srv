@@ -85,7 +85,7 @@ func (repo orderRepository) UpdateOrdersStatus(ctx context.Context, order models
 
 func (repo orderRepository) GetNotCalculatedOrder(ctx context.Context) (*models.Order, error) {
 	orders := models.OrdersList{}
-	err := repo.db.SelectContext(ctx, &orders, "SELECT id, \"user\", created_at, status, number, accrual::numeric, calculated FROM orders WHERE status = $1 AND calculated = $2 LIMIT 1", models.OrderStatusProcessed, false)
+	err := repo.db.SelectContext(ctx, &orders, "SELECT id, \"user\", created_at, status, number, accrual::numeric, calculated FROM orders WHERE status = $1 AND status = $2 AND calculated = $3 LIMIT 1", models.OrderStatusProcessed, models.OrderStatusInvalid, false)
 	if err != nil {
 		return nil, err
 	}
