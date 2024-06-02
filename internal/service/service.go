@@ -48,8 +48,8 @@ type UsersService interface {
 //go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=OrdersProcessor
 type OrdersProcessor interface {
 	RecalculateProcessedOrders(ctx context.Context) error
-	CheckProcessingOrders(ctx context.Context) error
-	RequestOrdersStatus(ctx context.Context, orderNum models.OrderNum) (*models.OrdersStatusInfo, error)
+	CheckProcessingOrders(ctx context.Context) (timeout int64, err error)
+	RequestOrdersStatus(ctx context.Context, orderNum models.OrderNum) (osi *models.OrdersStatusInfo, timeout int64, err error)
 }
 
 type Services struct {

@@ -30,10 +30,12 @@ func NewOrdersProcessor(invoicesService InvoicesService, ordersService OrdersSer
 func (p orderProcessor) RecalculateProcessedOrders(ctx context.Context) error {
 	order, err := p.ordersService.GetNotCalculatedOrder(ctx)
 	if err != nil {
+
 		return err
 	}
 
 	if order == nil || order.Accrual == nil || *order.Accrual == 0 {
+
 		return nil
 	}
 
@@ -75,51 +77,74 @@ func (p orderProcessor) RecalculateProcessedOrders(ctx context.Context) error {
 	return nil
 }
 
-func (p orderProcessor) CheckProcessingOrders(ctx context.Context) error {
+func (p orderProcessor) CheckProcessingOrders(ctx context.Context) (timeout int64, err error) {
 	order, err := p.ordersService.GetNotProcessedOrder(ctx)
 	if err != nil {
-		return err
+
+		return 0, err
 	}
 
 	if order == nil {
-		return nil
+
+		return 0, nil
 	}
 
-	si, err := p.RequestOrdersStatus(ctx, order.Number)
+	si, timeout, err := p.RequestOrdersStatus(ctx, order.Number)
 	if err != nil {
-		return err
+
+		return timeout, err
 	}
 
 	if si == nil {
-		return nil
+
+		return 0, nil
 	}
 
 	_, err = p.ordersService.UpdateOrdersStatus(ctx, *order, si.Status, si.Accrual)
 	if err != nil {
-		return err
+
+		return 0, err
 	}
 
-	return nil
+	return 0, nil
 }
 
-func (p orderProcessor) RequestOrdersStatus(ctx context.Context, orderNum models.OrderNum) (*models.OrdersStatusInfo, error) {
+func (p orderProcessor) RequestOrdersStatus(ctx context.Context, orderNum models.OrderNum) (osi *models.OrdersStatusInfo, timeout int64, err error) {
 	url := fmt.Sprintf("%s/api/orders/%s", p.accrualSystemAddress, orderNum)
 	response, err := p.httpClient.Get(url)
 	if err != nil {
-		return nil, err
+
+		return nil, 0, err
 	}
 
 	defer response.Body.Close()
 
-	if response.StatusCode == http.StatusNoContent {
-		return nil, nil
-	}
+	switch response.StatusCode {
+	case http.StatusTooManyRequests:
+		if s, ok := response.Header["Retry-After"]; ok {
+			if timeout, err = strconv.ParseInt(s[0], 10, 32); err != nil {
+				return nil, 0, nil
+			}
+		}
 
-	osi := &models.OrdersStatusInfo{}
-	err = json.NewDecoder(response.Body).Decode(osi)
-	if err != nil {
-		return nil, err
-	}
+		return nil, timeout, nil
+	case http.StatusNoContent:
+		return nil, 0, nil
+	case http.StatusOK:
+		osi = &models.OrdersStatusInfo{}
+		err = json.NewDecoder(response.Body).Decode(osi)
+		if err != nil {
+			return nil, 0, err
+		}
 
-	return osi, nil
+		return osi, 0, nil
+	case http.StatusInternalServerError:
+		var errMsg []byte
+		response.Body.Read(errMsg)
+
+		return nil, 0, fmt.Errorf("internal server error: %s", errMsg)
+	default:
+
+		return nil, 0, fmt.Errorf("unknow resonse type")
+	}
 }

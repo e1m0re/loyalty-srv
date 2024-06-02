@@ -4,13 +4,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
+	"net/http"
+	"time"
+
 	"github.com/jackc/pgx/v5/stdlib"
 	"github.com/jmoiron/sqlx"
 	"github.com/pressly/goose/v3"
 	"golang.org/x/sync/errgroup"
-	"log/slog"
-	"net/http"
-	"time"
 
 	appHandler "e1m0re/loyalty-srv/internal/api/handler"
 	"e1m0re/loyalty-srv/internal/db/migrations"
@@ -98,9 +99,12 @@ func (srv *Server) Start(ctx context.Context) error {
 			case <-ctx.Done():
 				return nil
 			case <-time.After(500):
-				err := srv.ordersProcessor.CheckProcessingOrders(ctx)
+				timeout, err := srv.ordersProcessor.CheckProcessingOrders(ctx)
 				if err != nil {
 					slog.Warn("Checking processing of orders", slog.String("error", err.Error()))
+				}
+				if timeout > 0 {
+					time.Sleep(time.Second * time.Duration(timeout))
 				}
 			}
 		}
