@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"errors"
+	"log/slog"
 	"net/http"
 
 	"e1m0re/loyalty-srv/internal/apperrors"
@@ -29,6 +30,7 @@ func (h *Handler) WritingOff(w http.ResponseWriter, r *http.Request) {
 
 	ok, err := h.services.OrdersService.ValidateNumber(r.Context(), requestData.Order)
 	if err != nil {
+		slog.Error("WritingOff", slog.String("error", err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -41,6 +43,7 @@ func (h *Handler) WritingOff(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value(models.CKUserID).(models.UserID)
 	invoice, err := h.services.InvoicesService.GetInvoiceByUserID(r.Context(), userID)
 	if err != nil {
+		slog.Error("WritingOff", slog.String("error", err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -52,6 +55,7 @@ func (h *Handler) WritingOff(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		slog.Error("WritingOff", slog.String("error", err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

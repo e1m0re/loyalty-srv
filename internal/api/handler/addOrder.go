@@ -3,6 +3,7 @@ package handler
 import (
 	"errors"
 	"io"
+	"log/slog"
 	"net/http"
 
 	"e1m0re/loyalty-srv/internal/apperrors"
@@ -16,7 +17,13 @@ func (h *Handler) AddOrder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data, err := io.ReadAll(r.Body)
-	if err != nil || len(data) == 0 {
+	if err != nil {
+		slog.Error("AddOrder", slog.String("error", err.Error()))
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	if len(data) == 0 {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -36,6 +43,7 @@ func (h *Handler) AddOrder(w http.ResponseWriter, r *http.Request) {
 		case errors.Is(err, apperrors.ErrOrderWasLoaded):
 			w.WriteHeader(http.StatusOK)
 		default:
+			slog.Error("AddOrder", slog.String("error", err.Error()))
 			w.WriteHeader(http.StatusInternalServerError)
 		}
 		return

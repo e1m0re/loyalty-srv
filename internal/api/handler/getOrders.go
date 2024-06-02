@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	"e1m0re/loyalty-srv/internal/models"
@@ -16,6 +17,7 @@ func (h *Handler) GetOrders(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value(models.CKUserID).(models.UserID)
 	ordersList, err := h.services.OrdersService.GetLoadedOrdersByUserID(r.Context(), userID)
 	if err != nil {
+		slog.Error("GetOrders", slog.String("error", err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -28,6 +30,7 @@ func (h *Handler) GetOrders(w http.ResponseWriter, r *http.Request) {
 
 	responseBody, err := json.Marshal(ordersList)
 	if err != nil {
+		slog.Error("GetOrders", slog.String("error", err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

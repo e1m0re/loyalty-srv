@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net/http"
 
 	"e1m0re/loyalty-srv/internal/apperrors"
@@ -35,18 +36,21 @@ func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		slog.Error("SignUp", slog.String("error", err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	_, err = h.services.InvoicesService.CreateInvoice(r.Context(), user.ID)
 	if err != nil {
+		slog.Error("SignUp", slog.String("error", err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	token, err := h.services.UsersService.SignIn(r.Context(), userInfo)
 	if err != nil {
+		slog.Error("SignUp", slog.String("error", err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

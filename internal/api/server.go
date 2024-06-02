@@ -98,7 +98,7 @@ func (srv *Server) Start(ctx context.Context) error {
 			select {
 			case <-ctx.Done():
 				return nil
-			case <-time.After(500):
+			case <-time.After(100):
 				timeout, err := srv.ordersProcessor.CheckProcessingOrders(ctx)
 				if err != nil {
 					slog.Warn("Checking processing of orders", slog.String("error", err.Error()))

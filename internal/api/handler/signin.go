@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net/http"
 
 	"e1m0re/loyalty-srv/internal/apperrors"
@@ -30,6 +31,7 @@ func (h *Handler) SignIn(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		slog.Error("SignIn", slog.String("error", err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

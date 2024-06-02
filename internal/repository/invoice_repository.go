@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"log/slog"
+	"math"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -104,7 +105,7 @@ func (repo invoiceRepository) GetWithdrawnTotalSum(ctx context.Context, invoiceI
 		return 0, err
 	}
 
-	return -sum, nil
+	return math.Abs(sum), nil
 }
 
 func (repo invoiceRepository) UpdateBalance(ctx context.Context, invoice models.Invoice, amount float64) (*models.Invoice, error) {

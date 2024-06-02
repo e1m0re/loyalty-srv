@@ -17,19 +17,21 @@ func (h *Handler) GetWithdrawals(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value(models.CKUserID).(models.UserID)
 	account, err := h.services.InvoicesService.GetInvoiceByUserID(r.Context(), userID)
 	if err != nil {
+		slog.Error("GetWithdrawals", slog.String("error", err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)
-		slog.Error("GetWithdrawals", slog.String("GetWithdrawals", err.Error()))
 		return
 	}
 
 	withdrawalsList, err := h.services.InvoicesService.GetWithdrawals(r.Context(), account)
 	if err != nil {
+		slog.Error("GetWithdrawals", slog.String("error", err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	responseBody, err := json.Marshal(withdrawalsList)
 	if err != nil {
+		slog.Error("GetWithdrawals", slog.String("error", err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
