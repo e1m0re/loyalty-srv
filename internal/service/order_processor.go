@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log/slog"
 	"net/http"
 	"strconv"
@@ -13,7 +14,7 @@ import (
 
 type orderProcessor struct {
 	accrualSystemAddress string
-	httpClient           *http.Client
+	httpClient           HTTPClient
 	invoicesService      InvoicesService
 	ordersService        OrdersService
 }
@@ -120,15 +121,8 @@ func (p orderProcessor) RequestOrdersStatus(ctx context.Context, orderNum models
 	defer response.Body.Close()
 
 	switch response.StatusCode {
-	case http.StatusTooManyRequests:
-		if s, ok := response.Header["Retry-After"]; ok {
-			if timeout, err = strconv.ParseInt(s[0], 10, 32); err != nil {
-				return nil, 0, nil
-			}
-		}
-
-		return nil, timeout, nil
 	case http.StatusNoContent:
+
 		return nil, 0, nil
 	case http.StatusOK:
 		osi = &models.OrdersStatusInfo{}
@@ -138,13 +132,23 @@ func (p orderProcessor) RequestOrdersStatus(ctx context.Context, orderNum models
 		}
 
 		return osi, 0, nil
+	case http.StatusTooManyRequests:
+		if s, ok := response.Header["Retry-After"]; ok {
+			if timeout, err = strconv.ParseInt(s[0], 10, 32); err != nil {
+				return nil, 0, nil
+			}
+		}
+
+		return nil, timeout, nil
 	case http.StatusInternalServerError:
-		var errMsg []byte
-		response.Body.Read(errMsg)
+		errMsg, err := io.ReadAll(response.Body)
+		if err != nil {
+			return nil, 0, err
+		}
 
 		return nil, 0, fmt.Errorf("internal server error: %s", errMsg)
 	default:
 
-		return nil, 0, fmt.Errorf("unknow resonse type")
+		return nil, 0, fmt.Errorf("unknown response type")
 	}
 }

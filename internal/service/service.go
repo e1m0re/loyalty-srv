@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/go-chi/jwtauth/v5"
 
@@ -50,6 +51,11 @@ type OrdersProcessor interface {
 	RecalculateProcessedOrders(ctx context.Context) error
 	CheckProcessingOrders(ctx context.Context) (timeout int64, err error)
 	RequestOrdersStatus(ctx context.Context, orderNum models.OrderNum) (osi *models.OrdersStatusInfo, timeout int64, err error)
+}
+
+//go:generate go run github.com/vektra/mockery/v2@v2.43.1 --name=HTTPClient
+type HTTPClient interface {
+	Get(url string) (resp *http.Response, err error)
 }
 
 type Services struct {

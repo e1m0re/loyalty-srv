@@ -4,6 +4,9 @@ import (
 	"context"
 	"e1m0re/loyalty-srv/internal/models"
 	"fmt"
+	"io"
+	"net/http"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/mock"
@@ -187,6 +190,279 @@ func Test_orderProcessor_RecalculateProcessedOrders(t *testing.T) {
 			p := test.mockProcess()
 			gotErr := p.RecalculateProcessedOrders(test.args.ctx)
 
+			if len(test.want.errMsg) > 0 {
+				require.EqualError(t, gotErr, test.want.errMsg)
+			} else {
+				require.Equal(t, nil, gotErr)
+			}
+		})
+	}
+}
+
+func Test_orderProcessor_RequestOrdersStatus(t *testing.T) {
+
+	type args struct {
+		ctx      context.Context
+		orderNum models.OrderNum
+	}
+	type want struct {
+		osi     *models.OrdersStatusInfo
+		timeout int64
+		errMsg  string
+	}
+	tests := []struct {
+		name        string
+		mockService func() OrdersProcessor
+		args        args
+		want        want
+	}{
+		{
+			name: "httpClient.Get failed",
+			mockService: func() OrdersProcessor {
+				mockHTTPClient := mocks.NewHTTPClient(t)
+				mockHTTPClient.
+					On("Get", mock.Anything).
+					Return(nil, fmt.Errorf("some error of request contractor"))
+
+				return &orderProcessor{
+					httpClient: mockHTTPClient,
+				}
+			},
+			args: args{
+				ctx:      context.Background(),
+				orderNum: "1",
+			},
+			want: want{
+				osi:     nil,
+				timeout: 0,
+				errMsg:  "some error of request contractor",
+			},
+		},
+		{
+			name: "Response with 204 code (StatusNoContent)",
+			mockService: func() OrdersProcessor {
+				mockHTTPClient := mocks.NewHTTPClient(t)
+				response := &http.Response{
+					Body:       io.NopCloser(strings.NewReader("")),
+					StatusCode: http.StatusNoContent,
+				}
+				mockHTTPClient.
+					On("Get", mock.Anything).
+					Return(response, nil)
+
+				return &orderProcessor{
+					httpClient: mockHTTPClient,
+				}
+			},
+			args: args{
+				ctx:      context.Background(),
+				orderNum: "1",
+			},
+			want: want{
+				osi:     nil,
+				timeout: 0,
+				errMsg:  "",
+			},
+		},
+		{
+			name: "Response with 202 code (StatusOK) and bad body",
+			mockService: func() OrdersProcessor {
+				mockHTTPClient := mocks.NewHTTPClient(t)
+				response := &http.Response{
+					Body:       io.NopCloser(strings.NewReader("{\"order\":\"<number>\",\"status\":\"PROCESSED\",")),
+					StatusCode: http.StatusOK,
+				}
+				mockHTTPClient.
+					On("Get", mock.Anything).
+					Return(response, nil)
+
+				return &orderProcessor{
+					httpClient: mockHTTPClient,
+				}
+			},
+			args: args{
+				ctx:      context.Background(),
+				orderNum: "1",
+			},
+			want: want{
+				osi:     nil,
+				timeout: 0,
+				errMsg:  "unexpected EOF",
+			},
+		},
+		{
+			name: "Response with 202 code (StatusOK)",
+			mockService: func() OrdersProcessor {
+				mockHTTPClient := mocks.NewHTTPClient(t)
+				response := &http.Response{
+					Body:       io.NopCloser(strings.NewReader("{\"order\":\"1\",\"status\":\"PROCESSED\",\"accrual\":500}")),
+					StatusCode: http.StatusOK,
+				}
+				mockHTTPClient.
+					On("Get", mock.Anything).
+					Return(response, nil)
+
+				return &orderProcessor{
+					httpClient: mockHTTPClient,
+				}
+			},
+			args: args{
+				ctx:      context.Background(),
+				orderNum: "1",
+			},
+			want: want{
+				osi: &models.OrdersStatusInfo{
+					OrderNumber: "1",
+					Status:      "PROCESSED",
+					Accrual:     500,
+				},
+				timeout: 0,
+				errMsg:  "",
+			},
+		},
+		{
+			name: "Response with 429 code (StatusTooManyRequests) and wrung Retry-After header",
+			mockService: func() OrdersProcessor {
+				mockHTTPClient := mocks.NewHTTPClient(t)
+				response := &http.Response{
+					Body:       io.NopCloser(strings.NewReader("")),
+					StatusCode: http.StatusTooManyRequests,
+					Header: http.Header{
+						"Retry-After": []string{""},
+					},
+				}
+				mockHTTPClient.
+					On("Get", mock.Anything).
+					Return(response, nil)
+
+				return &orderProcessor{
+					httpClient: mockHTTPClient,
+				}
+			},
+			args: args{
+				ctx:      context.Background(),
+				orderNum: "1",
+			},
+			want: want{
+				osi:     nil,
+				timeout: 0,
+				errMsg:  "",
+			},
+		},
+		{
+			name: "Response with 429 code (StatusTooManyRequests) and without Retry-After header",
+			mockService: func() OrdersProcessor {
+				mockHTTPClient := mocks.NewHTTPClient(t)
+				response := &http.Response{
+					Body:       io.NopCloser(strings.NewReader("")),
+					StatusCode: http.StatusTooManyRequests,
+				}
+				mockHTTPClient.
+					On("Get", mock.Anything).
+					Return(response, nil)
+
+				return &orderProcessor{
+					httpClient: mockHTTPClient,
+				}
+			},
+			args: args{
+				ctx:      context.Background(),
+				orderNum: "1",
+			},
+			want: want{
+				osi:     nil,
+				timeout: 0,
+				errMsg:  "",
+			},
+		},
+		{
+			name: "Response with 429 code (StatusTooManyRequests) and good Retry-After header",
+			mockService: func() OrdersProcessor {
+				mockHTTPClient := mocks.NewHTTPClient(t)
+				response := &http.Response{
+					Body:       io.NopCloser(strings.NewReader("")),
+					StatusCode: http.StatusTooManyRequests,
+					Header: http.Header{
+						"Retry-After": []string{"30"},
+					},
+				}
+				mockHTTPClient.
+					On("Get", mock.Anything).
+					Return(response, nil)
+
+				return &orderProcessor{
+					httpClient: mockHTTPClient,
+				}
+			},
+			args: args{
+				ctx:      context.Background(),
+				orderNum: "1",
+			},
+			want: want{
+				osi:     nil,
+				timeout: 30,
+				errMsg:  "",
+			},
+		},
+		{
+			name: "Response with 500 code (StatusInternalServerError)",
+			mockService: func() OrdersProcessor {
+				mockHTTPClient := mocks.NewHTTPClient(t)
+				response := &http.Response{
+					Body:       io.NopCloser(strings.NewReader("something wrong")),
+					StatusCode: http.StatusInternalServerError,
+				}
+				mockHTTPClient.
+					On("Get", mock.Anything).
+					Return(response, nil)
+
+				return &orderProcessor{
+					httpClient: mockHTTPClient,
+				}
+			},
+			args: args{
+				ctx:      context.Background(),
+				orderNum: "1",
+			},
+			want: want{
+				osi:     nil,
+				timeout: 0,
+				errMsg:  "internal server error: something wrong",
+			},
+		},
+		{
+			name: "Response with unknown status code",
+			mockService: func() OrdersProcessor {
+				mockHTTPClient := mocks.NewHTTPClient(t)
+				response := &http.Response{
+					Body:       io.NopCloser(strings.NewReader("")),
+					StatusCode: http.StatusMethodNotAllowed,
+				}
+				mockHTTPClient.
+					On("Get", mock.Anything).
+					Return(response, nil)
+
+				return &orderProcessor{
+					httpClient: mockHTTPClient,
+				}
+			},
+			args: args{
+				ctx:      context.Background(),
+				orderNum: "1",
+			},
+			want: want{
+				osi:     nil,
+				timeout: 0,
+				errMsg:  "unknown response type",
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			op := test.mockService()
+			gotOsi, gotTimeout, gotErr := op.RequestOrdersStatus(test.args.ctx, test.args.orderNum)
+			require.Equal(t, test.want.osi, gotOsi)
+			require.Equal(t, test.want.timeout, gotTimeout)
 			if len(test.want.errMsg) > 0 {
 				require.EqualError(t, gotErr, test.want.errMsg)
 			} else {
