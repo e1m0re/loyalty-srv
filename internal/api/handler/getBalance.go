@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	"e1m0re/loyalty-srv/internal/models"
@@ -13,15 +14,24 @@ func (h *Handler) GetBalance(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userId := models.UserId(1)
-	accountInfo, err := h.services.Accounts.GetAccountInfoByUserId(r.Context(), userId)
+	userID := r.Context().Value(models.CKUserID).(models.UserID)
+	invoice, err := h.services.InvoicesService.GetInvoiceByUserID(r.Context(), userID)
 	if err != nil {
+		slog.Error("GetBalance", slog.String("error", err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	responseBody, err := json.Marshal(accountInfo)
+	invoiceInfo, err := h.services.InvoicesService.GetInvoiceInfo(r.Context(), invoice)
 	if err != nil {
+		slog.Error("GetBalance", slog.String("error", err.Error()))
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	responseBody, err := json.Marshal(invoiceInfo)
+	if err != nil {
+		slog.Error("GetBalance", slog.String("error", err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

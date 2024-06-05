@@ -4,10 +4,10 @@ import (
 	"time"
 )
 
-type UserId int
+type UserID int
 
 type User struct {
-	ID        UserId     `db:"id"`
+	ID        UserID     `db:"id"`
 	Username  string     `db:"username"`
 	Password  string     `db:"password"`
 	LastLogin *time.Time `db:"last_login"`

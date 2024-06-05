@@ -2,14 +2,17 @@ package handler
 
 import (
 	"encoding/json"
+	"errors"
+	"log/slog"
 	"net/http"
 
+	"e1m0re/loyalty-srv/internal/apperrors"
 	"e1m0re/loyalty-srv/internal/models"
 )
 
 type writingOffRequest struct {
 	Order models.OrderNum `json:"order"`
-	Sum   int             `json:"sum"`
+	Sum   float64         `json:"sum"`
 }
 
 func (h *Handler) WritingOff(w http.ResponseWriter, r *http.Request) {
@@ -27,6 +30,7 @@ func (h *Handler) WritingOff(w http.ResponseWriter, r *http.Request) {
 
 	ok, err := h.services.OrdersService.ValidateNumber(r.Context(), requestData.Order)
 	if err != nil {
+		slog.Error("WritingOff", slog.String("error", err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -36,18 +40,23 @@ func (h *Handler) WritingOff(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userId := models.UserId(1)
-	account, err := h.services.Accounts.GetAccountByUserId(r.Context(), userId)
+	userID := r.Context().Value(models.CKUserID).(models.UserID)
+	invoice, err := h.services.InvoicesService.GetInvoiceByUserID(r.Context(), userID)
 	if err != nil {
+		slog.Error("WritingOff", slog.String("error", err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
 		return
 	}
 
-	_, err = h.services.Accounts.Withdraw(r.Context(), account.ID, requestData.Sum, requestData.Order)
+	_, err = h.services.InvoicesService.UpdateBalance(r.Context(), *invoice, -requestData.Sum, requestData.Order)
 	if err != nil {
+		if errors.Is(err, apperrors.ErrInvoiceHasNotEnoughFunds) {
+			w.WriteHeader(http.StatusPaymentRequired)
+			return
+		}
+
+		slog.Error("WritingOff", slog.String("error", err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
 		return
 	}
 

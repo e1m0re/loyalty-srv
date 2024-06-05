@@ -3,6 +3,8 @@ package handler
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
+	"log/slog"
 	"net/http"
 
 	"e1m0re/loyalty-srv/internal/apperrors"
@@ -15,11 +17,10 @@ func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userInfo := &models.UserInfo{}
-	err := json.NewDecoder(r.Body).Decode(userInfo)
+	userInfo := models.UserInfo{}
+	err := json.NewDecoder(r.Body).Decode(&userInfo)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(err.Error()))
 		return
 	}
 
@@ -28,22 +29,32 @@ func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = h.services.UsersService.CreateUser(r.Context(), userInfo)
+	user, err := h.services.UsersService.CreateUser(r.Context(), userInfo)
 	if err != nil {
-		if errors.Is(err, apperrors.BusyLoginError) {
+		if errors.Is(err, apperrors.ErrBusyLogin) {
 			w.WriteHeader(http.StatusConflict)
 			return
 		}
 
+		slog.Error("SignUp", slog.String("error", err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	_, err = h.services.UsersService.SignIn(r.Context(), userInfo)
+	_, err = h.services.InvoicesService.CreateInvoice(r.Context(), user.ID)
 	if err != nil {
+		slog.Error("SignUp", slog.String("error", err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
+	token, err := h.services.UsersService.SignIn(r.Context(), userInfo)
+	if err != nil {
+		slog.Error("SignUp", slog.String("error", err.Error()))
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Add("Authorization", fmt.Sprintf("Bearer %s", token))
 	w.WriteHeader(http.StatusOK)
 }
